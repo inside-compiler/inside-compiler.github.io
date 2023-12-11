@@ -102,5 +102,5 @@ theme: landscape
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repository: https://github.com/inside-compiler/inside-compiler.github.io.git
+  repository: git@github.com:inside-compiler/inside-compiler.github.io.git
   branch: main

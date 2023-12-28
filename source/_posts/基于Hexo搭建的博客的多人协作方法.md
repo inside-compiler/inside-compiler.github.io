@@ -4,6 +4,54 @@ date: 2023-12-16 16:21:51
 tags:
 ---
 
+## 搭建环境
+
+1.  拉取代码
+
+2. 安装 nodejs 和 npm
+
+3. 安装 hexo
+
+4. 更新代码中 node module
+
+   ```
+   npm intall
+   ```
+
+## 编写博客
+
+1. 创建博客
+
+   ```
+   hexo new blog_name
+   ```
+
+2. 编写博客 md 文件
+
+3. 生成 css 和 html 等文件
+
+   ```
+   hexo g
+   ```
+
+4. 发布
+
+   ```
+   hexo d
+   ```
+
+## 使用建议
+
+### 图片相关
+
+使用 md 编写工具的时候可以设置图片存放路径为相对路径。
+
+![image-20231228230710676](./基于Hexo搭建的博客的多人协作方法/image-20231228230710676.png)
+
+然后通过如下命令在 md 中插入图片，即可在md中看到图片，也可以在网页中看到图片。注意：要写路径要以“./”开头。
+
+![image-20231228233550519](./基于Hexo搭建的博客的多人协作方法/image-20231228233550519.png)
+
 ## 参考
 
 1. [nvm安装]([Ubuntu 安装 nvm, 并使用其安装 node.js 与 npm-CSDN博客](https://blog.csdn.net/weixin_44623897/article/details/122690638))
@@ -15,3 +63,4 @@ tags:
 4. [ubuntu | 镜像站使用帮助 | 清华大学开源软件镜像站 | Tsinghua Open Source Mirror](https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/)
 
    
+

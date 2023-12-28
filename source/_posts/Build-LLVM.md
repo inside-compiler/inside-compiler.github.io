@@ -86,3 +86,6 @@ $ clang -emit-llvm -S -isysroot `xcrun --show-sdk-path` hello.c -o hello.ll
 # 使用debug版本llc打印log
 $ llc hello.ll --march=bpf -o hello.s -debug >hello.log 2>&1
 ~~~
+
+
+

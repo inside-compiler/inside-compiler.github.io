@@ -1,15 +1,19 @@
 ---
 title: Build LLVM
 date: 2023-12-14 23:11:23
+categories:
+  - 项目编译
 tags:
+  - 编译配置
 ---
+
 ## download code
 ~~~sh
 git clone git@github.com:chenghanpeng/llvm-project.git
 cd llvm-project
 git switch release/15.x
 ~~~
-
+<!-- more -->
 ## Linux
 ~~~sh
 $ touch build.sh

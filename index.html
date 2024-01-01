@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Inside Compiler">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="inside compiler">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Inside Compiler</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Inside Compiler</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">3</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/25/Build-MLIR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/12/25/Build-MLIR/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-25 23:32:27" itemprop="dateCreated datePublished" datetime="2023-12-25T23:32:27+08:00">2023-12-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-12-30 13:51:42" itemprop="dateModified" datetime="2023-12-30T13:51:42+08:00">2023-12-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="MLIR学习系列1-MLIR概述"><a href="#MLIR学习系列1-MLIR概述" class="headerlink" title="MLIR学习系列1-MLIR概述"></a>MLIR学习系列1-MLIR概述</h1><p>MLIR自2019年发布后就成为编译界的新贵，不仅仅AI编译器、领域编译器、新型硬件公司和新型语言都在尝试使用MLIR，其中以AI编译器取得的成果最为显著。本文简单介绍MLIR的基础知识、MLIR构建和MLIR相关工具的使用。</p>
+<h2 id="MLIR是什么？"><a href="#MLIR是什么？" class="headerlink" title="MLIR是什么？"></a>MLIR是什么？</h2><p>MLIR是Multi-Level Intermediate Representation的缩写。MLIR提供一套新的编译基础架构，方便编译器开发人员定义多层IR，并基于IR进行优化。<br>MLIR定义的IR通过方言（Dialect）进行管理，Dialect又包含了Operation，而Operation是IR对于的操作，因此可以认为Dialect是Operation的集合。<br>通过Dialect的定义，可以将代码转换至对应的方言，再通过对方言的降级和优化，最后下降至LLVM IR，重用LLVM的编译框架完成优化、代码生成。</p>
+<h2 id="MLIR构建"><a href="#MLIR构建" class="headerlink" title="MLIR构建"></a>MLIR构建</h2><p>MLIR是LLVM的子项目，默认情况下构建LLVM时并不会构建MLIR子项目。所以为了使用MLIR在构建LLVM时需要添加额外的参数。编译命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/llvm/llvm-project.git</span><br><span class="line">mkdir llvm-project/build</span><br><span class="line">cd llvm-project/build</span><br><span class="line">cmake -G Ninja ../llvm \</span><br><span class="line">   -DLLVM_ENABLE_PROJECTS=mlir \</span><br><span class="line">   -DLLVM_BUILD_EXAMPLES=ON \</span><br><span class="line">   -DLLVM_TARGETS_TO_BUILD=&quot;Native;NVPTX;AMDGPU&quot; \</span><br><span class="line">   -DCMAKE_BUILD_TYPE=Release \</span><br><span class="line">   -DLLVM_ENABLE_ASSERTIONS=ON</span><br><span class="line">cmake --build . --target check-mlir</span><br></pre></td></tr></table></figure>
+<p>在构建时主要添加构建参数<code>-DLLVM_ENABLE_PROJECTS=mlir</code>即可。编译完成后就可以看到MLIR配套相关的工具。</p>
+<h2 id="MLIR相关工具使用"><a href="#MLIR相关工具使用" class="headerlink" title="MLIR相关工具使用"></a>MLIR相关工具使用</h2><p>MLIR项目构建完成后会生成一些工具。其中最主要的包括：</p>
+<ul>
+<li>mlir-tblgen：将TD文件转换C++代码，和MLIR’框架配合使用</li>
+<li>mlir-opt：对MLIR方言进行下降或者执行优化</li>
+<li>mlir-translate：将LLVM方言转换为LLVM IR；</li>
+</ul>
+<p>另外，其它还有一些工具，例如mlir-pdll、mlir-cpu-runner等在后续的blog中涉及到相关内容再进行介绍。</p>
+<h2 id="MLIR使用示例"><a href="#MLIR使用示例" class="headerlink" title="MLIR使用示例"></a>MLIR使用示例</h2><p>下面通过一个简单的示例演示MLIR的工作流程。</p>
+<h3 id="使用MLIR定义一个Hello-MLIR的代码"><a href="#使用MLIR定义一个Hello-MLIR的代码" class="headerlink" title="使用MLIR定义一个Hello MLIR的代码"></a>使用MLIR定义一个Hello MLIR的代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">module &#123;</span><br><span class="line">        memref.global &quot;private&quot; constant @string : memref&lt;13xi8&gt; = dense&lt;[0x48,0x65,0x6c,0x6c,0x6f,0x2c,0x20,0x4d,0x4c,0x49,0x52,0x21,0]&gt;</span><br><span class="line">        llvm.func external @puts(!llvm.ptr&lt;i8&gt;) -&gt; ()</span><br><span class="line">        func.func @main() -&gt; i64 &#123;</span><br><span class="line">                %c0_i64 = arith.constant 0 : i64</span><br><span class="line">                %0 = memref.get_global @string : memref&lt;13xi8&gt;</span><br><span class="line">                %1 = memref.extract_aligned_pointer_as_index %0 : memref&lt;13xi8&gt; -&gt; index</span><br><span class="line">                %2 = arith.index_cast %1 : index to i64</span><br><span class="line">                %3 = llvm.inttoptr %2 : i64 to !llvm.ptr&lt;i8&gt;</span><br><span class="line">                llvm.call @puts(%3) : (!llvm.ptr&lt;i8&gt;) -&gt; ()</span><br><span class="line">                return %c0_i64 : i64</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，使用4个方言，分别是memref、func、arith和llvm（例如代码中memerf.global表示memref方言中的global operation）。通过memref定义一个全局变量的字符串“Hello，MLIR！”<br>使用llvm方言引用一个外部函数put；<br>使用func方言定义main函数，并在main函数获取字符串，并将其作为put函数的参数，调用put函数。</p>
+<h3 id="将MLIR方言下降至LLVM方言"><a href="#将MLIR方言下降至LLVM方言" class="headerlink" title="将MLIR方言下降至LLVM方言"></a>将MLIR方言下降至LLVM方言</h3><p>在MLIR世界中，需要将其它的方言下降至LLVM方言（包含LLVM和后端硬件方言，烈日ArmSVE方言），在本例中需要将func、arith、memref下降到LLVM方言，使用命令如下：<br><code>mlir-opt  -convert-func-to-llvm  -finalize-memref-to-llvm -convert-arith-to-llvm -reconcile-unrealized-casts hello.mlir </code></p>
+<p>这个代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">module attributes &#123;llvm.data_layout = &quot;&quot;&#125; &#123;</span><br><span class="line">  llvm.mlir.global private constant @string(dense&lt;[72, 101, 108, 108, 111, 44, 32, 77, 76, 73, 82, 33, 0]&gt; : tensor&lt;13xi8&gt;) &#123;addr_space = 0 : i32&#125; : !llvm.array&lt;13 x i8&gt;</span><br><span class="line">  llvm.func @puts(!llvm.ptr&lt;i8&gt;)</span><br><span class="line">  llvm.func @main() -&gt; i64 &#123;</span><br><span class="line">    %0 = llvm.mlir.constant(0 : i64) : i64</span><br><span class="line">    %1 = llvm.mlir.constant(13 : index) : i64</span><br><span class="line">    %2 = llvm.mlir.constant(1 : index) : i64</span><br><span class="line">    %3 = llvm.mlir.null : !llvm.ptr</span><br><span class="line">    %4 = llvm.getelementptr %3[13] : (!llvm.ptr) -&gt; !llvm.ptr, i8</span><br><span class="line">    %5 = llvm.ptrtoint %4 : !llvm.ptr to i64</span><br><span class="line">    %6 = llvm.mlir.addressof @string : !llvm.ptr</span><br><span class="line">    %7 = llvm.getelementptr %6[0, 0] : (!llvm.ptr) -&gt; !llvm.ptr, !llvm.array&lt;13 x i8&gt;</span><br><span class="line">    %8 = llvm.mlir.constant(3735928559 : index) : i64</span><br><span class="line">    %9 = llvm.inttoptr %8 : i64 to !llvm.ptr</span><br><span class="line">    %10 = llvm.mlir.undef : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %11 = llvm.insertvalue %9, %10[0] : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %12 = llvm.insertvalue %7, %11[1] : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %13 = llvm.mlir.constant(0 : index) : i64</span><br><span class="line">    %14 = llvm.insertvalue %13, %12[2] : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %15 = llvm.insertvalue %1, %14[3, 0] : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %16 = llvm.insertvalue %2, %15[4, 0] : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %17 = llvm.ptrtoint %7 : !llvm.ptr to i64</span><br><span class="line">    %18 = llvm.inttoptr %17 : i64 to !llvm.ptr&lt;i8&gt;</span><br><span class="line">    llvm.call @puts(%18) : (!llvm.ptr&lt;i8&gt;) -&gt; ()</span><br><span class="line">    llvm.return %0 : i64</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该代码只包含了LLVM方言</p>
+<h3 id="将LLVM方言转换为LLVM-IR"><a href="#将LLVM方言转换为LLVM-IR" class="headerlink" title="将LLVM方言转换为LLVM IR"></a>将LLVM方言转换为LLVM IR</h3><p>将LLVM方言转换为LLVM IR，使用命令如下<code>mlir-translate --mlir-to-llvmir ***.mlir </code><br>生成的LLVM IR如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">; ModuleID = &#x27;LLVMDialectModule&#x27;</span><br><span class="line">source_filename = &quot;LLVMDialectModule&quot;</span><br><span class="line"></span><br><span class="line">@string = private constant [13 x i8] c&quot;Hello, MLIR!\00&quot;</span><br><span class="line"></span><br><span class="line">declare ptr @malloc(i64)</span><br><span class="line"></span><br><span class="line">declare void @free(ptr)</span><br><span class="line"></span><br><span class="line">declare void @puts(ptr)</span><br><span class="line"></span><br><span class="line">define i64 @main() &#123;</span><br><span class="line">  call void @puts(ptr @string)</span><br><span class="line">  ret i64 0</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">!llvm.module.flags = !&#123;!0&#125;</span><br><span class="line"></span><br><span class="line">!0 = !&#123;i32 2, !&quot;Debug Info Version&quot;, i32 3&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行测试LLVM-IR"><a href="#运行测试LLVM-IR" class="headerlink" title="运行测试LLVM IR"></a>运行测试LLVM IR</h3><p>生成的LLVM IR就可以接入到LLVM体系中，可以使用LLVM的优化、代码生成、汇编、反汇编工具。例如可以使用lli直接运行上述的LLVM IR，可以得到如下结果：<br><code>Hello， MLIR！</code></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文作为MLIR概述的第一篇，简单介绍MLIR的基本概念和工具，通过一个示例演示通过MLIR工具生成LLVM IR的过程。后续我们将逐步展开介绍MLIR方言、模式匹配、方言降级和优化等工作。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">基于Hexo搭建的博客的多人协作方法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-16 16:21:51" itemprop="dateCreated datePublished" datetime="2023-12-16T16:21:51+08:00">2023-12-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-12-25 23:27:18" itemprop="dateModified" datetime="2023-12-25T23:27:18+08:00">2023-12-25</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><p>[nvm安装](<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44623897/article/details/122690638">Ubuntu 安装 nvm, 并使用其安装 node.js 与 npm-CSDN博客</a>)</p>
+</li>
+<li><p>[npm报错问题原因](<a target="_blank" rel="noopener" href="https://ask.csdn.net/questions/7898679">npm报错 Cannot read property ‘insert’ of undefined_前端-CSDN问答</a>)</p>
+</li>
+<li><p>[hexo 多端同步](<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21193762/answer/489124966">使用hexo，如果换了电脑怎么更新博客？ - 知乎 (zhihu.com)</a>)</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/">ubuntu | 镜像站使用帮助 | 清华大学开源软件镜像站 | Tsinghua Open Source Mirror</a></p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/14/Build-LLVM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/12/14/Build-LLVM/" class="post-title-link" itemprop="url">Build LLVM</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-14 23:11:23" itemprop="dateCreated datePublished" datetime="2023-12-14T23:11:23+08:00">2023-12-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-12-25 23:27:18" itemprop="dateModified" datetime="2023-12-25T23:27:18+08:00">2023-12-25</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="download-code"><a href="#download-code" class="headerlink" title="download code"></a>download code</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com:chenghanpeng/llvm-project.git</span><br><span class="line"><span class="built_in">cd</span> llvm-project</span><br><span class="line">git switch release/15.x</span><br></pre></td></tr></table></figure>
+
+<h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">touch</span> build.sh</span><br></pre></td></tr></table></figure>
+<p>build.sh 内容如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">mkdir</span> -p build</span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ ! -f bin/llvm-lto ]; <span class="keyword">then</span></span><br><span class="line">  CORE_NUM=$(<span class="built_in">nproc</span> --all)</span><br><span class="line">  <span class="keyword">if</span> [ -z <span class="string">&quot;<span class="variable">$&#123;CORE_NUM&#125;</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    CORE_NUM=1</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Build llvm with&quot;</span> <span class="variable">$&#123;CORE_NUM&#125;</span> <span class="string">&quot;cores&quot;</span></span><br><span class="line"></span><br><span class="line">  cmake /mnt/Compiler/llvm-project/llvm \</span><br><span class="line">    -G <span class="string">&quot;Unix Makefiles&quot;</span> \</span><br><span class="line">    -DCMAKE_BUILD_TYPE=<span class="string">&quot;Debug&quot;</span> \</span><br><span class="line">    -DLLVM_TARGETS_TO_BUILD=<span class="string">&quot;X86;AArch64;BPF;Hexagon&quot;</span> \</span><br><span class="line">    -DLLVM_ENABLE_PROJECTS=<span class="string">&quot;clang&quot;</span> \</span><br><span class="line">    -DLLVM_ENABLE_RUNTIMES=<span class="string">&quot;libcxx;libcxxabi&quot;</span></span><br><span class="line"></span><br><span class="line">  cmake --build .</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;llvm has already been built&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">chmod</span> +x build.sh</span><br><span class="line">$ ./build.sh</span><br></pre></td></tr></table></figure>
+
+<h2 id="MacOs"><a href="#MacOs" class="headerlink" title="MacOs"></a>MacOs</h2><p>构建LLVM依赖git和cmake，可使用brew安装git和cmake</p>
+<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">which</span> brew</span><br><span class="line">brew not found</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装brew</span></span><br><span class="line">$ /bin/bash -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)</span>&quot;</span></span><br><span class="line">$ <span class="built_in">which</span> brew</span><br><span class="line"></span><br><span class="line"><span class="comment">#安装git</span></span><br><span class="line">$ brew install git</span><br><span class="line">$ git --version</span><br><span class="line"></span><br><span class="line"><span class="comment">#安装cmake</span></span><br><span class="line">$ brew install cmake</span><br><span class="line">$ <span class="built_in">which</span> cmake</span><br></pre></td></tr></table></figure>
+
+<h3 id="构建LLVM"><a href="#构建LLVM" class="headerlink" title="构建LLVM"></a>构建LLVM</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> llvm-project</span><br><span class="line">$ <span class="built_in">mkdir</span> build &amp;&amp; <span class="built_in">cd</span> build</span><br><span class="line">$ cmake -G <span class="string">&quot;Unix Makefiles&quot;</span> -DCMAKE_BUILD_TYPE=Debug DLLVM_TARGETS_TO_BUILD=<span class="string">&quot;X86;AArch64;BPF;Hexagon&quot;</span> -DLLVM_ENABLE_PROJECTS=<span class="string">&quot;clang&quot;</span> ../llvm</span><br><span class="line">$ make -j32</span><br><span class="line">$ <span class="built_in">cd</span> bin &amp; <span class="built_in">ls</span></span><br><span class="line">$ clang -v</span><br><span class="line">clang version 15.0.6 ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="macOS上使用自己源码构建的clang编译源文件"><a href="#macOS上使用自己源码构建的clang编译源文件" class="headerlink" title="macOS上使用自己源码构建的clang编译源文件"></a>macOS上使用自己源码构建的clang编译源文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在macOS上可能会报错 fatal error: &#x27;stdio.h&#x27; file not found</span></span><br><span class="line">$ clang -emit-llvm -S -isysroot `xcrun --show-sdk-path` hello.c -o hello.ll</span><br><span class="line"><span class="comment"># 使用debug版本llc打印log</span></span><br><span class="line">$ llc hello.ll --march=bpf -o hello.s -debug &gt;hello.log 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">inside compiler</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -20,23 +20,19 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="搭建环境 拉取代码  安装 nodejs 和 npm  安装 hexo  更新代码中 node module 1npm intall">
+  <meta name="description" content="用例12345#include &lt;arm_neon.h&gt;uint32x4_t test(uint32x4_t n) &#123;  return n;&#125; 12345#include &lt;arm_neon.h&gt;uint32x4_t test(uint32x4_t a, uint32x4_t b) &#123;  return a + b;&#125;  代码1ty">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于Hexo搭建的博客的多人协作方法">
-<meta property="og:url" content="http://example.com/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:title" content="Survey-on-LLVM-Vector">
+<meta property="og:url" content="http://example.com/2023/12/30/Survey-on-LLVM-Vector/index.html">
 <meta property="og:site_name" content="Inside Compiler">
-<meta property="og:description" content="搭建环境 拉取代码  安装 nodejs 和 npm  安装 hexo  更新代码中 node module 1npm intall">
+<meta property="og:description" content="用例12345#include &lt;arm_neon.h&gt;uint32x4_t test(uint32x4_t n) &#123;  return n;&#125; 12345#include &lt;arm_neon.h&gt;uint32x4_t test(uint32x4_t a, uint32x4_t b) &#123;  return a + b;&#125;  代码1ty">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/image-20231228230710676.png">
-<meta property="og:image" content="http://example.com/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/image-20231228233550519.png">
-<meta property="article:published_time" content="2023-12-16T08:21:51.000Z">
+<meta property="article:published_time" content="2023-12-30T04:24:41.000Z">
 <meta property="article:modified_time" content="2024-01-01T00:56:59.313Z">
 <meta property="article:author" content="inside compiler">
-<meta property="article:tag" content="编译配置">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/image-20231228230710676.png">
 
-<link rel="canonical" href="http://example.com/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/">
+<link rel="canonical" href="http://example.com/2023/12/30/Survey-on-LLVM-Vector/">
 
 
 <script id="page-configurations">
@@ -49,7 +45,7 @@
   };
 </script>
 
-  <title>基于Hexo搭建的博客的多人协作方法 | Inside Compiler</title>
+  <title>Survey-on-LLVM-Vector | Inside Compiler</title>
   
 
 
@@ -164,7 +160,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/30/Survey-on-LLVM-Vector/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -177,7 +173,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          基于Hexo搭建的博客的多人协作方法
+          Survey-on-LLVM-Vector
         </h1>
 
         <div class="post-meta">
@@ -187,7 +183,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2023-12-16 16:21:51" itemprop="dateCreated datePublished" datetime="2023-12-16T16:21:51+08:00">2023-12-16</time>
+              <time title="创建时间：2023-12-30 12:24:41" itemprop="dateCreated datePublished" datetime="2023-12-30T12:24:41+08:00">2023-12-30</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -196,15 +192,6 @@
                 <span class="post-meta-item-text">更新于</span>
                 <time title="修改时间：2024-01-01 08:56:59" itemprop="dateModified" datetime="2024-01-01T08:56:59+08:00">2024-01-01</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" itemprop="url" rel="index"><span itemprop="name">环境配置</span></a>
-                </span>
-            </span>
 
           
 
@@ -217,45 +204,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><ol>
-<li><p>拉取代码</p>
-</li>
-<li><p>安装 nodejs 和 npm</p>
-</li>
-<li><p>安装 hexo</p>
-</li>
-<li><p>更新代码中 node module</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm intall</span><br></pre></td></tr></table></figure></li>
-</ol>
-<span id="more"></span>
-<h2 id="编写博客"><a href="#编写博客" class="headerlink" title="编写博客"></a>编写博客</h2><ol>
-<li><p>创建博客</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new blog_name</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>编写博客 md 文件</p>
-</li>
-<li><p>生成 css 和 html 等文件</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>发布</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="使用建议"><a href="#使用建议" class="headerlink" title="使用建议"></a>使用建议</h2><h3 id="图片相关"><a href="#图片相关" class="headerlink" title="图片相关"></a>图片相关</h3><p>使用 md 编写工具的时候可以设置图片存放路径为相对路径。</p>
-<img src="/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/image-20231228230710676.png" class="" title="image-20231228230710676">
+        <span id="more"></span>
 
-<p>然后通过如下命令在 md 中插入图片，即可在md中看到图片，也可以在网页中看到图片。注意：要写路径要以“.&#x2F;”开头。</p>
-<img src="/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/image-20231228233550519.png" class="" title="image-20231228233550519">
+<h2 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;arm_neon.h&gt;</span><br><span class="line">uint32x4_t test(uint32x4_t n) &#123;</span><br><span class="line"></span><br><span class="line">  return n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;arm_neon.h&gt;</span><br><span class="line">uint32x4_t test(uint32x4_t a, uint32x4_t b) &#123;</span><br><span class="line"></span><br><span class="line">  return a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
-<li><p>[nvm安装](<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44623897/article/details/122690638">Ubuntu 安装 nvm, 并使用其安装 node.js 与 npm-CSDN博客</a>)</p>
-</li>
-<li><p>[npm报错问题原因](<a target="_blank" rel="noopener" href="https://ask.csdn.net/questions/7898679">npm报错 Cannot read property ‘insert’ of undefined_前端-CSDN问答</a>)</p>
-</li>
-<li><p>[hexo 多端同步](<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21193762/answer/489124966">使用hexo，如果换了电脑怎么更新博客？ - 知乎 (zhihu.com)</a>)</p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/">ubuntu | 镜像站使用帮助 | 清华大学开源软件镜像站 | Tsinghua Open Source Mirror</a></p>
-</li>
-</ol>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef __attribute__((neon_vector_type(4))) uint32_t uint32x4_t;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">AST:</span><br><span class="line">  ASTContext.h</span><br><span class="line">  Type.h</span><br><span class="line">  TypeProperties.td</span><br><span class="line"> </span><br><span class="line">Basic:</span><br><span class="line">  RISCVVTypes.def</span><br><span class="line">  TargetInfo.h</span><br><span class="line">  RISCV.h</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">Serialization:</span><br><span class="line">  ASTBitCodes.h</span><br><span class="line">  ASTReader.cpp</span><br><span class="line">  </span><br><span class="line">CodeGen:</span><br><span class="line">  CGDebugInfo.cpp</span><br><span class="line">  CodeGenTypes.cpp</span><br><span class="line">  ItaniumCXXABI.cpp</span><br><span class="line">  </span><br><span class="line">Index:</span><br><span class="line">  USRGeneration.cpp</span><br><span class="line">  </span><br><span class="line">Sema:</span><br><span class="line">  Sema.cpp </span><br><span class="line">  SemaExpr.cpp</span><br><span class="line">  </span><br><span class="line">module.modulemap</span><br><span class="line"></span><br><span class="line">test:</span><br><span class="line">  riscv-types.c  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">InitBuiltinTypes</span><br><span class="line">getTypeInfoImpl</span><br><span class="line">getBuiltinVectorTypeInfo</span><br><span class="line">getScalableVectorType</span><br><span class="line">getObjCEncodingForPrimitiveType</span><br><span class="line"></span><br><span class="line">VisitBuiltinType</span><br><span class="line">EvaluateBuiltinClassifyType</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang  -ast-print</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -264,9 +225,6 @@
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AE/" rel="tag"># 编译配置</a>
-          </div>
 
         
 
@@ -274,13 +232,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/12/14/Build-LLVM/" rel="prev" title="Build LLVM">
-      <i class="fa fa-chevron-left"></i> Build LLVM
+    <a href="/2023/12/25/Build-MLIR/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2023/12/25/Build-MLIR/" rel="next" title="">
-       <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -339,7 +294,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">搭建环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E5%8D%9A%E5%AE%A2"><span class="nav-number">2.</span> <span class="nav-text">编写博客</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%BB%BA%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">使用建议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E7%9B%B8%E5%85%B3"><span class="nav-number">3.1.</span> <span class="nav-text">图片相关</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E4%BE%8B"><span class="nav-number">1.</span> <span class="nav-text">用例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">代码</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

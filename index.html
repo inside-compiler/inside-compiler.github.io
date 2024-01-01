@@ -115,17 +115,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">1</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">0</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">3</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">4</span></a>
 
   </li>
   </ul>
@@ -151,6 +151,83 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/30/Survey-on-LLVM-Vector/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/12/30/Survey-on-LLVM-Vector/" class="post-title-link" itemprop="url">Survey-on-LLVM-Vector</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-30 12:24:41" itemprop="dateCreated datePublished" datetime="2023-12-30T12:24:41+08:00">2023-12-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-01 08:56:59" itemprop="dateModified" datetime="2024-01-01T08:56:59+08:00">2024-01-01</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+
+<h2 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;arm_neon.h&gt;</span><br><span class="line">uint32x4_t test(uint32x4_t n) &#123;</span><br><span class="line"></span><br><span class="line">  return n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;arm_neon.h&gt;</span><br><span class="line">uint32x4_t test(uint32x4_t a, uint32x4_t b) &#123;</span><br><span class="line"></span><br><span class="line">  return a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef __attribute__((neon_vector_type(4))) uint32_t uint32x4_t;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">AST:</span><br><span class="line">  ASTContext.h</span><br><span class="line">  Type.h</span><br><span class="line">  TypeProperties.td</span><br><span class="line"> </span><br><span class="line">Basic:</span><br><span class="line">  RISCVVTypes.def</span><br><span class="line">  TargetInfo.h</span><br><span class="line">  RISCV.h</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">Serialization:</span><br><span class="line">  ASTBitCodes.h</span><br><span class="line">  ASTReader.cpp</span><br><span class="line">  </span><br><span class="line">CodeGen:</span><br><span class="line">  CGDebugInfo.cpp</span><br><span class="line">  CodeGenTypes.cpp</span><br><span class="line">  ItaniumCXXABI.cpp</span><br><span class="line">  </span><br><span class="line">Index:</span><br><span class="line">  USRGeneration.cpp</span><br><span class="line">  </span><br><span class="line">Sema:</span><br><span class="line">  Sema.cpp </span><br><span class="line">  SemaExpr.cpp</span><br><span class="line">  </span><br><span class="line">module.modulemap</span><br><span class="line"></span><br><span class="line">test:</span><br><span class="line">  riscv-types.c  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">InitBuiltinTypes</span><br><span class="line">getTypeInfoImpl</span><br><span class="line">getBuiltinVectorTypeInfo</span><br><span class="line">getScalableVectorType</span><br><span class="line">getObjCEncodingForPrimitiveType</span><br><span class="line"></span><br><span class="line">VisitBuiltinType</span><br><span class="line">EvaluateBuiltinClassifyType</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang  -ast-print</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -274,8 +351,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-25 23:27:18" itemprop="dateModified" datetime="2023-12-25T23:27:18+08:00">2023-12-25</time>
+                <time title="修改时间：2024-01-01 08:56:59" itemprop="dateModified" datetime="2024-01-01T08:56:59+08:00">2024-01-01</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" itemprop="url" rel="index"><span itemprop="name">环境配置</span></a>
+                </span>
+            </span>
 
           
 
@@ -288,17 +374,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
-<li><p>[nvm安装](<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44623897/article/details/122690638">Ubuntu 安装 nvm, 并使用其安装 node.js 与 npm-CSDN博客</a>)</p>
+          <h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><ol>
+<li><p>拉取代码</p>
 </li>
-<li><p>[npm报错问题原因](<a target="_blank" rel="noopener" href="https://ask.csdn.net/questions/7898679">npm报错 Cannot read property ‘insert’ of undefined_前端-CSDN问答</a>)</p>
+<li><p>安装 nodejs 和 npm</p>
 </li>
-<li><p>[hexo 多端同步](<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21193762/answer/489124966">使用hexo，如果换了电脑怎么更新博客？ - 知乎 (zhihu.com)</a>)</p>
+<li><p>安装 hexo</p>
 </li>
-<li><p><a target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/">ubuntu | 镜像站使用帮助 | 清华大学开源软件镜像站 | Tsinghua Open Source Mirror</a></p>
-</li>
+<li><p>更新代码中 node module</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm intall</span><br></pre></td></tr></table></figure></li>
 </ol>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/12/16/%E5%9F%BA%E4%BA%8EHexo%E6%90%AD%E5%BB%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E6%96%B9%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -348,8 +441,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-25 23:27:18" itemprop="dateModified" datetime="2023-12-25T23:27:18+08:00">2023-12-25</time>
+                <time title="修改时间：2024-01-01 08:56:59" itemprop="dateModified" datetime="2024-01-01T08:56:59+08:00">2024-01-01</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BC%96%E8%AF%91/" itemprop="url" rel="index"><span itemprop="name">项目编译</span></a>
+                </span>
+            </span>
 
           
 
@@ -363,19 +465,14 @@
 
       
           <h2 id="download-code"><a href="#download-code" class="headerlink" title="download code"></a>download code</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com:chenghanpeng/llvm-project.git</span><br><span class="line"><span class="built_in">cd</span> llvm-project</span><br><span class="line">git switch release/15.x</span><br></pre></td></tr></table></figure>
-
-<h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">touch</span> build.sh</span><br></pre></td></tr></table></figure>
-<p>build.sh 内容如下：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">mkdir</span> -p build</span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ ! -f bin/llvm-lto ]; <span class="keyword">then</span></span><br><span class="line">  CORE_NUM=$(<span class="built_in">nproc</span> --all)</span><br><span class="line">  <span class="keyword">if</span> [ -z <span class="string">&quot;<span class="variable">$&#123;CORE_NUM&#125;</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    CORE_NUM=1</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Build llvm with&quot;</span> <span class="variable">$&#123;CORE_NUM&#125;</span> <span class="string">&quot;cores&quot;</span></span><br><span class="line"></span><br><span class="line">  cmake /mnt/Compiler/llvm-project/llvm \</span><br><span class="line">    -G <span class="string">&quot;Unix Makefiles&quot;</span> \</span><br><span class="line">    -DCMAKE_BUILD_TYPE=<span class="string">&quot;Debug&quot;</span> \</span><br><span class="line">    -DLLVM_TARGETS_TO_BUILD=<span class="string">&quot;X86;AArch64;BPF;Hexagon&quot;</span> \</span><br><span class="line">    -DLLVM_ENABLE_PROJECTS=<span class="string">&quot;clang&quot;</span> \</span><br><span class="line">    -DLLVM_ENABLE_RUNTIMES=<span class="string">&quot;libcxx;libcxxabi&quot;</span></span><br><span class="line"></span><br><span class="line">  cmake --build .</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;llvm has already been built&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">chmod</span> +x build.sh</span><br><span class="line">$ ./build.sh</span><br></pre></td></tr></table></figure>
-
-<h2 id="MacOs"><a href="#MacOs" class="headerlink" title="MacOs"></a>MacOs</h2><p>构建LLVM依赖git和cmake，可使用brew安装git和cmake</p>
-<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">which</span> brew</span><br><span class="line">brew not found</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装brew</span></span><br><span class="line">$ /bin/bash -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)</span>&quot;</span></span><br><span class="line">$ <span class="built_in">which</span> brew</span><br><span class="line"></span><br><span class="line"><span class="comment">#安装git</span></span><br><span class="line">$ brew install git</span><br><span class="line">$ git --version</span><br><span class="line"></span><br><span class="line"><span class="comment">#安装cmake</span></span><br><span class="line">$ brew install cmake</span><br><span class="line">$ <span class="built_in">which</span> cmake</span><br></pre></td></tr></table></figure>
-
-<h3 id="构建LLVM"><a href="#构建LLVM" class="headerlink" title="构建LLVM"></a>构建LLVM</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> llvm-project</span><br><span class="line">$ <span class="built_in">mkdir</span> build &amp;&amp; <span class="built_in">cd</span> build</span><br><span class="line">$ cmake -G <span class="string">&quot;Unix Makefiles&quot;</span> -DCMAKE_BUILD_TYPE=Debug DLLVM_TARGETS_TO_BUILD=<span class="string">&quot;X86;AArch64;BPF;Hexagon&quot;</span> -DLLVM_ENABLE_PROJECTS=<span class="string">&quot;clang&quot;</span> ../llvm</span><br><span class="line">$ make -j32</span><br><span class="line">$ <span class="built_in">cd</span> bin &amp; <span class="built_in">ls</span></span><br><span class="line">$ clang -v</span><br><span class="line">clang version 15.0.6 ...</span><br></pre></td></tr></table></figure>
-
-<h3 id="macOS上使用自己源码构建的clang编译源文件"><a href="#macOS上使用自己源码构建的clang编译源文件" class="headerlink" title="macOS上使用自己源码构建的clang编译源文件"></a>macOS上使用自己源码构建的clang编译源文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在macOS上可能会报错 fatal error: &#x27;stdio.h&#x27; file not found</span></span><br><span class="line">$ clang -emit-llvm -S -isysroot `xcrun --show-sdk-path` hello.c -o hello.ll</span><br><span class="line"><span class="comment"># 使用debug版本llc打印log</span></span><br><span class="line">$ llc hello.ll --march=bpf -o hello.s -debug &gt;hello.log 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/12/14/Build-LLVM/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -456,9 +553,21 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>

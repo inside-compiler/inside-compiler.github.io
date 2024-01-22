@@ -1,9 +1,9 @@
 ---
 title: MLIR学习系列1-MLIR概述
 categories:
-  - null
+  - MLIR
 tags:
-  - null
+  - MLIR
 date: 2024-01-01 10:21:22
 ---
 

@@ -65,5 +65,7 @@ tags:
 
 4. [ubuntu | 镜像站使用帮助 | 清华大学开源软件镜像站 | Tsinghua Open Source Mirror](https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/)
 
+5. [next主题设置](http://home.ustc.edu.cn/~liujunyan/blog/hexo-next-theme-config/)
+
    
 

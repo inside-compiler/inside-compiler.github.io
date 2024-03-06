@@ -3,7 +3,7 @@ title: ADT-任意精度类型介绍
 categories:
   - LLVM
 tags:
-  - LLVM， MLIR， ADT
+  - [LLVM, MLIR, ADT]
 date: 2024-02-02 22:00:26
 ---
 

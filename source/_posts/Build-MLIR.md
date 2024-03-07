@@ -1,3 +1,12 @@
+---
+title: MLIR学习系列1-MLIR概述
+categories:
+  - MLIR
+tags:
+  - MLIR
+date: 2024-01-01 10:21:22
+---
+
 # MLIR学习系列1-MLIR概述
 
 MLIR自2019年发布后就成为编译界的新贵，不仅仅AI编译器、领域编译器、新型硬件公司和新型语言都在尝试使用MLIR，其中以AI编译器取得的成果最为显著。本文简单介绍MLIR的基础知识、MLIR构建和MLIR相关工具的使用。

@@ -67,5 +67,9 @@ tags:
 
 5. [next主题设置](http://home.ustc.edu.cn/~liujunyan/blog/hexo-next-theme-config/)
 
+6. [添加Gitalk作为评论区]([[Gitalk\]评论系统 - Hexo-NexT](https://hexo-next.readthedocs.io/zh-cn/latest/next/advanced/gitalk-评论系统/))
+
+7. 
+
    
 

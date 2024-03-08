@@ -638,7 +638,7 @@ gitalk:
   repo: blog-comments 
   client_id: 3b662fd9edd646229c79
   client_secret: 312a2514c4029a47341087757f0c051786144c77
-  admin_user: fiking,chenghanpeng,jyu30,tabrisling
+  admin_user: fiking
   distraction_free_mode: true # Facebook-like distraction free mode
   # Gitalk's display language depends on user's browser or system environment
   # If you want everyone visiting your site to see a uniform language, you can set a force language value

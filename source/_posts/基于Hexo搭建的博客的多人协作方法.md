@@ -69,7 +69,9 @@ tags:
 
 6. [添加Gitalk作为评论区]([[Gitalk\]评论系统 - Hexo-NexT](https://hexo-next.readthedocs.io/zh-cn/latest/next/advanced/gitalk-评论系统/))
 
-7. 
+7. [hexo 配置]([Next 7.0+ 字数统计与阅读时长 | Alex_McAvoy (alex-mcavoy.github.io)](https://alex-mcavoy.github.io/hexo/c7b3748f.html))
+
+8. 
 
    
 

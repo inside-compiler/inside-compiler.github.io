@@ -1,0 +1,54 @@
+# 工作流名称
+name: Hexo Blog Deploy
+
+# 只在push到master分支的时候启动
+on:
+  push:
+    branches:
+      - hexo
+
+# 使用ubuntu虚拟机
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # 工作流步骤
+    steps:
+    - name: Checkout repository master branch
+      uses: actions/checkout@master
+
+    # 安装Node.js
+    - name: Install node.js
+      uses: actions/setup-node@master
+      with:
+        node-version: "21.x"
+
+    # 安装Hexo
+    - name: Install hexo
+      run: |
+        npm install hexo-cli -g
+        npm ci
+
+    # 设置SSH密钥，读取HEXO_DEPLOY_KEY
+    - name: Setup private key
+      env:
+        HEXO_DEPLOY_KEY: ${{ secrets.HEXO_DEPLOY_KEY }}
+      run: |
+        mkdir -p ~/.ssh/
+        echo "$HEXO_DEPLOY_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+    # 配置Git设置
+    - name: Setup git settings
+      run: |
+        git config --global user.name "fiking"
+        git config --global user.email "1129277432@qq.com"
+    # 更改上面的用户名和邮箱
+
+    # 部署
+    - name: Deploy hexo
+      run: |
+        hexo clean
+        hexo generate
+        hexo deploy

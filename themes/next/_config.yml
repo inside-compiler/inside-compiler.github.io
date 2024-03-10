@@ -644,6 +644,7 @@ gitalk:
   # If you want everyone visiting your site to see a uniform language, you can set a force language value
   # Available values: en | es-ES | fr | ru | zh-CN | zh-TW
   language:
+  proxy: https://proxy-git.vercel.app/github/login/oauth/access_token
 
 
 # ---------------------------------------------------------------

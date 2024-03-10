@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - hexo
+  pull_request:
+    branches:
+      - hexo    
 
 # 使用ubuntu虚拟机
 jobs:

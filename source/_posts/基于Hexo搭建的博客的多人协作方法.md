@@ -20,7 +20,6 @@ tags:
    ```
    npm intall
    ```
-<!-- more -->
 ## 编写博客
 
 1. 创建博客
@@ -42,6 +41,10 @@ tags:
    ```
    hexo d
    ```
+
+<!-- more -->
+
+
 
 ## 使用建议
 
@@ -72,5 +75,5 @@ tags:
 7. [hexo 配置]([Next 7.0+ 字数统计与阅读时长 | Alex_McAvoy (alex-mcavoy.github.io)](https://alex-mcavoy.github.io/hexo/c7b3748f.html))
 
 
-   
+
 

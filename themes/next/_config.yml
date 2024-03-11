@@ -635,7 +635,7 @@ livere_uid: # <your_uid>
 gitalk:
   enable: true
   github_id: inside-compiler
-  repo: blog-comments 
+  repo: inside-compiler.github.io 
   client_id: 3b662fd9edd646229c79
   client_secret: 312a2514c4029a47341087757f0c051786144c77
   admin_user: fiking
@@ -644,8 +644,6 @@ gitalk:
   # If you want everyone visiting your site to see a uniform language, you can set a force language value
   # Available values: en | es-ES | fr | ru | zh-CN | zh-TW
   language:
-  proxy: https://proxy-git.vercel.app/github/login/oauth/access_token
-
 
 # ---------------------------------------------------------------
 # Post Widgets & Content Sharing Services

@@ -721,7 +721,7 @@ gitalk:
   repo: inside-compiler.github.io
   client_id: 3b662fd9edd646229c79
   client_secret: 312a2514c4029a47341087757f0c051786144c77
-  admin_user: fiking,chenghanpeng,jyu30,tabrisling
+  admin_user: fiking 
   distraction_free_mode: true # Facebook-like distraction free mode
   labels:
     - gitalk

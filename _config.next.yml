@@ -723,6 +723,8 @@ gitalk:
   client_secret: 312a2514c4029a47341087757f0c051786144c77
   admin_user: fiking
   distraction_free_mode: true # Facebook-like distraction free mode
+  labels:
+    - gitalk
   # When the official proxy is not available, you can change it to your own proxy address
   proxy: https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token # This is official proxy address
   # Gitalk's display language depends on user's browser or system environment

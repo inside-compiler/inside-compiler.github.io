@@ -7,10 +7,14 @@ tags:
 date: 2024-03-07 19:17:08
 ---
 SelectionDAGISel算法经过了LLVM IR的DAG化、合法化、匹配表查找等复杂过程，会耗费大量时间。为了提高指令选择的速度，LLVM实现了一个快速指令选择算法（FastISel），这一算法只适用于部分后端的O0阶段，是以牺牲指令选择的质量来换取编译时间。
+
+<!-- more -->
+
 FastISel的原则是：尽可能快速地选择尽可能多的指令。也就意味着，FastISel允许指令选择失败，当发生失败就会进入到SelectionDAGIsel指令选择流程中继续选择，这也使得FastISel可以复用一些SelectionDAGIsel中的逻辑，避免重复实现。
 在7.2节提到在指令选择过程中还会涉及一些复杂的工作，例如合法化、优化等，FastIsel并不会处理，它只对数据类型合法的简单操作进行处理，比如常规的加减运算、位运算，其它的数据类型和指令操作，FastIsel都认为是失败场景，都会被自动切换到SelectionDAGIsel中进行。
 FastIsel也使用TableGen工具链，将TD文件中的指令描述直接翻译为一个或者几个函数调用。例如将TD中定义的一个ADD指令直接翻译成MIR指令序列。在使用FastIsel时直接基于LLVM IR进行指令匹配，生成MIR。例如Aarch64架构中ADDXrr指令在TD文件定义如代码清单7-12。
 Aarch64架构中对ADDXrr指令的TD描述
+
 ```multiclass AddSub<bit isSub, string mnemonic, string alias,
                   SDPatternOperator OpNode = null_frag> {
   let hasSideEffects = 0, isReMaterializable = 1, isAsCheapAsAMove = 1 in {
@@ -52,4 +56,3 @@ fastEmitInst_rr函数的实现
 }
 ```
 目前，并不是所有的架构都支持FastISel这种指令选择模式，除了上述提到的Aarch64外，当前支持该模式的架构还有Arm、Mips、PPC、X86、WebAssembly。
-<!-- more -->

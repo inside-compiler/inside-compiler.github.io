@@ -20,7 +20,9 @@ tags:
    ```
    npm intall
    ```
+
 <!-- more -->
+
 ## 编写博客
 
 1. 创建博客
@@ -65,5 +67,12 @@ tags:
 
 4. [ubuntu | 镜像站使用帮助 | 清华大学开源软件镜像站 | Tsinghua Open Source Mirror](https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/)
 
-   
+5. [next主题设置](http://home.ustc.edu.cn/~liujunyan/blog/hexo-next-theme-config/)
+
+6. [添加Gitalk作为评论区]([[Gitalk\]评论系统 - Hexo-NexT](https://hexo-next.readthedocs.io/zh-cn/latest/next/advanced/gitalk-评论系统/))
+
+7. [hexo 配置]([Next 7.0+ 字数统计与阅读时长 | Alex_McAvoy (alex-mcavoy.github.io)](https://alex-mcavoy.github.io/hexo/c7b3748f.html))
+
+
+
 

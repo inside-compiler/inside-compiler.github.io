@@ -7,6 +7,9 @@ tags:
 date: 2024-03-07 19:23:36
 ---
 SelectionDAGISel经过了多年的发展，功能完善且可靠性高。但是它存在着三个主要的问题。
+
+<!-- more -->
+
 1. 1)SelectionDAGISel包含了过多的功能，比如许多的合并优化和合法化优化；还有为了降低编译时间，而增加的FastISel的算法。而这些功能大多跟指令选择算法本身不是强相关，但都被放入到指令选择中，导致其代码架构越来越繁复，代码维护的成本变高。
 2. 2)它是以基本块为粒度进行指令模式匹配，导致一些跨基本块的模式无法匹配上，增加了生成最优代码的难度。
 3. 3)DAG IR是图结构，需要一个指令调度的功能才能生成线性的MIR，这导致编译时间的增加。但是它的输入LLVM IR本身是线性结构，如果DAG IR不是图结构的，指令调度就可以去除掉。
@@ -206,7 +209,7 @@ bb.1.entry:
 先G_TRUNC再G_ANYEXT
  ``` %1:_(s16) = G_TRUNC %3:_(s32)
   %6:_(s32) = G_ANYEXT %1:_(s16)
-```
+ ```
 首先将32位类型截断至16位类型，再将16位类型提升至32位类型，实际上就是冗余操作，可以进行合并。合并删除掉这些冗余指令后，得到的合法化的输出，7-25类型合法化后得到的结果如代码清单7-27。
 冗余指令优化后
 ```# Machine code for function test: IsSSA, TracksLiveness
@@ -333,6 +336,7 @@ InstructionSelect是以函数为粒度进行指令选择，使用的是基于树
 记录GINodeEquiv是为了减少从SelectionDAGISel迁移到全局指令选择的工作量而定义的，通过它可以将TargetOpcode和SelectionDAGISel的ISD Opcode关联起来，从而可以复用对应 ISD Opcode的Pattern。例如，要复用Aarch64在SelectionDAGISel加法指令的模式，可以把G_ADD和对应的ISD Opcode─add关联起来，如代码清单7-35所示。
 把G_ADD和add关联
 ```def : GINodeEquiv<G_ADD, add>;
+
 ```
 然后TableGen就可以根据add的Pattern来获得G_ADD的Pattern，从而生成相应的匹配状态机。
 ### 2.手动匹配模块
@@ -366,4 +370,4 @@ InstructionSelect是以函数为粒度进行指令选择，使用的是基于树
 6)Aarch64PostSelectOptimizer，它是基于Pass框架的优化，主要是简化浮点比较指令的使用。
 通常来说，对于一些简单的优化，都是将其表示成模式，然后通过通用框架直接完成优化；而比较复杂的优化，都是直接通过自行编写Pass遍历过程完成的。
 通过上述的介绍可以看出，全局指令选择将SelectionDAGISel耦合在一起的功能提取为多个独立的Pass，实现了高内聚低耦合的设计；同时，GMIR的引入，既避免DAG IR和MIR因语法形式差异大需要的转换成本，又因为它与MIR共用基础设施数据结构，进一步降低了代码维护的成本。当然，因为全局指令选择的诞生时间还比较短，还不够完善，生成的汇编代码质量不如SelectionDAGISel，且当前支持的目标架构也不丰富。因此，全局指令选择还需要各个目标架构进一步开发和完善。
-<!-- more -->
+

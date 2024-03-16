@@ -8,6 +8,9 @@ date: 2024-02-02 21:54:44
 ---
 
 ADT（Abstract Data Type）是LLVM定义的一套高级数据类型，是LLVM项目的基础组件。ADT定义了“基础类型”、“容器”、“算法”、“迭代器”，具体来说：
+
+<!-- more -->
+
 - 基础类型：定义了APInt（任意精度的整数）、APSInt（任意精度符号整数）、APFloat（任意精度的浮点数）、APFixedPoint（任意精度的定长数）类型；
 - 容器：定义了list、map、set、string、array、bitvector等容器；
 - 算法：定义了enumerate、zip、seq、enum_seq等高级算法；
@@ -27,4 +30,4 @@ ADT（Abstract Data Type）是LLVM定义的一套高级数据类型，是LLVM项
 
 另外LLVM中这一套新的数据结构对开发者提出了更高的挑战，需要学习新的数据结构以及学习API的使用。我们将在后续文章中剖析LLVM定义的ADT，主要介绍ADT的功能、使用。
 
-<!-- more -->
+

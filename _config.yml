@@ -107,3 +107,22 @@ deploy:
   type: git
   repository: git@github.com:inside-compiler/inside-compiler.github.io.git
   branch: main
+
+# 文章字数统计hexo-symbols-count-time
+# See：https://github.com/theme-next/hexo-symbols-count-time
+symbols_count_time:
+  symbols: true            # 文章字数统计
+  time: true               # 文章阅读时长
+  total_symbols: false     # 站点总字数统计
+  total_time: false        # 站点总阅读时长
+  exclude_codeblock: false # 排除代码字数统计
+  awl: 4                   # 平均词长度
+  wpm: 275                 # 每分钟阅读词数
+  suffix: "mins."          # 如果阅读时间少于 60 分钟，则添加后缀作为字符串参数    
+
+# 文章摘要
+excerpt:
+  depth: 3
+  excerpt_excludes: []
+  more_excludes: []
+  hideWholePostExcerpts: true    

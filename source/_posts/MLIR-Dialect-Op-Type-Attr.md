@@ -1,5 +1,5 @@
 ---
-title: MLIR-Dialect_Op_Type_Attr
+title: 第3章：类型、属性、操作和方言详解
 categories:
   - MLIR
 tags:

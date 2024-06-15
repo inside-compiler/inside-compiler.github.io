@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="正如2.3节提到的MLIR框架通过特质为操作、类型、属性提供约束，从而尽可能保证操作、属性、类型的正确性。接口借助于特质完成操作、属性、类型公共处理能力。本章主要介绍谓词、特质、接口的实现以及如何正确使用它们。 4.1 谓词谓词（Pred）是对操作和方言进行类型、属性等进行限制。由于谓词是在操作或者方言构建时使用，本书将其称为静态约束。在MLIR约束（Constraint）继承于谓词。约束对谓词增">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第4章（1）：约束">
+<meta property="og:url" content="http://example.com/2024/06/15/mlir-constraint/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="正如2.3节提到的MLIR框架通过特质为操作、类型、属性提供约束，从而尽可能保证操作、属性、类型的正确性。接口借助于特质完成操作、属性、类型公共处理能力。本章主要介绍谓词、特质、接口的实现以及如何正确使用它们。 4.1 谓词谓词（Pred）是对操作和方言进行类型、属性等进行限制。由于谓词是在操作或者方言构建时使用，本书将其称为静态约束。在MLIR约束（Constraint）继承于谓词。约束对谓词增">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-15T09:03:29.000Z">
+<meta property="article:modified_time" content="2024-06-15T10:10:04.091Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="MLIR">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2024/06/15/mlir-constraint/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/06/15/mlir-constraint/","path":"2024/06/15/mlir-constraint/","title":"第4章（1）：约束"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第4章（1）：约束 | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">26</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E8%B0%93%E8%AF%8D"><span class="nav-number">1.</span> <span class="nav-text">4.1 谓词</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/15/mlir-constraint/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第4章（1）：约束 | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第4章（1）：约束
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-06-15 17:03:29 / 修改时间：18:10:04" itemprop="dateCreated datePublished" datetime="2024-06-15T17:03:29+08:00">2024-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>951</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>正如2.3节提到的MLIR框架通过特质为操作、类型、属性提供约束，从而尽可能保证操作、属性、类型的正确性。接口借助于特质完成操作、属性、类型公共处理能力。本章主要介绍谓词、特质、接口的实现以及如何正确使用它们。</p>
+<h2 id="4-1-谓词"><a href="#4-1-谓词" class="headerlink" title="4.1 谓词"></a>4.1 谓词</h2><p>谓词（Pred）是对操作和方言进行类型、属性等进行限制。由于谓词是在操作或者方言构建时使用，本书将其称为静态约束。在MLIR约束（Constraint）继承于谓词。约束对谓词增加了描述字段（Summary），可以为谓词提供更好的错误提示。同时谓词之间可以通过And、Or、Contact、Negative、SubstLeaves等进行组合谓词。</p>
+<p>MLIR定义最基础（或原子）的谓词定义CPred，其定义如下</p>
+<figure class="highlight plaintext"><figcaption><span>CPred<code pred> : Pred &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">  code predExpr = &quot;(&quot; # pred # &quot;)&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CPred传递的类型为TD的code类型。在参数中可以传递一些占位符（Placeholder）和执行上下文进行关联，例如针对操作提供的占位符有$_builder、$_op、$_self等，这些占位符会被mlir-tblgen替换为合适的对象，$_builder会被替换为mlir::Builder，$_op表示当前的操作，而$_self则会根据上下文进行替换。</p>
+<p>通过继承于约束，实现类型、属性、区域和后继约束。其中区域和后继约束作用于操作的IR结构，类型约束主要作用于操作的操作数和结果的定义，属性约束作用于操作中的属性，在MLIR为了针对每一种类型进行验证都会在TD中定义相应的类。例如F16类型，在TD中继承体系如下代码所示：</p>
+<p><code>class Constraint&lt;Pred pred, string desc = &quot;&quot;&gt; &#123;   // The predicates that this constraint requires.   Pred predicate = pred;   // User-readable one line summary used in error reporting messages. If empty,   // a generic message will be used.   string summary = desc; &#125;</code></p>
+<figure class="highlight plaintext"><figcaption><span>TypeConstraint<Pred predicate, string summary </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">                     string cppClassNameParam = &quot;::mlir::Type&quot;&gt; :</span><br><span class="line">    Constraint&lt;predicate, summary&gt; &#123;</span><br><span class="line">  // The name of the C++ Type class if known, or Type if not.</span><br><span class="line">  string cppClassName = cppClassNameParam;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Type&lt;Pred condition, string descr = &quot;&quot;,</span><br><span class="line">           string cppClassName = &quot;::mlir::Type&quot;&gt; :</span><br><span class="line">    TypeConstraint&lt;condition, descr, cppClassName&gt; &#123;</span><br><span class="line">  string description = &quot;&quot;;</span><br><span class="line">  string builderCall = &quot;&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class BuildableType&lt;code builder&gt; &#123;</span><br><span class="line">  // The builder call to invoke (if specified) to construct the BuildableType.</span><br><span class="line">  code builderCall = builder;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class F&lt;int width&gt;</span><br><span class="line">    : Type&lt;CPred&lt;&quot;$_self.isF&quot; # width # &quot;()&quot;&gt;,</span><br><span class="line">           width # &quot;-bit float&quot;, &quot;::mlir::FloatType&quot;&gt;,</span><br><span class="line">      BuildableType&lt;&quot;$_builder.getF&quot; # width # &quot;Type()&quot;&gt; &#123;</span><br><span class="line">  int bitwidth = width;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">def F16 : F&lt;16&gt;;</span><br></pre></td></tr></table></figure>
+
+<p>对应的记录</p>
+<figure class="highlight plaintext"><figcaption><span>F16 &#123;// Constraint TypeConstraint Type BuildableType F</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">  Pred predicate = anonymous_35;</span><br><span class="line">  string summary = &quot;16-bit float&quot;;</span><br><span class="line">  string cppClassName = &quot;::mlir::FloatType&quot;;</span><br><span class="line">  string description = &quot;&quot;;</span><br><span class="line">  string builderCall = &quot;$_builder.getF16Type()&quot;;</span><br><span class="line">  int bitwidth = 16;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">def anonymous_35 &#123;// Pred CPred</span><br><span class="line">  string predExpr = &quot;($_self.isF16())&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>例如我们在一个操作MyOperation中可以直接类型F16、F32、F64等。在MyOperation中通常可以定义arguments和results，它们分别表示MyOperation的输入和输出。示例代码如下：</p>
+<figure class="highlight plaintext"><figcaption><span>MyOpeation : MyDialect_Op<"MyOpeartion", [Pure]> &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    let arguments = (ins F16:$lhs, F32:$rhs);</span><br><span class="line">let results = (outs F64:$result);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中arguments表示在MyOperation会有两个参数分别是lhs和rhs，它们的类型分别是F16和F32（F16和F32是MLIR社区定义的浮点数类型，它们是类型为::mlir::FloatType，并且宽度分别是16和32位）。results表示MyOperation的输出变量为result，类型为F64。</p>
+<p>在mlir-tblen生成C++表示的MyOperation，其定义是根据TD文件得到（参考*.*.*）。同时会在C++的MyOperation中增加一个函数：::mlir::LogicalResult verifyInvariants()和verifyInvariantsImpl()，在verifyInvariantsImpl()中会验证输入、输出类型的验证（验证不仅仅包含输入、输出类型，还包括region个数、successor信息、属性、谓词特质信息），验证规则是TD的定义得到。验证规则就是根据字段“predExpr”生成相应的代码，当然在生成代码时先将$_self替换为MyOpertion中对应的参数。例如对于F16和F32生成的验证规则对应C++代码如下：</p>
+<figure class="highlight plaintext"><figcaption><span>::mlir::LogicalResult __mlir_ods_local_type_constraint_MyOperationOps0(</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">    ::mlir::Operation *op, ::mlir::Type type, ::llvm::StringRef valueKind,</span><br><span class="line">    unsigned valueIndex) &#123;</span><br><span class="line">  if (!(((type.isF16())) || ((type.isF32())))) &#123;</span><br><span class="line">    return op-&gt;emitOpError(valueKind) &lt;&lt; &quot; #&quot; &lt;&lt; valueIndex</span><br><span class="line">        &lt;&lt; &quot; must be 16-bit float or 32-bit float, but got &quot; &lt;&lt; type;</span><br><span class="line">  &#125;</span><br><span class="line">  return ::mlir::success();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>__mlir_ods_local_type_constraint_MyOperationOps0在MyOperation中的verifyInvariantsImpl函数被调用。</p>
+<p>在Op构建时进行验证，当创建操作对象后会调用verifyInvariants，最终调用到具体的类型验证。除了mlir-tblgen自动生成的类型、属性、区域、后继等信息验证外。MLIR也支持开发者自己实现的验证函数（let hasVerifier &#x3D; 1时mlir-tblgen会生成verify的函数申明，而实现需要开发者进行实现），参考第3章介绍。</p>
+<p>4.1.1自定义谓词和使用</p>
+<p>开发者可以自定义谓词，例如我们要操作的操作数个数是否正确，可以定义谓词如下：</p>
+<p>class CheckNumOperands<int i> : CPred&lt;”$_op.getNumOperands() &#x3D;&#x3D; “ # i&gt;;</p>
+<p>这样就可以在TD中直接使用。mlir-tblgen会将谓词转换为相应的代码。不过需要注意的是这个谓词是功能谓词，不是类型或者属性，所以使用的使用一般可以通过PredTrait使用。</p>
+<p>4.1.2MLIR中常见谓词概览 （TODO）</p>
+<span id="more"></span>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MLIR/" rel="tag"># MLIR</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/19/MLIR-Dialect-Op-Type-Attr/" rel="prev" title="第3章：类型、属性、操作和方言详解">
+                  <i class="fa fa-angle-left"></i> 第3章：类型、属性、操作和方言详解
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/06/15/mlir-traits/" rel="next" title="第4章（2）：特质">
+                  第4章（2）：特质 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"75d4c55447e36fadf39e74c668235870"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

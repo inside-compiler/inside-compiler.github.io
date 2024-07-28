@@ -232,7 +232,23 @@ node类型
 
 PageSpace的内存回收比较简单，它是在PageSpace析构的时候直接释放所有内存。因此，不存在动态的垃圾回收过程。
 
-**Scavenger**
+**Scavenger**使用了Cheney算法，是一种复制内存管理算法，它在初始化阶段会向系统申请了一段固定的内存，然后将内存均分为两个区间进行管理，如下图所示，在内存分配阶段会固定在一个区间里进行分配即分配区间，而另一个区间不做任何事情作为闲置区间。
+
+![image-20240805232427637](./Introduction-of-DartVM/image-20240805232427637.png)
+
+当分配区间里无法分配内存了就会触发内存回收，在内存回收阶段会先依次检查分配区间里的每个数据是否存活（即是否还有存在的必要），并将存活的数据复制到闲置区间，最后释放分配区间里的数据并交换两个区间的角色。如下图所示，在经过一个分配和回收周期后，原有的分配区间变成闲置区间，而原有的闲置区间则变成分配区间。
+
+![image-20240805235105089](./Introduction-of-DartVM/image-20240805235105089.png)
+
+在大部分的论文或者实现里，这两个内存区间会被称为分配区间/幸存者区间（Allocation Space/Survivor Space）或者From space/To space。DartVM里采用的是From space/To space这对名称来命名Scavenger的两个内存区间，下面我们将DartVM的Scavenger的实现分为初始化、内存分配和内存回收三个阶段分别进行介绍。
+
+首先，在Scavenger初始化阶段，Scavenger就申请了32MB内存，并平均划分成From和To两个16MB空间（通过Memory Region进行管理）。
+
+
+
+
+
+
 
 
 
@@ -306,7 +322,7 @@ VirtualMemory* VirtualMemory::ReserveAligned(intptr_t size,
 
 分配的内存也是通过memory region进行管理。
 
-```
+```c++
 VirtualMemory* VirtualMemory::Reserve(intptr_t size) {
   void* address = VirtualAlloc(NULL, size, MEM_RESERVE, PAGE_NOACCESS);
   if (address == NULL) {
@@ -1424,9 +1440,40 @@ void Scavenger::Scavenge() {
 the non-GC'd Dart::vm_isolate_.
 ```
 
+### 3.7
+
+```
+enum class GCType {
+  kScavenge,
+  kEvacuate,
+  kStartConcurrentMark,
+  kMarkSweep,
+  kMarkCompact,
+};
+
+enum class GCReason {
+  kNewSpace,     // New space is full.
+  kStoreBuffer,  // Store buffer is too big.
+  kPromotion,    // Old space limit crossed after a scavenge.
+  kOldSpace,     // Old space limit crossed, or old space allocation failed.
+  kFinalize,     // Concurrent marking finished.
+  kFull,         // Heap::CollectAllGarbage
+  kExternal,     // Dart_NewFinalizableHandle Dart_NewWeakPersistentHandle
+  kIdle,         // Dart_NotifyIdle
+  kDestroyed,    // Dart_NotifyDestroyed
+  kDebugging,    // service request, etc.
+  kCatchUp,      // End of ForceGrowthScope or Dart_PerformanceMode_Latency.
+};
+```
+
 
 
 ## 参考
 
 1. https://medium.com/@author2000.1225/the-history-and-rules-of-dart-language-f25e09a58530
 1. https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html
+
+### 内存管理
+
+1. https://cloud.tencent.com/developer/article/1879916
+1. https://juejin.cn/post/7036005463946690590

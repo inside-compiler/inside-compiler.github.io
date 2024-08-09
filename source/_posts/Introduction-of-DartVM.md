@@ -242,7 +242,62 @@ PageSpace的内存回收比较简单，它是在PageSpace析构的时候直接�
 
 在大部分的论文或者实现里，这两个内存区间会被称为分配区间/幸存者区间（Allocation Space/Survivor Space）或者From space/To space。DartVM里采用的是From space/To space这对名称来命名Scavenger的两个内存区间，下面我们将DartVM的Scavenger的实现分为初始化、内存分配和内存回收三个阶段分别进行介绍。
 
-首先，在Scavenger初始化阶段，Scavenger就申请了32MB内存，并平均划分成From和To两个16MB空间（通过Memory Region进行管理）。
+首先，在Scavenger初始化阶段，Scavenger就申请了32MB内存，并平均划分成From和To两个16MB内存空间，这两个内存空间都是通过Memory Region进行管理的。
+
+然后，在内存分配阶段，Scavenger会在To内存空间里进行分配，它会维护一个top指针和一个end指针，top指针表示To内存空间的堆顶位置，end指针表示To内存空间的最大内存位置。主要分配步骤如下：
+
+1. 通过end-top计算出To空间剩余的内存大小，然后判断这个剩余内存是否可以满足申请的内存大小，不满足就返回空指针，满足就进行下一步；
+2. 将top指针作为申请到的内存首地址，并上移top指针分配出所申请的内存空间；
+3. 返回申请到的内存首地址。
+
+如下图例子所示，当申请一块内存之后top指针就会上移。
+
+![image-20240807101122254](./Introduction-of-DartVM/image-20240807101122254.png)
+
+最后，当无法从To空间申请出内存后，就会触发内存回收过程，此过程会尝试进行无用内存的回收，从而释放出可用空间。在这个内存回收阶段里（即垃圾回收阶段），主要的步骤有。
+
+1. 交换To和From指针，将新的To空间作为分配空间进行内存分配；
+2. 使用宽度优先遍历算法（相比深度优先具有更好的局部性）遍历内存对象根节点集合（root集），将所有属于From的内存对象复制到To空间；
+3. 遍历To空间所有的内存对象，逐个判断内存对象的子对象，将属于From的子对象复制到To空间；
+
+经过上述步骤之后，存活的对象都是在新的To空间里了，而新的From空间里剩余的对象都是垃圾，下次可以直接覆写掉。在第2步中提到的根节点集合指的是From空间的存活对象内存链表的首节点，通过这些根节点我们就可以找到From空间所有的存活对象内存，从而可以将所有的存活对象都复制到To空间里。Scavenger中根节点有以下8个来源，这些对象及其子对象如果有在From空间的，就可以被复制到To空间里。
+
+- Object Store的所有子对象；
+- Isolate StubCode的StubEntry对象；
+- Isolate所有Zone里的对象；
+- Isolate的所有StackFrame的对象；
+- Isolate的ApiState的对象；
+- Isolate的CodeIndexTable的对象；
+- Isolate的RawContext对象；
+- old_space和code_space的对象；
+
+因为内存对象是多链表的形式保存的，所以设计了一个基础的内存对象访问器用于对象访问，并且设计了三个子类访问器，每个子类访问器都实现了对内存对象的特定处理。如下图所示，目前有ScavengerVisitor、SnapshotWriterVisitor和VerifyPointersVisitor三个子类访问器。
+
+![image-20240809001123689](./Introduction-of-DartVM/image-20240809001123689.png)
+
+其中，ScavengerVisitor是用于内存回收的访问器，它实现了有个主要的函数实现了内存对象识别和复制内存对象到To空间的功能，这个函数具体可以分为以下几个部分：
+
+1. 从对象指针中获取原始地址；
+2. 判断地址是否属于From空间，如果不是则返回，否则继续；
+3. 判断地址是否已经处理过了，如果处理过就直接获取新地址，否则继续；
+4. 从新的To空间申请内存空间，复制数据到新内存空间，将老Object里的rawaddr换成新内存空间的地址；
+5. 将旧的Object换成新的Object。
+
+总体上，Scavenger可以快速的分配内存且内存碎片率低，但同时它存在内存利用率低（一个闲置空间被浪费了），需要暂停业务（数据多的话会需要较长GC的时间）。
+
+#### 系统接口层
+
+DartVM给应用提供了自动内存管理的功能，但是具体内存还是需要向操作系统申请的。因为DartVM适配了多个操作系统（win、macos、linux），不同操作系统的内存申请接口会存在差异，所以DartVM里设计了VirtualMemory作为系统接口层，屏蔽掉不同系统带来的差异。它由以下三部分功能组成。
+
+- 内存申请：提供了内存保留和内存提交功能；
+- 内存释放：提供了释放内存的功能；
+- 内存信息管理：提供了获取内存首地址、内存大小和判断是否包含某个地址等功能。
+
+
+
+
+
+
 
 
 
@@ -1477,3 +1532,7 @@ enum class GCReason {
 
 1. https://cloud.tencent.com/developer/article/1879916
 1. https://juejin.cn/post/7036005463946690590
+1. https://lambda.uta.edu/cse5317/notes/node48.html
+1. https://dbpedia.org/page/Cheney's_algorithm
+1. https://www.cs.princeton.edu/courses/archive/spr16/cos320/lectures/13-GC.pdf
+1. 

@@ -10,8 +10,6 @@ date: 2024-05-19 16:47:37
 
 # 第3章类型、属性、操作和方言详解
 
-[TOC]
-
 第2章简单介绍了MLIR基础知识，本章将详细介绍MLIR方言、操作、类型和属性相关知识。操作是MLIR中最基础的概念，变换、转换、分析等都是针对操作进行；类型用于修饰操作；属性可以修饰操作和方言，为操作和方言提供额外的信息；方言用于管理类型、属性和操作元数据（方言管理的类型和属性都是对象，原因是类型和属性都是全局唯一；但是操作可以多次示例化多个操作对象，所以方言并不直接管理操作对象，而是管理操作的元数据）。本章最后会介绍MLIR框架提供的MLIRContext，它用于管理各种方言，开发者通过MLIRContext可以访问方言、从而访问类型和属性以及操作元数据（并可以通过操作元数据示例化操作对象）。下面逐一介绍类型、属性、操作和方言。
 
 ## 3.1类型
@@ -258,7 +256,7 @@ return Base::get(context, width, signedness);
 * 类型存储（TypeStorage）：大多数情况类型对象只需要一个，相对来说比较简单，一般不需要任何额外信息的存储。对于需要实例化多个类戏对象的类型，会通过参数进行区别，对于这样的情况可以为类型设计一个具体的类型存储对象，在存储对象中保存具体的参数，并且可以根据类型存储的信息实例化不同的对象。然后把类型和类型存储进行关联，通过类型中统一的API访问不同的类型对象。
 通过上述代码可以看出IntegerType类结构如图3-1所示。
 
-![](media/17256960800154.jpg)
+![](MLIR-Dialect-Op-Type-Attr/17256960800154.jpg)
 
 当类型定义完成后，需要将类型注册到方言中，这样类型才能被使用。
 
@@ -801,13 +799,13 @@ void AddIOp::build(::mlir::OpBuilder &odsBuilder, ::mlir::OperationState &odsSta
 ```
 
 AddI操作的继承于Op类，Op继承于OpState和各种特质。这里我们不再给出详细的代码，直接给出类结构图如图3-2所示。
-![](media/17256969190851.jpg)
+![](MLIR-Dialect-Op-Type-Attr/17256969190851.jpg)
 
 OpState仅仅包括了Operation*的字段，Operation的类结构图如3-3所示。
-![](media/17256969369644.jpg)
+![](MLIR-Dialect-Op-Type-Attr/17256969369644.jpg)
 
 Operation继承于TrailingObjects，这里为了便于读者理解Operation类，需要对TrailingObjects做一个简单的介绍。TrailingObjects是LLVM中一个比较方便的辅助类，目的是为目标类添加额外的成员变量，例如Operation通过TrailingObjects最多添加5类成员变量（对TrailingObject就是有额外5个模版参数），每一类成员变量可以包含0个或者多个，具体添加多少个可以在Operation对象分配是确定，通过TrailingObject辅助类可以方便的找每类成员变量的位置。TralingObjects为了能够实现这个功能，将这5个模版参数依次通过继承的方式展开，从而方便确定成员变量的位置。对于的TralingObjects类结构展开如3-4所示。
-![](media/17256969557877.jpg)
+![](MLIR-Dialect-Op-Type-Attr/17256969557877.jpg)
 
 TrailingObjects方便了Operation动态添加成员变量，但是因为其比较复杂，难以理解，特别是涉及到模版继承展开的过程，对这一过程感兴趣的读者可以通过https://cppinsights.io/s/789b1c66查看详细过程。在3.3.2节还会通过对象内存布局进一步介绍TrailingObjects的功能。
 注意：为什么具体类的类结构图设计成图3-2的样子？主要有几个原因，一方面是因为所有的具体操作类和特质之间直接通过继承不符合现代C++对于继承的使用，因为特质转换到具体操作类时可以发现所有的具体类本质上相互影响，而通过CRTP（Curiously Recurring Template Pattern）则将类的多态变成了静态的多态（即仅保留动态使用Polymorphic Use），关于CRTP可以参考《深入理解LLVM：代码生成》附录C。另外一方面原因是在实现具体操作的创建过程中，需要有一些公共功能，它们需要进行抽象，所以设计了Op类，在3.3.2节会进一步介绍。
@@ -916,7 +914,7 @@ return op;
 }
 ```
 根据代码3-24可以得到Operation的对象布局可以分为3部分，分别是返回值、Operation本身固有属性以及TrailingObjects对象，从MLIR框架代码可知Operation固有属性包含64字节，而其它2部分则依赖于具体操作真实的大小，而Operation的对象布局也是具体操作的对象布局，如图3-5所示。
-![](media/17256971083934.jpg)
+![](MLIR-Dialect-Op-Type-Attr/17256971083934.jpg)
 
 
 使用create函数创建的对象Operation*类型，要想得到具体的类型指针AddIOp在代码中是通过dyn_cast<OpTy>即dyn_cast<AddIOp>完成。我们再次回顾一下图3-2，可以发现Operation类和AddIop根本没有继承关系（AddIOp只是包括一个Operation*的字段），那为什么可以使用dyn_cast实现类型转换？这涉及到LLVM框架提供动态转换能力，由于这一部分知识和标准的C++有所不同，我们稍微展开介绍一下。
@@ -1249,7 +1247,7 @@ Types、Attribute不是存储元数据
 * 多例类型：在MLIR运行系统中可能存在多个类型对象，例如Integer类型，开发者可以自定义任意长度的整数如i7（注意上面提到的i1、i8、i16、i32、i64都是Integer类型，其实Integer是它们的父类）；例如Complex类型，可以接受f32和Integer；再例如Function类型，在内建类型的函数类型是由参数类型和返回类型构成（这和C/C++语言中函数类型的定义略有不同）；另外还有一些高级类型，如RankedMemRef、RankedTensor、UnRankedMemRef和UnRankedTensor、Vector类型等。
 由于单例类型比较简单，基本上和读者熟悉的编程语言中的类型基本一致。而高级类型则非常少见，这里稍微展开介绍。
 RankedMemRef表示维度以及每维的长度都是已知的内存区域。为了区分不同的内存区域类型，它有4个字段，如表3-1所示。
-![](media/17256977135851.jpg)
+![](MLIR-Dialect-Op-Type-Attr/17256977135851.jpg)
 
 类似地RankedTensor、Vector都有Shape信息。也就是说它们是静态类型，在编译时就知道类型的维度、长度、占用的内存大小、访问方式等。
 而UnRankedMemRef、UnRankedTensor则没有Shape信息，只有元素类型。开发者可以根据有无Shape信息判断类型是静态还是动态。
@@ -1268,10 +1266,10 @@ RankedMemRef表示维度以及每维的长度都是已知的内存区域。为�
 * UnrealizedConversionCastOp：这个操作是指方言转换过程中由于类型缺失，需要插入额外的强制类型转换操作。
 
 ## 3.5编译上下文管理
-MLIR框架通过“全局”唯一的MLIRContext管理方言、内建类型、内建属性等，方言管理它自己的操作、类型和属性。方言Dialect结构如图3-7所示。![](media/17256978084756.jpg)
+MLIR框架通过“全局”唯一的MLIRContext管理方言、内建类型、内建属性等，方言管理它自己的操作、类型和属性。方言Dialect结构如图3-7所示。![](MLIR-Dialect-Op-Type-Attr/17256978084756.jpg)
 
 在3.1.1、3.3.1提到将类型、操作注册到方言中，但是方言并没有相应的数据结构存储这些信息，实际上它们被存储到MLIRContext中，MLIRContext结构如图3-8所示。
-![](media/17256978666317.jpg)
+![](MLIR-Dialect-Op-Type-Attr/17256978666317.jpg)
 
 
 在图中可以看到内建类型int1Ty、floatType等以及内建属性falseAttr、unitAttr等都在MLIRContext中，而注册到方言中的操作元数据在字段registeredOpertion中，类型在字段typeUniquer中、属性在字段attributeUniquer中。

@@ -106,10 +106,10 @@ def MyOpeation : MyDialect_Op<"MyOpeartion", [Pure]> {
 在构建操作对象后会验证对象，在创建操作对象后调用verifyInvariants，最终调用到具体的类型验证，即上述的__mlir_ods_local_type_constraint_MyOperationOps0代码，从而保证MyOperation对象输入和输出都是合法类型。除了mlir-tblgen工具自动生成的类型、属性、区域、后继等信息验证外。MLIR框架也支持开发者自己实现的验证函数（在操作定义时通过设置let hasVerifier = 1，mlir-tblgen工具会生成verify的函数声明，实现需要开发者完成），参考第3.3节介绍。
 注意：谓词和编译器中类型系统异同点有哪些？
 
-4.1.1自定义谓词和使用
+### 4.1.1自定义谓词和使用
 
 MLIR社区定义了很多谓词，能满足大多数场景的使用。当开发者遇到一些需要额外约束的场景，开发者可以自定义谓词。例如我们要约束操作的操作数个数是否满足要求，可以定义谓词class CheckNumOperands<int i> : CPred<"$_op.getNumOperands() == " # i>。定义完成后就可以在TD中直接使用该谓词。而mlir-tblgen工具会将谓词转换为相应的代码。不过需要注意的是这个谓词是功能谓词，不是类型或者属性，可以通过PredTrait使用（4.2节介绍）。
 
-4.1.2MLIR中常见谓词概览 （TODO）
+### 4.1.2MLIR中常见谓词概览 （TODO）
 
 <!-- more -->

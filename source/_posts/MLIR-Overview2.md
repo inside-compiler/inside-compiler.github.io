@@ -41,7 +41,7 @@ mlir_module = torch_mlir.compile(linear, torch.ones( 1, 16), output_type=torch_m
 而作为编译器开发者希望模型执行足够快，所以可以通过编译的方式生成可执行的代码，并在编译过程进行优化。向PyTorch这样的AI框架通常会将代码变成HIR和LIR，分别进行图优化和算子优化，然后再生成代码，正如图2提到的一样，除了编译和优化工作外需要框架考虑不同后端。
 而MLIR则是期望通过设计多层IR表达不同层次的功能，让编译器都能重用这些IR，同时在MLIR中对这次不同层次的IR进行针对性的优化，从而达到最优性能。
 
-例如在MLIR设计了一个接入层IR（实际上称为方言）TOSA（Tensor Of System Architecture），可以将上述代码转换为TOSA方言表达的代码。
+例如在MLIR设计了一个接入层IR（实际上称为方言）TOSA（Tensor Operation Set Architecture），可以将上述代码转换为TOSA方言表达的代码。
 
 ```func.func @forward(%arg0: tensor<1x16xf32>) -> tensor<1x10xf32> {
     %0 = "tosa.const"() {value = dense<"0xC44B..."> : tensor<1x16xf32>} : () -> tensor<1x16xf32>

@@ -5,6 +5,7 @@ categories:
 tags:
   - LLVM
 date: 2049-10-06 15:33:38
+sticky: 100
 ---
 # 勘误表
 

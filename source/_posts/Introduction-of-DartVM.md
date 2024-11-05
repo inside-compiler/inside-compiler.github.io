@@ -173,19 +173,130 @@ node类型
 
 DartVM的线程是通过Isolate实现的，一个Isolate表示一个dart线程。
 
+### 共享机制
+
+Dart Isolate设计了两套共享数据的机制，分别是Mutex和Monitor。
+
+Mutex是互斥锁，它会保证获得锁的线程是临界区的唯一访问者，在linux下是通过pthread_mutex_t实现的（这里有个跨平台实现上的设计，将平台无关的操作和平台相关的数据分离，即Mutex和MutexData关系）。
+
+```c++
+// thread.h
+class Mutex {
+  MutexData data_;
+};
+
+// thread_linux.h
+class MutexData {
+  pthread_mutex_t mutex_;
+};
+```
+
+Monitor条件锁，它可以使得线程如果在获得锁之后资源不满足时，主动进入阻塞状态，避免因为资源不满足导致的死锁问题。在linux上它是通过条件变量和互斥锁控制的。
+
+```c++
+// thread.h
+class Monitor {
+  MonitorData data_;  // OS-specific data.
+};
+
+// thread_linux.h
+class MonitorData {
+  pthread_mutex_t mutex_;
+  pthread_cond_t cond_;
+};
+```
+
+
+
+### 消息机制
+
+Dart Isolate是通过收发消息与外界（其它Isolate等）进行交互的。Isolate可以收发的消息是由DartVM的消息管理器统一管理的，即PortMap，它负责消息的路由转发。
+
+PortMap的有如下三个主要属性。
+
+```c++
+class PortMap: public AllStatic {
+  static Mutex* mutex_;
+  static Entry* map_;
+  static intptr_t capacity_;
+};
+```
+
+PortMap消息管理器是一个单例，它在DartVM里只有一个实例，在DartVM初始化的时候会完成PortMap的实例创建。
+
+```c++
+bool Dart::InitOnce(int argc, char** argv,
+                    Dart_IsolateInitCallback callback) {
+  PortMap::InitOnce();
+}                    
+```
+
+PortMap初始化阶段，会完成它的参数初始化，即互斥锁、消息映射表和表容量等。
+
+```c++
+void PortMap::InitOnce() {
+  mutex_ = new Mutex();
+  map_ = new Entry[kInitialCapacity];
+  memset(map_, 0, kInitialCapacity * sizeof(Entry));
+  capacity_ = kInitialCapacity;
+}
+```
+
+PortMap提供了五个基础功能，分别是端口状态判断、端口创建、释放和消息发出、接收。
+
+- 端口状态判断：通过检查一个isolate的id是否在map_里，来判断端口是否有效。
+- 端口创建：首先分配一个端口id并绑定当前的isolate组成一个端口项，然后根据端口id通过hash算法计算出这个端口项可以放置的映射表位置，最后将这个新的端口项放入到映射表中。
+- 端口释放：首相将映射表中对应的端口项置为初始状态，然后将此端口所在isolate的消息队列中的端口相关消息删除。
+- 消息发出：先根据消息id在map_里找到接收消息的isolate，然后把消息放到前面找到的isolate的消息队列里。期间需要对PortMap和isolate的数据上锁。
+- 消息接收：获取当前的isolate，然后从isolate的消息队列里出队一个消息，如果还没有收到，则等待一定时间再尝试一次。
+
+#### Isolate 消息队列
+
+每个Isolate都一个自己的消息队列（MessageQueue）。
+
+```c++
+class Isolate {
+  MessageQueue* message_queue_;
+};
+```
+
+它在Isolate初始化的时候被创建，并在Isolate关闭的时候被销毁。
+
+```c++
+Isolate* Isolate::Init() {
+  MessageQueue* queue = new MessageQueue();
+  result->set_message_queue(queue);
+}
+
+void Isolate::Shutdown() {
+  delete message_queue();
+  set_message_queue(NULL);
+}
+```
+
+它以链表的形式管理消息，有一个头指针和一个尾指针。
+
+```c++
+class MessageQueue {
+  PortMessage* head_;
+  PortMessage* tail_;
+};
+```
+
+它提供了四个功能函数：
+
+- 消息入队（head是哨兵节点，采用尾插法）
+- 消息出队
+- 删除指定ID的消息
+- 删除所有消息
+
+
+
 ## 内存管理
 
 ### 对象内存模型
 
 ### 堆内存管理
-
-
-
-
-
-
-
-
 
 ```c++
 class Isolate {

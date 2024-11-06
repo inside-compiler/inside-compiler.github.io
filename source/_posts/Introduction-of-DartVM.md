@@ -169,13 +169,152 @@ node类型
     V(JSRegExp)                                                                
 ```
 
+## 即时编译器
+
+DartVM的JIT由三部分组成，分别是解析器、代码生成器和汇编器。
+
+- 解析器，将dart源码解析成AST代码；
+- 代码生成器，将AST代码编译成汇编代码，它有优化和不优化两种代码生成；
+- 汇编器，将汇编代码翻译成二进制机器码。
+
+### 解析器
+
+解析器由词法分析器（Scanner）和语法分析器（Parser）组成。
+
+#### 词法分析器
+
+词法分析器读入dart源码字符流数据，输出单词（Token）流数据，即识别出代码中的每个单词是关键字或其它。主要实现在Scanner里，它有以下属性：
+
+- 源码信息，包括源码字符流、源码字符长度；
+- 解析过程临时信息，如lookahead位置等；
+- 关键字信息。
+
+并且提供了一个GetStream用于扫描整个源文件并输出单词流的接口。
+
+```c++
+// scanner.h
+// A call to Scan() scans the source one token at at time.
+// The scanned token is returned by cur_token().
+// GetStream() scans the entire source text and returns a stream of tokens.
+class Scanner : ValueObject {
+  // Scans entire source and returns a stream of tokens.
+  // Should be called only once.
+  const GrowableTokenStream& GetStream();
+};
+```
+
+Scanner识别单词采用的是直接扫描的算法，在遇到二义性的时候使用了向前看多个的方式解决。
+
+Scanner里一个单词使用了以下五个属性进行表示：
+
+- 单词类，表示单词的类型；
+- 偏移，表示它在源码流中的起始位置；
+- 长度，表示它在源码流中的长度；
+- 文件位置，表示它在源码文件中的行列号信息；
+- 字面量，表示它的原始信息。
+
+#### 语法分析器
+
+语法分析器读入词法分析器产生的单词流，输出抽象语法树。主要的实现在Parser里，它的主要属性有：
+
+- 源文件（Script）
+- 单词流（TokenStream）
+- Library，它是内存中保存AST或者机器码的数据结构。
+- 分析中的一些临时数据（如，current_class等）。
+
+语法分析器分为两个阶段进行，首先是在源文件加载阶段，它会解析顶层的自定义类型、变量和函数定义；然后在执行阶段会进一步当前需要编译的函数。这两个部分分别对应了ParseTopLevel和ParseFunction两个主接口。
+
+ParseTopLevel在解析函数的时候，会使用Skip XXX等函数跳过函数体的解析。
+
+### 代码生成器
+
+DartVM的代码生成器是method-base的，即以函数为单位进行编译的。它有两个代码生成器，一个是未优化代码生成器，生成的汇编代码是不带优化的；另一个是优化代码生成器，有一定的代码优化能力（如类型反馈优化），生成更高效的汇编代码。DartVM的函数里有两个指令用于保存这两种汇编代码，避免因为退优化导致重复编译代码。
+
+```c++
+class Function : public Object {
+};
+class RawFunction : public RawObject {
+  RawCode* code_;  // Compiled code for the function.
+  RawCode* unoptimized_code_;  // Unoptimized code, keep it after optimization.  
+};
+```
+
+#### 未优化代码生成器
+
+未优化代码生成器遍历语法分析器生成的AST，依次将每个AST节点翻译成汇编指令。它持有三个主要的属性：
+
+- 待编译的AST；
+- pc和异常处理表；
+- 编译过程状态信息。
+
+```c++
+class CodeGenerator : public AstNodeVisitor {
+  const ParsedFunction& parsed_function_;
+  intptr_t locals_space_size_;
+  CodeGeneratorState* state_;
+  DescriptorList* pc_descriptors_list_;
+  HandlerList* exception_handlers_list_;
+  int try_index_;  
+};
+```
+
+#### 优化代码生成器
+
+优化代码生成器是在未优化代码生成器的基础上，针对一些节点的汇编生成做了改进，如二元操作节点、循环节点等。
+
+```c++
+class OptimizingCodeGenerator : public CodeGenerator {
+  virtual void VisitBinaryOpNode(BinaryOpNode* node);
+  virtual void VisitForNode(ForNode* node);
+  virtual void VisitDoWhileNode(DoWhileNode* node);
+  virtual void VisitWhileNode(WhileNode* node);  
+};
+```
+
+### 汇编器
+
+汇编器为每条指令实现了一个二进制输出函数，如下面的pushl指令对应的pushl二进制生成函数。这种函数是根据架构指令规范一一实现的。此外，汇编器里持有一个缓存区，用于存储生成的二进制指令。
+
+```c++
+class Assembler : public ValueObject {
+  void pushl(Register reg);  
+  AssemblerBuffer buffer_;
+};
+```
+
+
+
+
+
 ## 多线程模型
 
-DartVM的线程是通过Isolate实现的，一个Isolate表示一个dart线程。
+DartVM的线程是通过Isolate实现的，一个Isolate表示一个dart线程。dart线程和OS线程的模型是1:1的，即一个dart线程由一个操作系统线程支持。
+
+### 线程管理
+
+DartVM的线程架构可以分为如下三层：
+
+![image-20241107092430084](./Introduction-of-DartVM/image-20241107092430084.png)
+
+- Isolate用户层，管理Dart线程的数据，包括Stack、Heap、api、stub_code和消息队列等。
+- Thread接口层，屏蔽操作系统线程API的差异，向上层提供统一的线程管理接口。
+- 操作系统适配层，适配每个操作系统的线程管理接口。
+
+#### Isolate用户层
+
+这一层的功能可以划分为可执行代码管理、内存管理、消息管理、共享控制、和定时器列表四部分。每一部分的功能如下：
+
+- 可执行代码管理：通过代码调用表（CodeIndexTable）、长跳转（LongJump）、动态库（Dart_LibraryTagHandler）和虚拟机接口（ApiState、StubCode）管理线程里的函数调用和执行；
+- 内存管理：管理线程的所有私有数据和动态创建的数据，如Stack、Heap、线程静态对象数据区（ObjectStore）、线程临时对象区（Zone）；
+- 消息管理：管理着线程的消息端口和消息队列；
+- 共享控制：通过Monitor控制线程共享变量的访问；
+- 定时器列表：管理线程的定时器。
 
 ### 共享机制
 
 Dart Isolate设计了两套共享数据的机制，分别是Mutex和Monitor。
+
+#### Mutex
 
 Mutex是互斥锁，它会保证获得锁的线程是临界区的唯一访问者，在linux下是通过pthread_mutex_t实现的（这里有个跨平台实现上的设计，将平台无关的操作和平台相关的数据分离，即Mutex和MutexData关系）。
 
@@ -190,6 +329,14 @@ class MutexData {
   pthread_mutex_t mutex_;
 };
 ```
+
+Mutex提供了三个功能：
+
+- Lock，获得锁；
+- TryLock，尝试获得锁；
+- UnLock，释放锁。
+
+#### Monitor
 
 Monitor条件锁，它可以使得线程如果在获得锁之后资源不满足时，主动进入阻塞状态，避免因为资源不满足导致的死锁问题。在linux上它是通过条件变量和互斥锁控制的。
 
@@ -206,7 +353,12 @@ class MonitorData {
 };
 ```
 
+Monitor提供了四个功能：
 
+- Enter，获得锁；
+- Exit，释放锁；
+- Wait，手动进入等待状态；
+- Notify&NotifyAll，唤醒等待线程；
 
 ### 消息机制
 

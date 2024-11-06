@@ -169,13 +169,45 @@ node类型
     V(JSRegExp)                                                                
 ```
 
+## 即时编译器
+
+DartVM的JIT由三部分组成，分别是解析器、代码生成器和汇编器。
+
+- 解析器，将dart源码解析成AST代码；
+- 代码生成器，将AST代码编译成汇编代码，它有优化和不优化两种代码生成；
+- 汇编器，将汇编代码翻译成二进制机器码。
+
+
+
 ## 多线程模型
 
-DartVM的线程是通过Isolate实现的，一个Isolate表示一个dart线程。
+DartVM的线程是通过Isolate实现的，一个Isolate表示一个dart线程。dart线程和OS线程的模型是1:1的，即一个dart线程由一个操作系统线程支持。
+
+### 线程管理
+
+DartVM的线程架构可以分为如下三层：
+
+![image-20241106101919230](./Introduction-of-DartVM/image-20241106101919230.png)
+
+- Isolate用户层，管理Dart线程的数据，包括Stack、Heap、api、stub_code和消息队列等。
+- Thread接口层，屏蔽操作系统线程API的差异，向上层提供统一的线程管理接口。
+- 操作系统适配层，适配每个操作系统的线程管理接口。
+
+#### Isolate用户层
+
+这一层的功能可以划分为可执行代码管理、内存管理、消息管理、共享控制、和定时器列表四部分。每一部分的功能如下：
+
+- 可执行代码管理：通过代码调用表（CodeIndexTable）、长跳转（LongJump）、动态库（Dart_LibraryTagHandler）和虚拟机接口（ApiState、StubCode）管理线程里的函数调用和执行；
+- 内存管理：管理线程的所有私有数据和动态创建的数据，如Stack、Heap、线程静态对象数据区（ObjectStore）、线程临时对象区（Zone）；
+- 消息管理：管理着线程的消息端口和消息队列；
+- 共享控制：通过Monitor控制线程共享变量的访问；
+- 定时器列表：管理线程的定时器。
 
 ### 共享机制
 
 Dart Isolate设计了两套共享数据的机制，分别是Mutex和Monitor。
+
+#### Mutex
 
 Mutex是互斥锁，它会保证获得锁的线程是临界区的唯一访问者，在linux下是通过pthread_mutex_t实现的（这里有个跨平台实现上的设计，将平台无关的操作和平台相关的数据分离，即Mutex和MutexData关系）。
 
@@ -190,6 +222,14 @@ class MutexData {
   pthread_mutex_t mutex_;
 };
 ```
+
+Mutex提供了三个功能：
+
+- Lock，获得锁；
+- TryLock，尝试获得锁；
+- UnLock，释放锁。
+
+#### Monitor
 
 Monitor条件锁，它可以使得线程如果在获得锁之后资源不满足时，主动进入阻塞状态，避免因为资源不满足导致的死锁问题。在linux上它是通过条件变量和互斥锁控制的。
 
@@ -206,7 +246,12 @@ class MonitorData {
 };
 ```
 
+Monitor提供了四个功能：
 
+- Enter，获得锁；
+- Exit，释放锁；
+- Wait，手动进入等待状态；
+- Notify&NotifyAll，唤醒等待线程；
 
 ### 消息机制
 

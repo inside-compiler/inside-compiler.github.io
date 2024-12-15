@@ -1,9 +1,9 @@
 ---
 title: 应用框架与执行引擎协同讨论
 categories:
-  - virtual machine
+  - application framework
 tags:
-  - virtual machine
+  - application framework
 date: 2024-12-14 12:06:14
 ---
 
@@ -19,7 +19,23 @@ date: 2024-12-14 12:06:14
 
 ## 引擎执行层
 
-webf、react-native、flutter
+如下图所示，引擎执行层是应用编程语言执行环境与操作系统的中间桥梁，应用编程语言执行环境通过它可以获取操作系统资源或执行操作系统功能，反过来操作系统通过它管理应用编程语言执行环境或执行对应的应用编程语言。一般而言，它的主要功能是根据应用或者应用框架的需求定制的，并且为了降低性能开销都会做得比较精简。
 
+![image-20241215202235126](./introduction-of-language-engine-of-application-framwork/image-20241215202235126.png)
 
+后面我们通过研究react-native、kraken和flutter三个框架的引擎执行层的主要功能，探索应用框架的引擎执行层需要具有的功能集合。
+
+### React-Native的引擎执行层
+
+React-Native是基于Javascript应用编程语言的跨平台应用框架，它为兼容了多个JS引擎的差异，提出了一个引擎兼容层-- JSI，并且在引擎执行层采用了接口-实现分离的设计，从而在保证框架结构稳定的同时可以根据新引擎或新需求进行接口定制和扩展。React-Native引擎执行层的基础接口是JSExecutor，然后根据JSI接口实现了JSIExecutor，以及在JSIExecutor的基础上定义了HermesExecutor以支持Hermes引擎。它们三者的继承关系如下图所示，HermesExecutor继承自JSIExecutor，而JSIExecutor继承自JSIExecutor。因为HermesExecutor对JSIExecutor的变动主要是调试相关的功能，并且JSC是直接使用JSIExecutor作为引擎执行层，所以我们主要介绍下JSIExecutor的功能。
+
+![image-20241215210732185](./introduction-of-language-engine-of-application-framwork/image-20241215210732185.png)
+
+JSIExecutor的功能如下类图所示，它的接口有18个，其中主要是其父类JSExecutor里定义功能接口的实现。
+
+![image-20241215212018708](./introduction-of-language-engine-of-application-framwork/image-20241215212018708.png)
+
+将这些接口按功能划分为引擎管理、JS代码管理、native函数调用、全局属性设置和JS引擎内存管理5部分，具体如下表所示。
+
+![image-20241215220456016](./introduction-of-language-engine-of-application-framwork/image-20241215220456016.png)
 

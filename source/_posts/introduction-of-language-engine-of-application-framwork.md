@@ -39,3 +39,17 @@ JSIExecutor的功能如下类图所示，它的接口有18个，其中主要是�
 
 ![image-20241215220456016](./introduction-of-language-engine-of-application-framwork/image-20241215220456016.png)
 
+### Kraken的引擎执行层
+
+Kraken是一套以兼容W3C标准为目标的夸端UI框架，它借助Flutter的夸端能力（以flutter为host）实现多端运行，并引入web的开发范式（HTML/CSS/JS）兼容web开发者生态。它的引擎执行层是基于QuickJS构建的，为了性能没有引入引擎兼容层，也是直接基于QuickJS构建了一个引擎层（ExecutionContext）。
+
+kranken引擎执行层代码结构如下图所示，基本的接口由KrakenPage实现，然后宿主模块和GC的管理由各自独立的模块完成。此外，全局属性管理直接由引擎层的接口完成，引擎执行层没有在对其进行二次封装。
+
+![image-20241231174111183](./introduction-of-language-engine-of-application-framwork/image-20241231174111183.png)
+
+KrakenPage及其子模块的主要接口有11个，除了HTML处理模块，其它的接口功能分类和React-Native是相同的。
+
+![image-20241231174912840](./introduction-of-language-engine-of-application-framwork/image-20241231174912840.png)
+
+### Flutter的引擎执行层
+

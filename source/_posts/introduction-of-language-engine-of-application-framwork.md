@@ -53,3 +53,20 @@ KrakenPage及其子模块的主要接口有11个，除了HTML处理模块，其�
 
 ### Flutter的引擎执行层
 
+Flutter的应用开发语言是dart，它的引擎执行层是基于DartVM的功能构建的。因为Flutter和DartVM是相互耦合的设计（没有多个引擎替换的兼容性需求），所以Flutter的引擎执行层是分模块的设计，没有统一的入口。如下图所示，Flutter的引擎执行层是runtime，主要的功能分为三部分。
+
+![image-20250112152058247](./introduction-of-language-engine-of-application-framwork/image-20250112152058247.png)
+
+它们的功能如下：
+
+- DartVMRef：管理DartVM的声明周期，VM的数据处理放在了DartVM这个类里；
+- DartIsolate：Dart线程的数据管理，一个Isolate对应一个Dart线程；
+- RuntimeDelegate：Dart用到的宿主接口，具体实现在RuntimeController里。
+
+runtime的接口比较多，下面列出了9个主要的接口及其功能说明。
+
+![image-20250112160654718](./introduction-of-language-engine-of-application-framwork/image-20250112160654718.png)
+
+## 总结
+
+综合上述三个例子，应用框架的引擎执行层一般会有三个功能引擎管理、线程/代码管理和宿主接口管理。相比VM本身的接口，引擎执行层的数量相对较少，可以简化应用框架使用VM的难度。因此，一个功能完善的应用框架一般都会有一个引擎执行层来使用VM的功能并隔离VM的复杂性。

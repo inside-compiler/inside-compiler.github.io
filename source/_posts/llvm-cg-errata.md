@@ -33,5 +33,5 @@ sticky: 100
 5. 书中“寄存器分配前的调度算法...而寄存器分配后的调度算法...还需要关注寄存器分配的压力”。
 这里的“寄存器分配前”和“寄存器分配后”写反了。
 
-感谢网友 @ywgrit，@punkyc，@IanIsMyUsername，@mengdouer 的反馈。
+感谢网友 @ywgrit，@punkyc，@IanIsMyUsername，@mengdouer，sunshaoce 的反馈。
 <!-- more -->

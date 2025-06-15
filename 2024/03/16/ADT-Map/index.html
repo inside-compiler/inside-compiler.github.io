@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="LLVM本身提供了一些Map相关的容器，同时在LLVM还可以直接std中标准map容器，该如何正确使用map？ LLVM中Map容器DenseMapLLVM提供DenseMap的目的为了加速使用Map的效率。它具有以下特点：  针对key、value组合成一个Pair，然后根据Map的初始长度分配一段连续的内存，其中每个pair作为内存的元素。因此Densemap是Key-Value组合在一起的连">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ADT中Map容器介绍">
+<meta property="og:url" content="http://example.com/2024/03/16/ADT-Map/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="LLVM本身提供了一些Map相关的容器，同时在LLVM还可以直接std中标准map容器，该如何正确使用map？ LLVM中Map容器DenseMapLLVM提供DenseMap的目的为了加速使用Map的效率。它具有以下特点：  针对key、value组合成一个Pair，然后根据Map的初始长度分配一段连续的内存，其中每个pair作为内存的元素。因此Densemap是Key-Value组合在一起的连">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/03/16/ADT-Map/17105802768390.jpg">
+<meta property="og:image" content="http://example.com/2024/03/16/ADT-Map/17105803752754.jpg">
+<meta property="article:published_time" content="2024-03-16T09:03:21.000Z">
+<meta property="article:modified_time" content="2025-06-15T05:58:00.471Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="LLVM,MLIR,ADT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/03/16/ADT-Map/17105802768390.jpg">
+
+
+<link rel="canonical" href="http://example.com/2024/03/16/ADT-Map/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/03/16/ADT-Map/","path":"2024/03/16/ADT-Map/","title":"ADT中Map容器介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ADT中Map容器介绍 | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LLVM%E4%B8%ADMap%E5%AE%B9%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">LLVM中Map容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DenseMap"><span class="nav-number">1.1.</span> <span class="nav-text">DenseMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SmallDenseMap"><span class="nav-number">1.2.</span> <span class="nav-text">SmallDenseMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ImmutableMap"><span class="nav-number">1.3.</span> <span class="nav-text">ImmutableMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IndexedMap"><span class="nav-number">1.4.</span> <span class="nav-text">IndexedMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IntervalMap"><span class="nav-number">1.5.</span> <span class="nav-text">IntervalMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StringMap"><span class="nav-number">1.6.</span> <span class="nav-text">StringMap</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LLVM%E5%85%B6%E4%B8%AD%E9%AB%98%E7%BA%A7Map"><span class="nav-number">2.</span> <span class="nav-text">LLVM其中高级Map</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ValueMap"><span class="nav-number">2.1.</span> <span class="nav-text">ValueMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapVector"><span class="nav-number">2.2.</span> <span class="nav-text">MapVector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SmallMapVector"><span class="nav-number">2.3.</span> <span class="nav-text">SmallMapVector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IntEqClasses"><span class="nav-number">2.4.</span> <span class="nav-text">IntEqClasses</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Std%E4%B8%ADMap%E5%AE%B9%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">Std中Map容器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Map-multiMap"><span class="nav-number">3.1.</span> <span class="nav-text">Map&#x2F;multiMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#unordered-map-undered-multimap"><span class="nav-number">3.2.</span> <span class="nav-text">unordered_map&#x2F;undered_multimap</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/16/ADT-Map/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ADT中Map容器介绍 | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ADT中Map容器介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-16 17:03:21" itemprop="dateCreated datePublished" datetime="2024-03-16T17:03:21+08:00">2024-03-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>LLVM本身提供了一些Map相关的容器，同时在LLVM还可以直接std中标准map容器，该如何正确使用map？</p>
+<h1 id="LLVM中Map容器"><a href="#LLVM中Map容器" class="headerlink" title="LLVM中Map容器"></a>LLVM中Map容器</h1><h2 id="DenseMap"><a href="#DenseMap" class="headerlink" title="DenseMap"></a>DenseMap</h2><p>LLVM提供DenseMap的目的为了加速使用Map的效率。它具有以下特点：</p>
+<ol>
+<li><p>针对key、value组合成一个Pair，然后根据Map的初始长度分配一段连续的内存，其中每个pair作为内存的元素。因此Densemap是Key-Value组合在一起的连续内存。其存储结构如下：</p>
+<img src="/2024/03/16/ADT-Map/17105802768390.jpg" class="">
+</li>
+<li><p>DenseMap需要解决存储时Hash的问题，对于常见类型作为Key时LLVM项目中已经提供了Hash算法，而对于自定义Key时需要实现自己的Hash算法；</p>
+</li>
+<li><p>当对Key进行Hash后，如果产生冲突，则进行二次散列（实现是基于当前的位置+变化的偏移）。</p>
+</li>
+<li><p>由于DenseMap底层本质上采用了数组进行存储，所以需要区别不同Key的状态用于标记元素的有效性，例如设置为1《Bit表示空；2《Bit表示元素曾经有用过，但现在已经被删除，设置为Tombe，此时这个槽位并不能被再次占用。</p>
+</li>
+<li><p>DenseMap还考虑了自动内存的扩展，当使用元素超过3&#x2F;4时会自动扩容；当Tomeb元素超过一定比例（1&#x2F;8）会对DenseMap重写构造，并将Tombe对应的槽位进行真正回收重用。因此增删元素会导致DenseMap扩容&#x2F;缩减，进而引起迭代器失效。另外扩容时会删除旧缓存中的元素(析构Key与Value)，因此需要注意Key与Value成员的所有权问题。</p>
+</li>
+<li><p>需要自己实现迭代器，否则无法遍历容器数据。</p>
+</li>
+</ol>
+<p>本意DenseMap希望提供高性能的Map，但是2014年LLVM大会提供的材料表明DenseMap效果和std中map、unordered_map相比并不完全占优，相反在Insert、lookup性能均裂于unordered_map。</p>
+<h2 id="SmallDenseMap"><a href="#SmallDenseMap" class="headerlink" title="SmallDenseMap"></a>SmallDenseMap</h2><p>DenseMap在对分配时最低要求64个元素，所以在数据量较少时存在内存浪费问题，所以提供了一个小数组模拟底层存储（初始默认值为4个元素），当元素超过64时就退化为DensMap。<br>SmallDenseMap底层使用一个Union组合一个数组和DenseMap。</p>
+<h2 id="ImmutableMap"><a href="#ImmutableMap" class="headerlink" title="ImmutableMap"></a>ImmutableMap</h2><p>ADT中提供了不可变Map，它的底层存储时基于平衡二叉树，但是它最大的特点是不袁允许对于Map进行修改，例如插入或者删除元素后都会新生成一个新的ImmutableMap。因此它更适合用于一次构造，多次查询的场景。</p>
+<h2 id="IndexedMap"><a href="#IndexedMap" class="headerlink" title="IndexedMap"></a>IndexedMap</h2><p>这是一个特殊的Map，接受两个参数。代码如下：</p>
+<figure class="highlight plaintext"><figcaption><span><typename T, typename ToIndexT </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class IndexedMap &#123;</span><br></pre></td></tr></table></figure>
+
+<p>第一个参数为Map的类型，第二个参数为索引位置计算的函数。在底层它使用了SmallVector作为存储结构，同时使用函数计算元素在SmallVector的位置。</p>
+<h2 id="IntervalMap"><a href="#IntervalMap" class="headerlink" title="IntervalMap"></a>IntervalMap</h2><p>这是LLVM特意为Live Interval设计的数据结构，key是一个区间，value是值，key可以支持前闭后闭、前闭后开两种区间。<br>IntervalMap采用树形进行存储，分为两类结点：中间结点和叶子结点，叶子结点存放的区间和值，一个叶子结点可能包括多个区间，例如[(start1,end1),value1]，[(start2,end2),value2，[(start3,end3),value3]。主要原因是IntervalMap设计时期望访问能按照CacheLine对其，假设CacheLine为64字节，按照3倍CacheLine设计存储空间（即192字节），而192个字节可能包括多个区间。而中间结点目的是将区间形成一棵树，方便插入、删除和查找。<br>由于IntervalMap以区间为Key，当插入新的元素后会尝试进行区间合并（当然合并时Value必须相等，并且区间是相邻）。</p>
+<h2 id="StringMap"><a href="#StringMap" class="headerlink" title="StringMap"></a>StringMap</h2><p>ADT为了处理String，特别引入StringMap类型，主要是因为String的长度不固定，所以一般需要分配在堆中，所以不太适合直接使用DenseMap进行处理。<br>StringMap的结构如下所示：</p>
+<img src="/2024/03/16/ADT-Map/17105803752754.jpg" class="">
+
+<p>可以看到StringMap使用连续内存来处理Key-Value，但是又把Key&#x2F;Value真实的值放在堆中。<br>除了底层存储不同以外StringMap在很多地方类似与DenseMap，比如Hash冲突、Key不允许重复，同样地StringMap也会存在扩缩容的问题。</p>
+<p>默认长度为16.<br>所以StringMap更适合的场景是对key、value连续访问，元素个数不多或者hash冲突不严重的场景，且尽可能少的发生扩缩容。</p>
+<h1 id="LLVM其中高级Map"><a href="#LLVM其中高级Map" class="headerlink" title="LLVM其中高级Map"></a>LLVM其中高级Map</h1><h2 id="ValueMap"><a href="#ValueMap" class="headerlink" title="ValueMap"></a>ValueMap</h2><p>ValueMap本质上利用DenseMap实现LLVM特殊的需求，例如Value可以被其它的Instruction使用，但是Value发生了变化（例如被删除、RACU），那么Value的使用者需要更新变化情况，使用ValueMap就非常有用。ValueMap存储Value和使用的映射关系，当Value变化时，例如从V1变到V2，则老得映射V1-》Target可以被删除，并添加一个新的映射V2-》Target。<br>注意：需要通过Value中delete或者replaceAllUseWith对应的API调用才能完成更新。</p>
+<h2 id="MapVector"><a href="#MapVector" class="headerlink" title="MapVector"></a>MapVector</h2><p>这个类型是利用DenseMap和std::vector组合的一个新的类型，它和DensMap最大的区别是Value会按照顺序进行存储。这样在一些map的遍历中可以保证顺序。<br>实际上MapVector首先将Key存储在DenseMap中，如同时将《key、value》的Pair再插入vector中，所以key会被插入两次，因此有空间浪费。但是MapVector相对于vector来说查询效率可能更好，因此查询之前总是先通过DenseMap查询key是否存在，如果key不存在则无需到vector中查询，如果key存在则仍然需要遍历vector。</p>
+<h2 id="SmallMapVector"><a href="#SmallMapVector" class="headerlink" title="SmallMapVector"></a>SmallMapVector</h2><p>SmallMapVector和MapVectorhe非常类似，唯一的不同点是SmallMapVector中的Vector使用的是SmallVector而不是std::vector。</p>
+<h2 id="IntEqClasses"><a href="#IntEqClasses" class="headerlink" title="IntEqClasses"></a>IntEqClasses</h2><p>这是对整数进行等价类划分，所以它也类似于Map功能。具体方式比较简单，将容器中所有整数进行划分，相同的就是一个等价类。划分完成中每个整数都有一个唯一的等价类标号。<br>IntEqClasses底层使用smallvector进行实现，如果确定两个元素是等价类，使用join进行连接，连接后返回等价类中第一个元素的索引，当使用compress后等价类标号从0开始依次增加（不再是等价类第一个元素的索引）。</p>
+<h1 id="Std中Map容器"><a href="#Std中Map容器" class="headerlink" title="Std中Map容器"></a>Std中Map容器</h1><h2 id="Map-multiMap"><a href="#Map-multiMap" class="headerlink" title="Map&#x2F;multiMap"></a>Map&#x2F;multiMap</h2><p>Map采用红黑树进行实现，它时一种平衡二叉树，能保证树的高度大约是对数，在插入、删除、查找时复杂度为哦（nlog（n），由于红黑树保证树的平衡，所以在插入、删除时需要对树进行再平衡，所以性能略差，但是对于查找友好（由于红黑树的特性，可以认为构建的map是以key进行排序进行的）。</p>
+<p>Multimap和map最大的区别是key是可以重复的。因此mulltimap提供的一些API和Map略有不同，multimap可能返回iterator，用于表示可能存在多个Key-Value，而Map通常返回pair即可。</p>
+<h2 id="unordered-map-undered-multimap"><a href="#unordered-map-undered-multimap" class="headerlink" title="unordered_map&#x2F;undered_multimap"></a>unordered_map&#x2F;undered_multimap</h2><p>undered_map采用的是链表方式实现，和DenseMap类似。但是又有所不同，undered-map中的key是连续的，但是value采用了链表的方式进行存储，所以在解决冲突时较为简单。但是通常插入时需要使用malloc进行分配。</p>
+<span id="more"></span>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LLVM-MLIR-ADT/" rel="tag"># LLVM,MLIR,ADT</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/16/ADT-Seq-Contianer/" rel="prev" title="ADT顺序容器介绍">
+                  <i class="fa fa-angle-left"></i> ADT顺序容器介绍
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/03/16/ADT-Set/" rel="next" title="ADT中Set容器介绍">
+                  ADT中Set容器介绍 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"bc4f35203ceea9440e69ecd40f30ebb5"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

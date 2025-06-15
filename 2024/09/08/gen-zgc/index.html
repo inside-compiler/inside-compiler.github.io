@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="2023年9月19日发布的JDK 21中正式发布了分代ZGC（下文简称ZGC），ZGC是目前业界最新、最复杂的垃圾回收器。垃圾回收器一直是JDK中最热门技术，根据JDK版本支持的策略，JDK 8、JDK 11、JDK 17和JDK 21是目前长期支持的版本。目前这四个版本共支持七种垃圾回收器，分别是串行回收（简称Serial GC）、并行回收（Parallel Scavenge，简称Paralle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分代ZGC概述">
+<meta property="og:url" content="http://example.com/2024/09/08/gen-zgc/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="2023年9月19日发布的JDK 21中正式发布了分代ZGC（下文简称ZGC），ZGC是目前业界最新、最复杂的垃圾回收器。垃圾回收器一直是JDK中最热门技术，根据JDK版本支持的策略，JDK 8、JDK 11、JDK 17和JDK 21是目前长期支持的版本。目前这四个版本共支持七种垃圾回收器，分别是串行回收（简称Serial GC）、并行回收（Parallel Scavenge，简称Paralle">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/09/08/gen-zgc/17258405203063.jpg">
+<meta property="og:image" content="http://example.com/2024/09/08/gen-zgc/17258405437124.jpg">
+<meta property="og:image" content="http://example.com/2024/09/08/gen-zgc/17258406205052.jpg">
+<meta property="og:image" content="http://example.com/2024/09/08/gen-zgc/17257734878123.jpg">
+<meta property="og:image" content="http://example.com/2024/09/08/gen-zgc/17257732739624.jpg">
+<meta property="og:image" content="http://example.com/2024/09/08/gen-zgc/17257733080380.jpg">
+<meta property="og:image" content="http://example.com/2024/09/08/gen-zgc/17257734423602.jpg">
+<meta property="og:image" content="http://example.com/2024/09/08/gen-zgc/17257734570006.jpg">
+<meta property="article:published_time" content="2024-09-08T11:13:49.000Z">
+<meta property="article:modified_time" content="2025-06-15T05:58:00.525Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="virtual machine">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/09/08/gen-zgc/17258405203063.jpg">
+
+
+<link rel="canonical" href="http://example.com/2024/09/08/gen-zgc/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/09/08/gen-zgc/","path":"2024/09/08/gen-zgc/","title":"分代ZGC概述"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>分代ZGC概述 | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E5%B9%B6%E5%8F%91%E5%9B%9E%E6%94%B6%E5%8E%9F%E7%90%86%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">1并发回收原理概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E5%B9%B6%E5%8F%91%E5%9B%9E%E6%94%B6%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">2并发回收步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E5%B9%B6%E5%8F%91%E6%A0%B9%E6%A0%87%E8%AE%B0"><span class="nav-number">3.</span> <span class="nav-text">3并发根标记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E9%AB%98%E6%95%88%E6%A0%87%E8%AE%B0"><span class="nav-number">4.</span> <span class="nav-text">4高效标记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E5%88%86%E4%BB%A3%E5%9B%9E%E6%94%B6"><span class="nav-number">5.</span> <span class="nav-text">5分代回收</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E5%88%86%E4%BB%A3ZGC%E7%9A%84%E4%BC%98%E5%8A%BF%E4%B8%8E%E4%B8%8D%E8%B6%B3"><span class="nav-number">6.</span> <span class="nav-text">6分代ZGC的优势与不足</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/08/gen-zgc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="分代ZGC概述 | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分代ZGC概述
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-09-08 19:13:49" itemprop="dateCreated datePublished" datetime="2024-09-08T19:13:49+08:00">2024-09-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/GC/" itemprop="url" rel="index"><span itemprop="name">GC</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>2023年9月19日发布的JDK 21中正式发布了分代ZGC（下文简称ZGC），ZGC是目前业界最新、最复杂的垃圾回收器。垃圾回收器一直是JDK中最热门技术，根据JDK版本支持的策略，JDK 8、JDK 11、JDK 17和JDK 21是目前长期支持的版本。目前这四个版本共支持七种垃圾回收器，分别是串行回收（简称Serial GC）、并行回收（Parallel Scavenge，简称Parallel GC）、并发标记清除（Concurrent Mark Sweep，简称CMS）、垃圾优先（Garbage First，简称G1）、Shenandoah GC、ZGC、Epsilon（实验特性，仅支持分配不回收，实际场景中不会采用）。其中ZGC经过近年来JDK中最热门的技术，经过近10年的发展，在2017年发布的JDK 11中提供单代ZGC为实验特性，在2020年发布的JDK 17中正式将单代ZGC升级为产品特性，在2023年发布的JDK 21正式支持分代ZGC。目前已经有不少互联网公司在实际产品中开始使用最新版本的ZGC，它是一款完全无停顿的垃圾回收器，目前应用停顿时间基本上都小于1毫秒，同时支持堆内存最高可达64TB。<br>以2022年 Per linden在演讲[<a target="_blank" rel="noopener" href="https://cr.openjdk.org/~pliden/slides/ZGC-OracleDevLive-2022.pdf]%E4%B8%AD%E7%BB%99%E5%87%BA%E7%9A%84%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E4%B8%BA%E4%BE%8B%EF%BC%8C%E9%92%88%E5%AF%B9SPECjbb%C2%AE2015%E6%B5%8B%E8%AF%95%E5%A5%97%E4%BD%BF%E7%94%A8G1%E5%92%8CZGC%EF%BC%88%E5%85%B6%E4%B8%ADG1%E4%BB%8EJDK9%E4%BB%A5%E5%90%8E%E5%B0%B1%E6%98%AF%E9%BB%98%E8%AE%A4%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%EF%BC%89%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%8F%91%E7%8E%B0G1%E5%AF%BC%E8%87%B4%E5%BA%94%E7%94%A8%E7%9A%84%E5%81%9C%E9%A1%BF%E6%97%B6%E9%97%B4%E5%A4%A7%E7%BA%A6%E5%9C%A8300~500%E6%AF%AB%E7%A7%92%EF%BC%8C%E8%80%8CZGC%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%83%85%E5%86%B5%E4%B8%8B%E4%B8%8D%E8%B6%85%E8%BF%87200%E5%BE%AE%E7%A7%92%EF%BC%8C%E5%81%9C%E9%A1%BF%E6%97%B6%E9%97%B4%E7%BA%A6%E4%B8%BA%E5%8E%9F%E6%9D%A5%E7%9A%84%E5%8D%83%E5%88%86%E4%B9%8B%E4%B8%80%E3%80%82%E6%B5%8B%E8%AF%95%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%E6%89%80%E7%A4%BA%EF%BC%88%E5%B7%A6%E5%9B%BE%E5%8D%95%E4%BD%8D%E4%B8%BAms%EF%BC%8C%E5%9B%BE%E4%B8%AD%E7%9C%8B%E4%B8%8D%E5%88%B0ZGC%E7%9A%84%E5%81%9C%E9%A1%BF%E6%97%B6%E9%97%B4%EF%BC%9B%E5%8F%B3%E5%9B%BE%E5%B0%86%E5%8D%95%E4%BD%8D%E5%88%87%E6%8D%A2%E4%B8%BAus%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0zgc%E5%81%9C%E9%A1%BF%E6%97%B6%E9%97%B4%E4%B8%8D%E8%B6%85%E8%BF%87200us%EF%BC%89%EF%BC%9A">https://cr.openjdk.org/~pliden/slides/ZGC-OracleDevLive-2022.pdf]中给出的测试数据为例，针对SPECjbb®2015测试套使用G1和ZGC（其中G1从JDK9以后就是默认的垃圾回收器），可以发现G1导致应用的停顿时间大约在300~500毫秒，而ZGC大多数情况下不超过200微秒，停顿时间约为原来的千分之一。测试效果如下所示（左图单位为ms，图中看不到ZGC的停顿时间；右图将单位切换为us，可以看到zgc停顿时间不超过200us）：</a></p>
+<img src="/2024/09/08/gen-zgc/17258405203063.jpg" class="">
+<img src="/2024/09/08/gen-zgc/17258405437124.jpg" class="">
+
+
+<p>同时和G1相比吞吐量并没有明显下降（吞吐量下降约2%左右），如下图所示：</p>
+<img src="/2024/09/08/gen-zgc/17258406205052.jpg" class="">
+
+
+<p>上面以128G的堆空间为例进行测试，如果堆空间进一步扩大，ZGC的会表现的更为优异。<br>从设计和实现效果来看，ZGC适合大内存、停顿时间要求低的场景，如金融、大数据等用户体验越来越重要的场景中发挥着关键作用。ZGC为什么能够表现的这么优异？主要原因是ZGC是完全并发垃圾回收器（JVM中的垃圾回收线程和Java应用线程并发地运行，即在内存对象发生移动时也不要去Java应用暂停），将堆空间分为新生代和老生代，垃圾回收可以并发回收新生代和老生代空间，在垃圾回收的同时应用程序还可以并发执行。用Minor GC表示新生代回收（绿色表示），Major GC表示老生代回收（红色表示），Mutator表示应用（蓝色表示），ZGC执行示意图如下：</p>
+<img src="/2024/09/08/gen-zgc/17257734878123.jpg" class="">
+
+
+<p>由于ZGC是完全并发执行，设计和实现也非常复杂，回收算法采用标记-压缩（Mark-Compact）为基础，标记-压缩算法是跟踪法回收，通过根对象标记遍历标记所有活跃对象，压缩活跃对象实现内存回收。涉及到关键技术有：着色指针、读屏障、写屏障、栈帧屏障等。</p>
+<h2 id="1并发回收原理概述"><a href="#1并发回收原理概述" class="headerlink" title="1并发回收原理概述"></a>1并发回收原理概述</h2><p>并发回收有多种实现原理，最为直观的方法是目标空间不变性，将堆空间分为From和To来两个空间，Mutator在运行时产生对象（分配内存），GC工作线程（称为Collector）负责回收已经死亡的对象（将活跃对象搬移到To空间）。由于对象之间存在引用关系，Muator和Collector并发执行时可以同时访问一个对象（Mutator通常修改对象、Collector负责搬移对象），需要优雅设计处理并发问题。最直观的思路是：在垃圾回收启动后，无论是Mutator还是Collector访问对象，只要发现对象还没有转移到目标空间，就会先启动转移。当发现对象已经转移时，则通过转发指针获得目标空间中的对象并访问演示了Mutator写对象时先转移对象到目标空间，再在目标空间中写对象。</p>
+<p>这个过程通常要借助读屏障（Load Barrier）完成上述功能。<br>其他并发回收原理还有源空间不变性、引用不变性，可以参考相关书籍。</p>
+<h2 id="2并发回收步骤"><a href="#2并发回收步骤" class="headerlink" title="2并发回收步骤"></a>2并发回收步骤</h2><p>ZGC并发垃圾回收采用标记-压缩。整个回收过程可以分为3个阶段：分别为标记（mark）、转移（relocate或者copy）和重定位（remap）。这3个阶段完成的功能如下。<br>1）标记：从根集合出发，标记活跃对象，此时内存中存在活跃对象和死亡对象。<br>2）转移：把活跃对象转移（复制）到新的内存空间，原来的内存空间可以回收。<br>3）重定位：因为对象的内存地址发生了变化，所以所有指向对象老地址的指针都要调整到对象新的地址上。<br>并发垃圾回收就是将这3步都实现为并发执行。</p>
+<p>在这3个阶段执行前，通常需要一个安全点执行阶段，安全点执行阶段是串行执行，此时Mutator会暂停执行，安全点的目的是为了同步Collector的工作状态。在非并发回收中，所有的工作都在安全点执行，Mutator会一直暂停，这个时间称为应用的暂停时间。<br>这3个阶段在实现时进一步划分为8步：<br>1)初始标记：暂停Mutator执行，设置标记转态以及完成根集合初始标记、完成Remap；<br>2)并发标记：和Mutator并发执行，并完成标记、Remap；<br>3)结束标记：暂停Mutator执行，完成所有对象标记、Remap；<br>4)标记空间释放：并发执行，在标记过程中会使用标记栈来存储待标记对象，此时可以释放未使用的标记栈空间；<br>5)重置转移集：并发执行，准备好待转移对象使用的空间；<br>6)选择转移集：并发执行，选择新生代或者老生代需要转移的页面；<br>7)初始转移：暂停Mutator执行，设置Rermap状态，完成根集合转移；<br>8)并发转移：并发执行，根据转移集将活跃对象转移至新的内存空间（页面）；<br>在初始标记、结束标记、初始选择这3步还需要暂停Java应用执行，所以ZGC还是存在一定的停顿时间，但是为了减少这3步的停顿时间，ZGC还引入了高效并发根标记技术。</p>
+<h2 id="3并发根标记"><a href="#3并发根标记" class="headerlink" title="3并发根标记"></a>3并发根标记</h2><p>在标记时，首先从根集合触发。根集合通常线程的栈帧、全局变量、锁、类元数据等信息。其中最耗时的是线程栈帧遍历，线程栈帧包含了函数调用链的所有栈帧，需要将所有的栈帧都进行遍历，这将非常耗时。一个高效的并发标记方法是引入栈帧屏障技术。简单说为栈帧引入一个WaterMark，当SP（栈顶指针）大于WaterMark说明访问早期的栈，需要Mutator进行标记处理，当SP小于WaterMark说明是新增的函数调用，可以通过记录新增函数的对象，并进行遍历。<br>通过并发根标记技术，可以大大减少停顿时间，从而使得ZGC的停顿时间从几毫秒降至微秒级别。</p>
+<h2 id="4高效标记"><a href="#4高效标记" class="headerlink" title="4高效标记"></a>4高效标记</h2><p>垃圾回收的第一个阶段遍历根集合，对所有活跃对象进行标记。由于回收动作分成不同步骤，所以在标记完活跃对象后，需要将活跃对象状态保持下来（即对象是活跃）。由于状态和对象一一对应，所以最简单的设计是为每个对象关联一个状态信息，当识别对象是活跃状态后更新对象的状态，但是这带来两个问题：一方面是需要内存空间保持状态信息，另一方面是有额外的对象内存访问（通常需要访问对象后获取状态）。一个优化的设计是采用着色指针，即将对象的活跃保存在指针地址中，而不需要真实访问对象。<br>在分代ZGC中将地址的低16位用作对象状态，示意图如下所示：</p>
+<img src="/2024/09/08/gen-zgc/17257732739624.jpg" class="">
+
+<p>其中RRRRMM、mm、FF、rr的含义如下：</p>
+<img src="/2024/09/08/gen-zgc/17257733080380.jpg" class="">
+
+
+<p>在Load时将着色的指针转换为正常地址，在Store时将正常地址进行着色。例如在x86_64架构下，读屏障为：</p>
+<figure class="highlight plaintext"><figcaption><span>rax, 0x10(rbx)</span><a target="_blank" rel="noopener" href="//读取对象">link</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shrq rax, $address_shift//右移，找到对应的着色状态</span><br><span class="line">ja slow_path         //如果状态不正确，进入slow path，否则直接向下执行</span><br></pre></td></tr></table></figure>
+<p>这里可以看出，在读屏障时会有额外两条指令（上述的shrq和ja）<br>写屏障为：</p>
+<figure class="highlight plaintext"><figcaption><span>0x10(rbx), $stroe_bad_mask//判断对象着色状态是否正确</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">jnz slow_path         //如果状态不正确，进入slow path，否则直接向下执行</span><br><span class="line">shlq rax, $address_shift//左移</span><br><span class="line">orq rax, $color//添加着色信息</span><br><span class="line">movq 0x10(rbx), rax//更新对象地址</span><br><span class="line">这里可以看出，在写屏障时会有额外四条指令（上述的testl、jnz、shlq和orq）</span><br></pre></td></tr></table></figure>
+
+<h2 id="5分代回收"><a href="#5分代回收" class="headerlink" title="5分代回收"></a>5分代回收</h2><p>基于对象生命周期管理，有弱分代理论假设和强分代理论假设两种。<br>1）弱分代理论假设：假定对象分配内存后很快使用，并且使用后很快就不再使用（内存可以释放）。<br>2）强分代理论假设：假定对象长期存活后，未来此类对象还将长期存活。<br>基于弱分代理论将内存管理划分成多个空间进行管理，基于强分代理论可以优化GC执行的效率，不回收识别的长期存活对象，从而加快GC 的执行效率。<br>值得一提的是，目前弱分代理论在高级语言中普遍得到证实和认可，但是对于强分代理论只在一些场景中适用。目前弱分代理论和强分代理论在JVM 中均有体现。</p>
+<p>所以将内存划分为多个区域，每个区域单独执行垃圾回收，能提供应用的吞吐量，减少暂停时间。通常将堆空间划分为两个，分别是新生代和老生代。新生代的垃圾回收称为Minor GC，老生代的垃圾回收称为Major GC。<br>通常新生代较小，老生代较大。在Minor GC执行时，对新生代中活跃对象进行标记，通常会从根集合开始跟踪遍历对象，同时为了加速新生代的遍历，记录了老生代到新生代对象的引用，称为引用集（记为RSet），将RSet也作为新生代的根跟踪标记活跃对象。Minor GC标记如下所示：</p>
+<img src="/2024/09/08/gen-zgc/17257734423602.jpg" class="">
+
+<p>RSet通常使用写屏障，即在老生代对象关联新生代对象时记录老生代到新生代的引用，放在RSet中。<br>Major GC会回收整个堆空间。可以执行一次Minor GC，然后在执行老生代回收。这样做的好处是：借助一次Minor GC，新生代对老生代的引用不会包含过时引用；同时可以清空新生代。Major GC执行示意图如下所示：</p>
+<img src="/2024/09/08/gen-zgc/17257734570006.jpg" class="">
+
+
+<p>分代回收存在Minor GC、Major GC，并且都采用了标记-压缩算法，由于Minor GC、Major GC和Mutator都可以并发执行，即都可以修改同一个对象。而Collector和Mutator之间的并发执行通过读屏障、写屏障和栈帧屏障实现。但是Minor GC和Major GC之间也必须考虑并发同步问题，否则也会出错。<br>例如在Major GC执行过程中，有触发了Minor GC，当Major GC已经标记了老生代的一个对象ObjOld，这个对象有一个指向新生代的对象（ObjNew）引用。但是Minor GC已经完成了对象的转移，此时ObjOld指向一个过时的对象（实际上对象已经被回收，这是一块非法内存），ObjOld在转移前必须更新指针才能保证GC正确性。<br>为此ZGC进行了以下设计：</p>
+<ul>
+<li>Minor GC执行过程中不能启动新的Minor GC和Major GC；</li>
+<li>Major GC执行过程中不能启动新的Major GC；</li>
+<li>Major GC执行过程中可以启动新的Minor GC；并且可以启动多轮Minor GC；</li>
+<li>Major GC执行会启动一个“特殊的”Minor GC，这个“特殊的”Minor GC不仅仅执行新生代回收，还会将新生代到老生代的引用记录在老生代的标记栈中；</li>
+<li>多个GC请求会进行排队，依次处理，最终决定执行Minor GC还是Major GC；</li>
+<li>Minor GC在转移过程，对象可以晋升到老生代，在晋升过程中需要更新RSet中对象的状态信息（例如Remap）；</li>
+<li>Minor GC执行转移过程中定义转发信息（保存对象转移前后的地址信息），并且在Minor GC标记执行完成对象完成重定位；</li>
+<li>Minor GC执行标记过程中会使用Major GC的转发信息，并且在Minor GC标记执行完成对象完成重定位；</li>
+<li>Major GC执行转移过程中定义转发信息，并且在Major GC标记执行完成对象完成重定位。</li>
+</ul>
+<h2 id="6分代ZGC的优势与不足"><a href="#6分代ZGC的优势与不足" class="headerlink" title="6分代ZGC的优势与不足"></a>6分代ZGC的优势与不足</h2><p>上面着重讨论了分代ZGC的关键技术，使得ZGC可以支持TB级内存，同时以非常短的停顿时间完成垃圾回收。但是ZGC也存在一些不足，统计数据表明ZGC的吞吐量较G1下降约2%，主要原因是ZGC采用了读写屏障，会带来额外的负担。同时需要指出的是，复杂的实现也会消耗额外的内存（即所谓的底噪比较高）。</p>
+<span id="more"></span>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/virtual-machine/" rel="tag"># virtual machine</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/09/07/mlir-rewriter/" rel="prev" title="第6章：操作匹配和重写(1)">
+                  <i class="fa fa-angle-left"></i> 第6章：操作匹配和重写(1)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/11/13/V8-StringConstructor/" rel="next" title="V8 StringConstructor实现机制">
+                  V8 StringConstructor实现机制 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"6602002d9b0c298f7acc637e3da8595b"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

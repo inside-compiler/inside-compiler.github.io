@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="基础数据类型ADT的基础类型有APInt、APSInt、APFloat和APFixedPoint。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ADT-任意精度类型介绍">
+<meta property="og:url" content="http://example.com/2024/02/02/ADT-AP-Types/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="基础数据类型ADT的基础类型有APInt、APSInt、APFloat和APFixedPoint。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-02-02T14:00:26.000Z">
+<meta property="article:modified_time" content="2025-06-15T05:58:00.471Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="LLVM,MLIR,ADT">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2024/02/02/ADT-AP-Types/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/02/02/ADT-AP-Types/","path":"2024/02/02/ADT-AP-Types/","title":"ADT-任意精度类型介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ADT-任意精度类型介绍 | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">基础数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">整数类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#APInt"><span class="nav-number">1.1.1.</span> <span class="nav-text">APInt</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#APInt%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">APInt示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#APSInt"><span class="nav-number">1.1.2.</span> <span class="nav-text">APSInt</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#APSInt%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">APSInt示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E6%95%B0%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">浮点数类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#APFloat%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">APFloat示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E9%95%BF%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">定长类型</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/02/02/ADT-AP-Types/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ADT-任意精度类型介绍 | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ADT-任意精度类型介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-02-02 22:00:26" itemprop="dateCreated datePublished" datetime="2024-02-02T22:00:26+08:00">2024-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="基础数据类型"><a href="#基础数据类型" class="headerlink" title="基础数据类型"></a>基础数据类型</h1><p>ADT的基础类型有APInt、APSInt、APFloat和APFixedPoint。</p>
+<span id="more"></span>
+
+<h2 id="整数类型"><a href="#整数类型" class="headerlink" title="整数类型"></a>整数类型</h2><p>ADT提供整数类型，包括APInt（Arbitrary Precision Integer）和APSInt（Arbitrary Precision Sign Integer）两种类型，分别是任意精度的整数、任意精度的符号整数。</p>
+<h3 id="APInt"><a href="#APInt" class="headerlink" title="APInt"></a>APInt</h3><p>APInt主要描述任意精度整数，类似于传统的unsinged、unsigned long、uint64_t。但是APInt还能表述任意位数的整数，例如3<br>、7、15，甚至超过64位精度的整数。</p>
+<p>APInt的设计思路为：使用一个字段bitwidth记录整数的位宽，使用另外一个字段U记录数据。bitwidth可以是任意宽度，U字段是一个联合结构体，当bitwdith小于等于64时，直接使用unit64_t类型存储原始数据；当bitwidth大于64时使用unit64_t类型的指针表示。APInt的数据结构如下所示：</p>
+<p>从APInt的设计中可以看出，任意整数都被转换成无符号数进行存储，例如-1在APInt中被表示为0XFFFF,FFFF,FFFF,FFFF。在APInt中判断整数是否是负数的依据是最高位是否为1，如果最高位为1，说明表示的值为负数。需要注意的是，APInt本身并不知道数字是否有无符号，依赖于使用者进行确定。对于加法来说，直接根据unit64_t类型直接相加，这里可能带来一个问题，对于unit64_t直接相加的结果可能溢出，所以APInt提供了一系列关于加法相关的API，加法API例如：</p>
+<ul>
+<li>operator+&#x3D;：两个APInt直接相加，由使用者确定结果该如何使用；</li>
+<li>sadd_ov：两个APInt直接相加，但是将结果视为符号数，如果结果的最高位和两个操作数只要的最高位不同，则说明发生了溢出；</li>
+<li>uadd_ov：两个APInt直接相加，但是将结果视为无符号数，如果结果大于其中一个操作数则说明发生了溢出；</li>
+<li>sadd_sat：调用sadd_ov，如果不发生溢出，直接返回；如果发生溢出，则返回最大值（结果为正数）或者最小值（结果为负数时）；</li>
+<li>uadd_sat：调用uadd_ov，如果不发生溢出，直接返回；如果发生溢出，则返回最大值。<br>所以开发者需要明确确定该属于哪一个API。</li>
+</ul>
+<p>APInt提供一些基础API，包括加减乘除、取模、左移、右移、取整、逻辑运算等基础操作；还提供了一些高级API，例如计算0的个数、1的个数、log等；还有和unit64_t、float、double、string转换的方法。</p>
+<h4 id="APInt示例"><a href="#APInt示例" class="headerlink" title="APInt示例"></a>APInt示例</h4><h3 id="APSInt"><a href="#APSInt" class="headerlink" title="APSInt"></a>APSInt</h3><p>由于APInt中统一使用unit64_t进行各种运算，对于符号数、无符号数需要开发者根据场景选择不同的API。这对使用者不太方便，为此ADT中封装了APSInt，其中明确指定了符号标记信息，从而在使用统一的API而不用刻意区分符号数、无符号数的API。</p>
+<h4 id="APSInt示例"><a href="#APSInt示例" class="headerlink" title="APSInt示例"></a>APSInt示例</h4><h2 id="浮点数类型"><a href="#浮点数类型" class="headerlink" title="浮点数类型"></a>浮点数类型</h2><p>APFloat主要描述任意浮点数，这里的任意并不是指和APInt一样任意位数的浮点数，任意指的是将所有可以支持的浮点数进行封装，例如float、double、bfloat、quard、x87、8e5m2等IEEE标准以及x87特殊浮点数等各种后端支持的浮点数类型。所有的浮点数可以通过三部分表示，这三部分是：符号数、指数和尾数三个部分。</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>指数最大值</th>
+<th>指数最小值</th>
+<th>符号位</th>
+<th>尾数位</th>
+<th>总位数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>half</td>
+<td>15</td>
+<td>-14</td>
+<td>1</td>
+<td>11</td>
+<td>16</td>
+</tr>
+<tr>
+<td>bfloat</td>
+<td>127</td>
+<td>-126</td>
+<td>1</td>
+<td>8</td>
+<td>16</td>
+</tr>
+<tr>
+<td>float</td>
+<td>127</td>
+<td>-126</td>
+<td>1</td>
+<td>24</td>
+<td>32</td>
+</tr>
+<tr>
+<td>double</td>
+<td>1023</td>
+<td>-1022</td>
+<td>1</td>
+<td>53</td>
+<td>64</td>
+</tr>
+<tr>
+<td>8E5M2</td>
+<td>15</td>
+<td>-14</td>
+<td>1</td>
+<td>3</td>
+<td>8</td>
+</tr>
+<tr>
+<td>8E5M2FNUZ</td>
+<td>15</td>
+<td>-15</td>
+<td>1</td>
+<td>3</td>
+<td>8</td>
+</tr>
+<tr>
+<td>8E4M3FN</td>
+<td>8</td>
+<td>-6</td>
+<td>1</td>
+<td>4</td>
+<td>8</td>
+</tr>
+<tr>
+<td>8E4M3FNUZ</td>
+<td>7</td>
+<td>-7</td>
+<td>1</td>
+<td>4</td>
+<td>8</td>
+</tr>
+<tr>
+<td>8E4M3B11FNUZ</td>
+<td>4</td>
+<td>-10</td>
+<td>1</td>
+<td>4</td>
+<td>8</td>
+</tr>
+<tr>
+<td>FloatTF32</td>
+<td>127</td>
+<td>-126</td>
+<td>1</td>
+<td>11</td>
+<td>19</td>
+</tr>
+<tr>
+<td>X87DoubleExtended</td>
+<td>16383</td>
+<td>-16382</td>
+<td>1</td>
+<td>64</td>
+<td>80</td>
+</tr>
+<tr>
+<td>PPCDoubleDouble</td>
+<td>-1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>128</td>
+</tr>
+<tr>
+<td>PPCDoubleDoubleLegacy</td>
+<td>1023</td>
+<td>-1022+53</td>
+<td>1</td>
+<td>53+53</td>
+<td>128</td>
+</tr>
+</tbody></table>
+<p>APFloat也提供了一些对应的API，包括加减乘除、比较、abs、比较操作等，以及提供了从float、double、string和APFloat的相互转化。</p>
+<h4 id="APFloat示例"><a href="#APFloat示例" class="headerlink" title="APFloat示例"></a>APFloat示例</h4><p>APFloat F1(-0.0);</p>
+<h2 id="定长类型"><a href="#定长类型" class="headerlink" title="定长类型"></a>定长类型</h2><p>APFixedPoint主要描述任意的定义浮点数，这里定长指的是浮点数的总位数固定，任意指的是提供不同类型的指数、小数偏移位（Scale缩放因此）可以存在不同的划分方式。该数据类型的标准在ISO&#x2F;IEC&#x2F;ANSI进行定义，主要用在嵌入式系统中。示例如下所示：</p>
+<p>例如 （16,7）</p>
+<p>17.99609375f 对应的二进制为0x11.FF。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sem = FixedPointSemantics(/*width=*/16, /*scale=*/7, /*isSigned=*/true,</span><br><span class="line">                             /*isSaturated=*/false,</span><br><span class="line">                             /*hasUnsignedPadding=*/false);</span><br><span class="line"></span><br><span class="line">APFixedPoint(val, sem);</span><br></pre></td></tr></table></figure>
+
+<p>0x8FF，实际上这个数字等于17.9921875 （并不等于Val17.99609375f ）。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LLVM-MLIR-ADT/" rel="tag"># LLVM,MLIR,ADT</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/02/02/ADT-Overview/" rel="prev" title="ADT-概述">
+                  <i class="fa fa-angle-left"></i> ADT-概述
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/02/02/llvm-codegen-overview/" rel="next" title="深入理解LLVM代码生成-概述">
+                  深入理解LLVM代码生成-概述 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"1c5d68845a167a6d4f131fd218915c30"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

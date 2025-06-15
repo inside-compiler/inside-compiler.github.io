@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta property="og:type" content="website">
+<meta property="og:title" content="Inside Compiler">
+<meta property="og:url" content="http://example.com/page/2/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="inside compiler">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/page/2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"page/2/index.html","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Inside Compiler</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/15/mlir-traits/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/06/15/mlir-traits/" class="post-title-link" itemprop="url">第4章（2）：特质</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-15 17:42:13" itemprop="dateCreated datePublished" datetime="2024-06-15T17:42:13+08:00">2024-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>特质（Trait）是一种抽象机制的实现，针对属性、操作和类型进行修饰，主要有两个作用。</p>
+<ul>
+<li>提供不同属性之间或不同操作之间或不同类型之间的通用机制的实现.</li>
+<li>对属性、操作和类型提供约束。<br>根据特质的用途，目前MLIR主要提供了以下四种特质。</li>
+<li>NativeTrait：提供一种方式，将C++的声明和定义封装为一个特质，然后用于TD中修饰对象。</li>
+<li>ParamNativeTrait：继承于NativeTrait，但是这个特质目的是定义一个嵌套特质。</li>
+<li>GenInternalTrait：并没有与之对应的C++代码，而是用于mlir-tblgen自动生成代码。</li>
+<li>PredTrait：包含谓词的特质，通过该特质可以访问对应的谓词。例如mlir-tblgen工具会为PredTrait自动生成验证的代码。它和谓词最大的区别是，谓词一般用于单实体约束，而PredTrait通常用于多实体约束。</li>
+</ul>
+<h3 id="4-2-1特质的使用"><a href="#4-2-1特质的使用" class="headerlink" title="4.2.1特质的使用"></a>4.2.1特质的使用</h3><p>特质作为一种基础能力，广泛用于MLIR中。可以通过操作的hasTrait成员函数判断操作是否存在相应的特质，例如操作为Op，特质为MyTrait，判断操作是否具有特质可以通过op-&gt;hasTrait<MyTrait>()完成。目前特质在MLIR中有三种典型的用途。</p>
+<ul>
+<li>mlir-tblgen工具自动生成代码过程，将操作定义的特质用作验证代码。例如特质SameVariadicOperandSize、AttrSizedOperandSegments等为操作中的操作数提供额外约束，mlir-tblgen工具会为操作生成额外的代码，用于约束操作数。这类特质一般继承于GenInternalTrait。</li>
+<li>定义的特质作为标记符，在MLIR框架框架中通常被作为一组操作具有的公共能力。例如在MLIR有一个特质IsolatedFromAbove，使用该特质修饰的操作，表示该操作和它之前的区域隔离，即该操作不能再使用它之前区域定义的变量。这类特质主要用于MLIR框架中公共代码，例如对于定义IsolatedFromAbove的操作，MLIR框架可以认为操作不能进行跨区域优化（例如代码提升），从而约束操作相关优化。</li>
+<li>定义特质用于运行时验证，此时要求特质除了定义外，还需要提供具体的验证实现。一般来说，特质需要实现verifyTrait接口。<br>注意：一般来说定义特质，仅用于表示操作具有这类属性，而不需要对特质中定义的成员函数提供具体的实现。原因是操作直接继承于特质模版，而特质中的成员函数不是虚函数，如果特质中成员函数提供具体的实现，所有操作都继承了特质中成员函数的实现都，所以一般特质较少提到具体的实现，更多是用于标记符。当然，通过模版继承的方式也可以让操作实现自己特有的功能，例如verifyTrait就是这样的例子，要求在模版中实现verifyTarit，操作中实现verifyTraitImpl，模版中verifyTrait调用操作的verifyTraitImpl，从而完成静态多态。具体的实现方法可以参考《深入理解LLVM：代码生成》中附录C关于奇异递归模版模式（CRTP）相关内容。</li>
+</ul>
+<h3 id="4-2-2自定义特质"><a href="#4-2-2自定义特质" class="headerlink" title="4.2.2自定义特质"></a>4.2.2自定义特质</h3><p>下面以自定义特质为例，介绍如何定义和使用特质。</p>
+<h4 id="1-定义特质"><a href="#1-定义特质" class="headerlink" title="1.定义特质"></a>1.定义特质</h4><p>由于特质的用途不同，特质的定义和实现也有所不同。上面提到的三种用途，对于前两种，只需要在TD文件中定义特质，而最后一种用途除了在TD定义外，还需要在C++文件中实现相关接口。</p>
+<h5 id="TD中定义特质"><a href="#TD中定义特质" class="headerlink" title="TD中定义特质"></a>TD中定义特质</h5><p>由于特质可以分为四类，其中NativeTrait、ParamNativeTrait和GenInternalTrait都可以作为特质定义的基类。假设定义两个特质如代码4-6所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def MyTrait : NativeOpTrait&lt;&quot;MyTrait&quot;&gt;;</span><br><span class="line"></span><br><span class="line">// 定义待参数特质，第一个参数为cpp类名，第二个参数为字符串列表</span><br><span class="line">class MyParametricTrait&lt;int prop&gt;  : NativeOpTrait&lt;&quot;MyParametricTrait&quot;, !cast&lt;string&gt;(!head(parameters))&gt;;</span><br></pre></td></tr></table></figure>
+
+<p>这样2个特质继承于NativeOpTrait，表示它们是针对操作的特质。</p>
+<h5 id="C-中实现特质"><a href="#C-中实现特质" class="headerlink" title="C++中实现特质"></a>C++中实现特质</h5><p>在TD定义特质后，使用mlir-tblgen生成记录然后再生成C++代码。由于前面中已经详细介绍了从TD到记录再到C++代码的生成过程，本节不再赘述这一过程。默认情况下开发者需要实现verifyTrait和foldTrait，当然可以在特质定义时在TD中决定是否生成相关函数签名，针对代码4-6需要实现的C++代码如代码4-7所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename ConcreteType&gt;</span><br><span class="line">class MyTrait : public OpTrait::TraitBase&lt;ConcreteType, MyTrait&gt; &#123;</span><br><span class="line">public:</span><br><span class="line">  //为具体操作重载verifyTrait函数，用于验证具体操作的正确性</span><br><span class="line">  static LogicalResult verifyTrait(Operation *op) &#123;</span><br><span class="line">    // ...</span><br><span class="line">  &#125;</span><br><span class="line">  //为具体操作重载foldTrait，用于执行操作折叠</span><br><span class="line">  static OpFoldResult foldTrait(Operation *op, ArrayRef&lt;Attribute&gt; operands) &#123;</span><br><span class="line">    // ...</span><br><span class="line">  &#125;</span><br><span class="line">  //不同foldTrait的签名</span><br><span class="line">  static LogicalResult foldTrait(Operation *op, ArrayRef&lt;Attribute&gt; operands, SmallVectorImpl&lt;OpFoldResult&gt; &amp;results) &#123;</span><br><span class="line">    // ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">//特质MyParametricTrait的实现</span><br><span class="line">template &lt;int Parameter&gt;</span><br><span class="line">class MyParametricTrait &#123;</span><br><span class="line">public:</span><br><span class="line">  template &lt;typename ConcreteType&gt;</span><br><span class="line">  class Impl : public TraitBase&lt;ConcreteType, Impl&gt; &#123;</span><br><span class="line">    //通过参数Impl可以自由访问模版参数</span><br><span class="line">    ...</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="2-关联特质"><a href="#2-关联特质" class="headerlink" title="2.关联特质"></a>2.关联特质</h4><p>特质定义好以后就可以使用。既可以在TD中直接使用特质，也可以在C++代码直接使用，下面给出TD和C++代码使用特质的示例。</p>
+<h5 id="TD中使用特质"><a href="#TD中使用特质" class="headerlink" title="TD中使用特质"></a>TD中使用特质</h5><p>TD中使用特质比较简单，操作、类型、属性等都有参数用于指定特质。例如定义一个操作OpWithInferTypeInterfaceOp，它有参数用于接受特质列表，假设它使用特质MyTrait和MyParametricTrait，示例代码如4-8所示。</p>
+<figure class="highlight plaintext"><figcaption><span>OpWithInferTypeInterfaceOp : Op<...[MyTrait, MyParametricTrait<10>]> &#123; ... &#125;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line"></span><br><span class="line">##### C++代码中直接使用</span><br><span class="line">在C++使用特质也非常，如果在C++定义属性、操作和类型时，它们也都可以继承模版类，而模版类中都包含一个。假定定义属性MyAttr、MyOp和MyType，并且使用特质MyTrait和MyParametricTrait，代码如4-9所示。</span><br><span class="line">```//定义属性MyAttr，其C++基类AttrBase包含一个变长的模版参数，用于接受多个特质</span><br><span class="line">class MyAttr : public Attribute::AttrBase&lt;MyAttr, ..., MyTrait, MyParametricTrait&lt;10&gt;::Impl&gt; &#123;&#125;;</span><br><span class="line">//定义操作MyOp，其C++基类Op包含一个变长的模版参数，用于接受多个特质</span><br><span class="line">class MyOp : public Op&lt;MyOp, MyTrait, MyParametricTrait&lt;10&gt;::Impl&gt; &#123;&#125;;</span><br><span class="line">//定义操作MyType，其C++基类TypeBase包含一个变长的模版参数，用于接受多个特质</span><br><span class="line">class MyType : public Type::TypeBase&lt;MyType, ..., MyTrait, MyParametricTrait&lt;10&gt;::Impl&gt; &#123;&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-3MLIR中常见特质概览-TODO"><a href="#4-2-3MLIR中常见特质概览-TODO" class="headerlink" title="4.2.3MLIR中常见特质概览(TODO)"></a>4.2.3MLIR中常见特质概览(TODO)</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/06/15/mlir-traits/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/15/mlir-constraint/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/06/15/mlir-constraint/" class="post-title-link" itemprop="url">第4章（1）：约束</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-15 17:03:29" itemprop="dateCreated datePublished" datetime="2024-06-15T17:03:29+08:00">2024-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在第2.3节提到的MLIR框架通过谓词、特质为操作、类型、属性提供约束，从而尽可能保证操作、属性、类型的正确性。接口借助于特质完成操作、属性、类型动态处理能力。本章主要介绍谓词、特质、接口的实现以及如何正确使用它们。</p>
+<h2 id="4-1-谓词"><a href="#4-1-谓词" class="headerlink" title="4.1 谓词"></a>4.1 谓词</h2><p>谓词（Pred）是对操作或方言使用的类型、属性等进行限制。由于谓词是在操作或者方言构建时使用，本书将其称为静态约束。在MLIR框架中还有约束（Constraint），它继承于谓词，并且约束对谓词增加了描述字段（Summary），可以为谓词提供更好的错误提示（由于约束在中文中含义过于笼统，本书统一使用谓词）。同时谓词之间可以通过And（交集-多个谓词同时满足）、Or（并-多个谓词至少满足一个）、Contact（链接-将多个谓词链接成一个谓词）、Negative（非-满足谓词取反）、SubstLeaves（替代-将谓词中部分进行替代为新的谓词）等进行组合谓词。<br>MLIR框架定义最基础（或原子）的谓词定义CPred，其定义如代码4-1所示。</p>
+<figure class="highlight plaintext"><figcaption><span>CPred<code pred> : Pred &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">  //谓词的真正实现代码，是cpp代码</span><br><span class="line">  code predExpr = &quot;(&quot; # pred # &quot;)&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CPred传递的类型为TD的code类型。在参数中可以传递一些占位符（Placeholder）和执行上下文进行关联，例如针对操作提供的占位符有$_builder、$_op、$_self等，这些占位符会被mlir-tblgen工具替换为合适的对象，例如$_builder会被替换为mlir::Builder（表示对象构造），$_op表示当前的操作，而$_self则会根据上下文进行替换为当前的对象。例如一个简单的谓词定义为CPred&lt;”::llvm::isa&lt;::mlir::F32&gt;”&gt;，其中::llvm::isa&lt;::mlir::F32&gt;对应的代码为llvm::isa<Float32Type>，其中F32表示Float32Type。<br>MLIR框架提供的谓词可以针对类型、属性、区域和后继。其中区域和后继约束作用于操作的IR结构，类型约束主要作用于操作的操作数和结果的定义，属性约束作用于操作中的属性。<br>在MLIR中，对每一种类型进行验证都会在TD中定义相应的类。例如要验证类型是否为Float16Type，TD定义F16，如代码4-2所示。</p>
+<figure class="highlight plaintext"><figcaption><span>Constraint<Pred pred, string desc </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">  // 谓词，描述约束</span><br><span class="line">  Pred predicate = pred;</span><br><span class="line">  // 描述信息</span><br><span class="line">  string summary = desc;</span><br><span class="line">&#125;</span><br><span class="line">//类型约束类</span><br><span class="line">class TypeConstraint&lt;Pred predicate, string summary = &quot;&quot;,</span><br><span class="line">                     string cppClassNameParam = &quot;::mlir::Type&quot;&gt; :</span><br><span class="line">    Constraint&lt;predicate, summary&gt; &#123;</span><br><span class="line">  // 限定生成的代码位于::mlir::Type命名空间内</span><br><span class="line">  string cppClassName = cppClassNameParam;</span><br><span class="line">&#125;</span><br><span class="line">//类型的约束，在TD中用Type表示</span><br><span class="line">class Type&lt;Pred condition, string descr = &quot;&quot;,</span><br><span class="line">           string cppClassName = &quot;::mlir::Type&quot;&gt; :</span><br><span class="line">    TypeConstraint&lt;condition, descr, cppClassName&gt; &#123;</span><br><span class="line">  string description = &quot;&quot;;</span><br><span class="line">  string builderCall = &quot;&quot;;//构造cpp中类型对象的函数</span><br><span class="line">&#125;</span><br><span class="line">class BuildableType&lt;code builder&gt; &#123;</span><br><span class="line">  code builderCall = builder;</span><br><span class="line">&#125;</span><br><span class="line">//在TD中可用的浮点约束数记录类，以F开头，后跟数字</span><br><span class="line">class F&lt;int width&gt;</span><br><span class="line">    : Type&lt;CPred&lt;&quot;$_self.isF&quot; # width # &quot;()&quot;&gt;,</span><br><span class="line">           width # &quot;-bit float&quot;, &quot;::mlir::FloatType&quot;&gt;,</span><br><span class="line">      BuildableType&lt;&quot;$_builder.getF&quot; # width # &quot;Type()&quot;&gt; &#123;</span><br><span class="line">  int bitwidth = width;</span><br><span class="line">&#125;</span><br><span class="line">//F16示例</span><br><span class="line">def F16 : F&lt;16&gt;;</span><br></pre></td></tr></table></figure>
+
+<p>使用mlir-tblgen工具将代码4-2翻译成记录，结果如代码4-3所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">def F16 &#123;// Constraint TypeConstraint Type BuildableType F，是F16的继承记录信息</span><br><span class="line">  Pred predicate = anonymous_35; //谓词对应的记录类</span><br><span class="line">  string summary = &quot;16-bit float&quot;;//简单描述</span><br><span class="line">  string cppClassName = &quot;::mlir::FloatType&quot;;//cpp类名</span><br><span class="line">  string description = &quot;&quot;;//描述信息</span><br><span class="line">  string builderCall = &quot;$_builder.getF16Type()&quot;;//对应的类型对象构造函数</span><br><span class="line">  int bitwidth = 16;//浮点数位宽</span><br><span class="line">&#125;</span><br><span class="line">//F16的谓词</span><br><span class="line">def anonymous_35 &#123;</span><br><span class="line">  //这个谓词判断当前类型是否为Float16类型</span><br><span class="line">  string predExpr = &quot;($_self.isF16())&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>例如在一个操作为MyOperation中可以直接类型约束F16、F32、F64等。在MyOperation有arguments和results，它们分别表示MyOperation的输入和输出。示例代码如如代码4-4所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def MyOpeation : MyDialect_Op&lt;&quot;MyOpeartion&quot;, [Pure]&gt; &#123;</span><br><span class="line">    //操作数有2个，分别是lhs和rhs，它们的类型约束分别为F16和F32</span><br><span class="line">    let arguments = (ins F16:$lhs, F32:$rhs);</span><br><span class="line">    //操作的返回值，类型约束为F64</span><br><span class="line">    let results = (outs F64:$result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>操作MyOperation的arguments表示操作有两个参数分别是lhs和rhs，它们的类型约束分别是F16和F32（F16和F32是MLIR社区定义的浮点数类型，它们是类型为::mlir::FloatType，并且宽度分别是16和32位）；results表示MyOperation的输出变量为result，类型约束为F64。<br>使用mlir-tblgen工具对代码4-4生成C++代码，结果类似于3.3节AddI操作。类似于AddI操作MyOperation对应的C++代码有两个函数：verifyInvariants和verifyInvariantsImpl，在函数verifyInvariantsImpl中会验证输入、输出类型的验证（验证不仅仅包含输入、输出类型，还包括区域个数、后继基本块信息、属性、谓词特质信息），验证规则是TD的定义得到。F16、F32、F64等类型验证规则是根据字段predExpr生成相应的代码，当然在生成代码时先将predExpr中$_self替换为MyOpertion中对应的参数。例如对于F16和F32生成的验证规则对应C++代码如代码4-5所示。</p>
+<figure class="highlight plaintext"><figcaption><span>::mlir::LogicalResult __mlir_ods_local_type_constraint_MyOperationOps0(</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">    ::mlir::Operation *op, ::mlir::Type type,</span><br><span class="line">    ::llvm::StringRef valueKind, unsigned valueIndex) &#123;</span><br><span class="line">  //判断类型是否是F16和F32，如果不是则报错</span><br><span class="line">  if (!(((type.isF16())) || ((type.isF32())))) &#123;</span><br><span class="line">    return op-&gt;emitOpError(valueKind) &lt;&lt; &quot; #&quot; &lt;&lt; valueIndex</span><br><span class="line">        &lt;&lt; &quot; must be 16-bit float or 32-bit float, but got &quot; &lt;&lt; type;</span><br><span class="line">  &#125;</span><br><span class="line">  return ::mlir::success();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>验证规则对应的代码__mlir_ods_local_type_constraint_MyOperationOps0在MyOperation中的verifyInvariantsImpl函数中被调用。<br>在构建操作对象后会验证对象，在创建操作对象后调用verifyInvariants，最终调用到具体的类型验证，即上述的__mlir_ods_local_type_constraint_MyOperationOps0代码，从而保证MyOperation对象输入和输出都是合法类型。除了mlir-tblgen工具自动生成的类型、属性、区域、后继等信息验证外。MLIR框架也支持开发者自己实现的验证函数（在操作定义时通过设置let hasVerifier &#x3D; 1，mlir-tblgen工具会生成verify的函数声明，实现需要开发者完成），参考第3.3节介绍。<br>注意：谓词和编译器中类型系统异同点有哪些？</p>
+<h3 id="4-1-1自定义谓词和使用"><a href="#4-1-1自定义谓词和使用" class="headerlink" title="4.1.1自定义谓词和使用"></a>4.1.1自定义谓词和使用</h3><p>MLIR社区定义了很多谓词，能满足大多数场景的使用。当开发者遇到一些需要额外约束的场景，开发者可以自定义谓词。例如我们要约束操作的操作数个数是否满足要求，可以定义谓词class CheckNumOperands<int i> : CPred&lt;”$_op.getNumOperands() &#x3D;&#x3D; “ # i&gt;。定义完成后就可以在TD中直接使用该谓词。而mlir-tblgen工具会将谓词转换为相应的代码。不过需要注意的是这个谓词是功能谓词，不是类型或者属性，可以通过PredTrait使用（4.2节介绍）。</p>
+<h3 id="4-1-2MLIR中常见谓词概览-（TODO）"><a href="#4-1-2MLIR中常见谓词概览-（TODO）" class="headerlink" title="4.1.2MLIR中常见谓词概览 （TODO）"></a>4.1.2MLIR中常见谓词概览 （TODO）</h3>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/06/15/mlir-constraint/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/19/MLIR-Dialect-Op-Type-Attr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/05/19/MLIR-Dialect-Op-Type-Attr/" class="post-title-link" itemprop="url">第3章：类型、属性、操作和方言详解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-05-19 16:47:37" itemprop="dateCreated datePublished" datetime="2024-05-19T16:47:37+08:00">2024-05-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="第3章类型、属性、操作和方言详解"><a href="#第3章类型、属性、操作和方言详解" class="headerlink" title="第3章类型、属性、操作和方言详解"></a>第3章类型、属性、操作和方言详解</h1><p>第2章简单介绍了MLIR基础知识，本章将详细介绍MLIR方言、操作、类型和属性相关知识。操作是MLIR中最基础的概念，变换、转换、分析等都是针对操作进行；类型用于修饰操作；属性可以修饰操作和方言，为操作和方言提供额外的信息；方言用于管理类型、属性和操作元数据（方言管理的类型和属性都是对象，原因是类型和属性都是全局唯一；但是操作可以多次示例化多个操作对象，所以方言并不直接管理操作对象，而是管理操作的元数据）。本章最后会介绍MLIR框架提供的MLIRContext，它用于管理各种方言，开发者通过MLIRContext可以访问方言、从而访问类型和属性以及操作元数据（并可以通过操作元数据示例化操作对象）。下面逐一介绍类型、属性、操作和方言。</p>
+<h2 id="3-1类型"><a href="#3-1类型" class="headerlink" title="3.1类型"></a>3.1类型</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/05/19/MLIR-Dialect-Op-Type-Attr/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/19/MLIR-Overview3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/05/19/MLIR-Overview3/" class="post-title-link" itemprop="url">第2章：MLIR-设计、实现与架构</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-05-19 16:25:08" itemprop="dateCreated datePublished" datetime="2024-05-19T16:25:08+08:00">2024-05-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="第2章-MLIR-设计、实现与架构"><a href="#第2章-MLIR-设计、实现与架构" class="headerlink" title="第2章 MLIR-设计、实现与架构"></a>第2章 MLIR-设计、实现与架构</h1><p>[TOC]</p>
+<p>MLIR作为一款编译器框架，提供了许多功能，包括：如何定义IR，包括操作、操作与之关联的类型、操作上的属性，并通过方言进行管理这些信息。另外MLIR框架中还包括针对IR中操作的优化，多级IR之间的转化，编译过程的中调试功能等功能。这些功能为MLIR的成功提供了基础。本章主要介绍MLIR涉及到的各种概念，主要包括：<br>1.MLIR的组成和结构，包括操作、类型、属性、方言以及IR结构等内容。<br>2.约束、特质和接口机制，保证IR的正确性以及提供公共能力。<br>3.操作匹配和重写机制，方便开发者针对操作实现优化。<br>4.Pass和Pass管理机制，方便开发者实现自己的优化。<br>5.文档生成、解析IR、打印IR、位置信息、多线程编译、Pass管理等。</p>
+<h2 id="2-1MLIR的组成与结构"><a href="#2-1MLIR的组成与结构" class="headerlink" title="2.1MLIR的组成与结构"></a>2.1MLIR的组成与结构</h2><p>MLIR的IR是一种编译器的中间表示，它非常类似于传统SSA形式的三地址码，同时它又引入了针对循环的多面体优化表述形式。通过MLIR框架可以完成代码表示、分析、优化、和高性能目标代码生成。</p>
+<h3 id="2-1-1操作"><a href="#2-1-1操作" class="headerlink" title="2.1.1操作"></a>2.1.1操作</h3><p>操作（Operation）是MLIR中最基础的单元，它的含义也非常丰富。例如用操作表述高级语义时，一个操作可以是函数定义、函数调用、缓存区分配、缓存区切片，甚至是进程创建等；用操作表述低级语义时，一个操作可以是目标架构无关的算术运算、目标架构相关的指令描述、寄存器信息、电路信息。MLIR相关工作基本上都是围绕操作展开的。<br>例如编译器开发者针对矩阵乘这样的运算将其抽象为一个操作，记为matmul。而matmul通常是通过多重循环进行实现（循环的层数依赖于输入的矩阵），可以将循环抽象为一个操作，记为for。那么matmul这个操作可以通过for操作进行实现，通过这个例子可以看出可以把信息处理过程的抽象为操作。<br>MLIR允许开发者定义自己的操作，甚至还可以对上游社区的操作进行扩展，从而大大提供了代码的表达能力。</p>
+<h3 id="2-1-2类型"><a href="#2-1-2类型" class="headerlink" title="2.1.2类型"></a>2.1.2类型</h3><p>操作总是有与之关联的数据类型（Type），例如matmul处理矩阵类型（记为Tensor），可以是二维、三位甚至是多维的。<br>例如可以通过Tensor&lt;2 x 3 x f32&gt;这样的形式来描述一个具体的类型，它表示2行3列的矩阵，每个矩阵元素类型为float类型。这样就可以使用matmul操作实现描述针对具体数据类型进行的矩阵乘，例如matmul(t1 : Tensor&lt;2 x 3 x f32&gt;, t2: Tensor&lt; 3 x 4 x f32&gt;)就表示输入为两个矩阵，分别是2行3列、3行4列的矩阵，相乘后得到2行4列的矩阵，记为Tensor&lt;2 x 4 x f32&gt;。整理得到这样的代码：<br>t3 : Tensor&lt;2 x 4 x f32&gt; &#x3D; matmul(t1 : Tensor&lt;2 x 3 x f32&gt;, t2: Tensor&lt; 3 x 4 x f32&gt;)<br>MLIR允许开发者定义自己的类型，用于描述操作要处理的信息。当然MLIR社区也定义了许多类型，例如RankedTensor、memRef、vector、integer等，开发者可以直接使用这些类型（这些类型称为内建类型，在第后文再次介绍）。</p>
+<h3 id="2-1-3属性"><a href="#2-1-3属性" class="headerlink" title="2.1.3属性"></a>2.1.3属性</h3><p>开发者在定义操作和类型时，可以为它们添加属性（Attribute），用于指定操作或者类型额外的信息。例如上面的类型Tensor&lt;2 x 3 x f32&gt;表示一个矩阵，但是在一些场景中矩阵中大多数元素为0，那么可以对矩阵进行压缩存储，一种自然的想法是为Tensor&lt;2 x 3 x f32&gt;增加一个属性，用于表示压缩格式（当然针对矩阵压缩有很多压缩方式，在第10.2.7节稀疏张量还会进一步介绍）。例如Tensor&lt;2 x 3 x f32, encoding&gt;这里的encoding就是各种不同的压缩方式。<br>同样地对于操作也可以添加属性用于增加操作的表达能力。</p>
+<h3 id="2-1-4方言"><a href="#2-1-4方言" class="headerlink" title="2.1.4方言"></a>2.1.4方言</h3><p>由于开发者可自由定义操作、以及与操作关联的类型、属性，每个操作操作都是一个IR。为了更好管理自定义IR，MLIR框架提供了方言机制（Dialect），对操作、属性、类型进行管理（方言有点类似容器或者命名空间的概念）。通过方言机制，可以将同一层次抽象出来的操作、类型和属性放在具体的方言中，这样的方言称为一层IR。<br>例如上面例子中的matmul操作，可以通过定义方言linalg（Liner algorithm，线性算法）方言将matmul等操作进行管理。而matmul操作展开后使用的循环用for操作表示，将for操作定义在affine（仿射）方言中。<br>由于不同的方言表达的功能是一样，抽象层次不同，因此它们提供的优化能力所有不同。MLIR框架是以操作为核心，MLIR提供变换（Transform）机制针对操作进行优化，例如matmul操作在输入数据很大时，可以尝试进行数据并行处理，此时一种经典的处理就是将矩阵进行分开进行乘法，这样针对matmul操作进行优化的过程称为变换。当基于高层方言的优化完成后，将将高层方言转换到低层方言。例如从方言linalg转换到方言affine，这一过程称为转换（Convert）。<br>另外MLIR框架利用了LLVM的代码生成的能力，因此可以认为MLIR中的IR基于LLVM IR之上，也就是说最后编译过程要从MLIR世界进入到LLVM IR世界，这一过程称为翻译（Translate），当翻译为LLVM IR后就可以基于LLVM进行优化和代码生成。<br>简单的说，转换是一个方言到另一个方言的处理（在MLIR中最场景的情况是从一个高级抽象的方言到一个相对低级抽象的方言，因此本书通常也使用降级（Lowering）替代转换，但需要注意的是转换也可以指从低级抽象方言到高级抽象方言的处理，这一个过程通常使用提升（Raising或者Lifting）替代转换），在基于MLIR编译器的开发过程通常需要定义一个或者多个方言，因此转换一般都是必须的；而变换通常针对优化，因此可以是选做；通常也需要从MLIR世界进入到别的世界（通常为LLVM IR，但也可以有其它的场景，例如从MLIR进入到源代码），所以翻译一般也是必须的。在MLIR变换和转换都是基于Pass和Pass管理实现，为了方便编译器的调试和开发，MLIR提供了mlir-opt这样的工具，方便处理变换和转换，MLIR还提供了mlir-translate方便处理翻译过程。<br>代码2-1是一段MLIR代码片段，展示了如何使用方言、操作、类型和属性等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">^block(%block_argument : !argument_type):</span><br><span class="line">&quot;dialect.further_operation&quot;() [ ^successor ]:() -&gt; ()</span><br><span class="line">^successor:</span><br><span class="line">  ...</span><br><span class="line">&#125;) : (!operand_type) -&gt; !result_type&lt;&quot;may_be_parameterized&quot;&gt;</span><br></pre></td></tr></table></figure>
+<p>这段IR的解释如代码2-2所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//其中dialect为方言名，operation为操作名</span><br><span class="line">//操作接受参数为value_use，并且操作有一个属性，名字为attribute_name</span><br><span class="line">//属性值为attr_kind&lt;&quot;value&quot;&gt;，属性的结构为key-value对形式</span><br><span class="line">//操作的输入类型即value_use的类型是operand_type</span><br><span class="line">//operand_type前面的！表示operand_type为自定义类型</span><br><span class="line">//操作的输出类型为result_type&lt;&quot;may_be_parameterized&quot;&gt;</span><br><span class="line">%value_definition = &quot;dialect.operation&quot;(%value_use)&#123; attribute_name = #attr_kind&lt;&quot;value&quot;&gt; &#125;(&#123; //  这里的&#123;定义了区域，下面整个区域是操作的payload</span><br><span class="line">//区域包含了基本块.其中基本块是^开头定义的</span><br><span class="line">//block表示基本块的名字，而block_argument是基本块参数，其类型为argument_type</span><br><span class="line">//在argument_type前面的！表示argument_type是开发者自定义的类型</span><br><span class="line">^block(%block_argument : !argument_type):</span><br><span class="line">//基本块又包括了操作，操作为dialect。further_operation</span><br><span class="line">//操作输入类型为void，输出类型为void</span><br><span class="line">//further_operation执行完后跳转到后继基本块successor</span><br><span class="line">&quot;dialect.further_operation&quot;() [ ^successor ]:() -&gt; ()</span><br><span class="line">//基本块successor的定义，它没有基本块参数</span><br><span class="line">^successor:</span><br><span class="line">//下面可能有更多的操作忽略</span><br><span class="line">  ...</span><br><span class="line">&#125;) : (!operand_type) -&gt; !result_type&lt;&quot;may_be_parameterized&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>总结来说使用dialect.operation定义值value_definition可以供其它代码引用。而operation本身可以内嵌更多的操作，且内嵌需要按照一定的格式组织。<br>当然，这只是操作使用简单的示例，实际操作还可能更为复杂，例如操作的返回值可以有多个，在操作上还可以附加调试信息等，将在第3章进一步介绍。</p>
+<h3 id="2-1-5IR结构"><a href="#2-1-5IR结构" class="headerlink" title="2.1.5IR结构"></a>2.1.5IR结构</h3><p>操作定了抽象的信息处理，但是操作本身还可以携带处理过程，表达处理过程的IR称为payload IR。MLIR的IR结构除了定义的操作外，还定义了区域（Region）和基本块（Block）2种基本单元。操作可以包含区域，区域又可以包含基本块，基本块又可以包含操作。这3种基本单元可以进行递归定义从而构成了IR的基础。如图2-1所示。</p>
+<img src="/2024/05/19/MLIR-Overview3/17161073744803.jpg" class="">
+
+
+<h4 id="区域"><a href="#区域" class="headerlink" title="区域"></a>区域</h4><p>在MLIR LangRef[ <a target="_blank" rel="noopener" href="https://mlir.llvm.org/docs/LangRef/%EF%BC%8C2024%E5%B9%B47%E6%9C%88%E8%AE%BF%E9%97%AE%E3%80%82]%E4%B8%AD%E6%8F%90%E5%88%B0%E5%8C%BA%E5%9F%9F%E6%98%AF%E7%94%B1%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%9C%AC%E5%9D%97%E7%BB%84%E6%88%90%EF%BC%8C%E5%9F%BA%E6%9C%AC%E5%9D%97%E4%B8%AD%E5%8C%85%E5%90%AB%E4%BA%86%E4%B8%80%E4%BA%9B%E6%93%8D%E4%BD%9C%E3%80%82%E4%BD%86%E6%98%AF%E5%B9%B6%E6%B2%A1%E6%9C%89%E8%BF%9B%E4%B8%80%E6%AD%A5%E6%98%8E%E7%A1%AE%E6%93%8D%E4%BD%9C%E6%89%A7%E8%A1%8C%E7%9A%84%E9%A1%BA%E5%BA%8F%E3%80%82%E5%8E%9F%E5%9B%A0%E6%98%AF%E5%8C%BA%E5%9F%9F%E6%98%AFMLIR%E4%B8%AD%E7%89%B9%E5%88%AB%E5%BC%95%E5%85%A5%E7%9A%84%E5%8D%95%E5%85%83%EF%BC%8C%E7%9B%AE%E5%89%8D%E6%9C%89SSACFG%E5%92%8CGraph%E4%B8%A4%E7%A7%8D%E5%8C%BA%E5%9F%9F[">https://mlir.llvm.org/docs/LangRef/，2024年7月访问。]中提到区域是由一些基本块组成，基本块中包含了一些操作。但是并没有进一步明确操作执行的顺序。原因是区域是MLIR中特别引入的单元，目前有SSACFG和Graph两种区域[</a> MLIR中引入了区域导致了一些问题，目前社区正在讨论引入一种新的区域，但是目前尚未形成最后结论。<a target="_blank" rel="noopener" href="https://discourse.llvm.org/t/rfc-region-based-control-flow-with-early-exits-in-mlir/76998%EF%BC%8C2024%E5%B9%B47%E6%9C%88%E8%AE%BF%E9%97%AE%E3%80%82]%E3%80%82%E5%85%B6%E4%B8%AD%EF%BC%9A">https://discourse.llvm.org/t/rfc-region-based-control-flow-with-early-exits-in-mlir/76998，2024年7月访问。]。其中：</a></p>
+<ul>
+<li>SSACFG区域：表示区域内的操作具有执行顺序约束，这个执行顺序和我们熟知的CFG完全相同。它可以由多个基本块组成。</li>
+<li>Graph区域：区域内的操作并没有执行顺序约束，甚至一个使用的变量可以出现在其定义之前。它只能包含一个块[ 特别提示这里是说块而非基本块，原因是块里面的操作执行顺序和传统意义上基本块内执行顺序执行不一致。]。<br>但为什么MLIR引入区域，而不是直接采用操作+基本块两层结构？主要原因是：<br>1)提升抽象级别，可以加快编译过程、指令提取或者并行性。<br>2)区域可以提供明确的边界，便于更合适做编译优化。还可以进行一些原来属于函数间的优化。<br>但引入区域后也带来了新的问题，例如计算变量的支配关系和传统的SSA有所不同，导致支配计算相对更为复杂（目前MLIR社区对于支配仅仅计算基本块之间的支配，要求基本块所在的区域是SSACFG，基本块在同一个区域内或者它们的父区域是一个）。<br>区域有一些特殊要求，例如区域定义不能有类型和属性。区域内定义的SSA值不能逃逸到区域外（即区域增加了作用域的概念）。</li>
+</ul>
+<h4 id="基本块"><a href="#基本块" class="headerlink" title="基本块"></a>基本块</h4><p>基本块是由一组连续执行的操作组成，和传统的基本块定义基本一致（这里不讨论图区域中的块），但和传统基本块最大的不同之处在于MLIR中基本块接受参数（Block Argument，基本块参数），而不使用PHI指令（PHI表示不同执行路径的聚合点，同一变量在不同路径被赋值，在聚合点需要引入PHI指令，将不同路径的赋值变量通过PHI指令重新聚合为一个变量，从而满足SSA要求）。<br>通过这样的设计，可以看出MLIR代码本质上是一个图，其中图中节点表示操作，边是操作或者基本块参数的结果（记为值），每个值都有对应的类型[ <a target="_blank" rel="noopener" href="https://mlir.llvm.org/docs/Tutorials/UnderstandingTheIRStructure/%EF%BC%8C">https://mlir.llvm.org/docs/Tutorials/UnderstandingTheIRStructure/，</a> 2024年7月访问。]。</p>
+<h3 id="2-1-6存储格式与使用"><a href="#2-1-6存储格式与使用" class="headerlink" title="2.1.6存储格式与使用"></a>2.1.6存储格式与使用</h3><p>MLIR在使用过程中提供了3种IR的描述方式，分别是：</p>
+<ul>
+<li>文本格式：使用字符串格式定义IR，MLIR框架支持读取和解析字符串，并生成相应的对象；</li>
+<li>内存格式：在MLIR编译时使用的内存对象；</li>
+<li>字节码格式：便于传输的压缩格式。<br>这3种格式可以相互转化。因此本质上可以认为MLIR以字符串形式定义IR，并且MLIR框架允许自定义IR的格式。<br>注意：为什么采用字符串形式？有哪些优势和不足？<br>采用字符串形式定义IR最大的优势可以支持非常灵活的IR，开发者完全可以自定义IR的格式。但是灵活性也带了另外的问题，如何保证IR的正确性？为了解决正确性问题，在MLIR中提供了约束、特质等功能用于保证IR的正确性。</li>
+</ul>
+<h2 id="2-2谓词、约束、特质和接口"><a href="#2-2谓词、约束、特质和接口" class="headerlink" title="2.2谓词、约束、特质和接口"></a>2.2谓词、约束、特质和接口</h2><p>MLIR使用谓词、约束、特质解决IR正确性保证。而正确性保证可以分为IR运行之前以及IR运行时两种，其中IR运行之前主要可以分为IR的解析和构建，因此可以IR正确性保证可以分为：</p>
+<ul>
+<li>IR解析：保证IR格式正确，当定义错误的IR格式，在IR解析阶段就能发现错误。</li>
+<li>IR构建：对于格式正确的IR可以构建出对象（例如操作、类型对象）。格式正确的IR但语义可能不符合IR的要求，MLIR框架应该有能力发现这样的错误。</li>
+<li>IR运行时：保证构建的IR对象在运行时仍然具有某些正确性语义，满足运行时的约束。<br>为此MLIR提供了3类约束，分别是：谓词（CPred）、约束（Constraint）和特质（Trait）。其中谓词和约束含义相同，MLIR社区未来会将谓词和约束进行合并，由于约束概念较为宽泛，本书统一使用谓词表示。总的来说，谓词用于IR运行之前，属于静态约束；而特质用于IR运行时，属于动态约束。我们将在第4章详细展开。<br>特质是通过继承实现，即每一个操作对象都直接继承于特质。但在实现场景中还有动态绑定的诉求，因此MLIR框架提供接口功能，用于满足对操作提供动态绑定的能力。</li>
+</ul>
+<h2 id="2-3匹配、重写和Pass以及PassManager"><a href="#2-3匹配、重写和Pass以及PassManager" class="headerlink" title="2.3匹配、重写和Pass以及PassManager"></a>2.3匹配、重写和Pass以及PassManager</h2><p>MLIR的设计围绕操作，提供其中一个重要的功能是以操作为核心的匹配、重写机制，这也是MLIR中转换的核心：针对操作进行匹配，并对可以匹配的操作提供重写新IR、替换或者删除旧IR的辅助能力。开发者只需要关注如何匹配操作（定义匹配规则），当操作匹配成功后关注如何替换操作、插入新的操作、删除旧操作等业务相关内容。<br>在MLIR提供的转换框架中还进一步提供如何递归匹配操作，详细内容将在第6章介绍。除此以外，MLIR中还有一个特殊的场景，即方言降级到另一个方言，这和一般针对操作的匹配&#x2F;重写机制有所不同，一般的匹配&#x2F;重写关注操作的处理，但会假定操作中相关的类型不发生变化。而方言降级除了关注操作的变化外，还会关注类型的变化，因此方言降级更为复杂。例如上面提到的matmul操作输入类型为Tensor，当从linalg方言降级到affine方言的for操作时，for操作接受的类型为memRef，所以针对matmul降级到for需要同时处理操作和类型。这对匹配&#x2F;重写机制提出了额外的要求，因为matmul降级过程中可以同时完成操作和类型的处理，但是matmul降级后，可能有其它的操作引用了matmul操作（即matmul是其它操作的操作数），此时就会有问题，引用的操作中操作数的类型发生了变化，再匹配引用操作就会失败，因此MLIR实现了独立的方言降级来解决这一问题，在第6章详细介绍。<br>另外要特别指出的是MLIR不仅仅提供多层IR，它还有一个特点“混合IR”，即多个层级IR可以共存。这在匹配&#x2F;重写机制和方言降级中需要特别考虑，从而保证正确性，因此MLIR在匹配&#x2F;重写实现了部分操作转换（允许多种方言共存）和全部操作转换（某一方言的操作应该全部降级）。<br>匹配&#x2F;重写机制通过Pass进行管理，而Pass又通过PassManager进行管理，PassManager也是MLIR的基础框架，我们将在第5章介绍如何定义Pass和PassManager，以及利用Pass机制实现一些公共优化能力。</p>
+<h2 id="2-4调试"><a href="#2-4调试" class="headerlink" title="2.4调试"></a>2.4调试</h2><p>MLIR提供了丰富的调试功能，这也是MLIR能够成功的原因之一，典型的调试方法有四种：<br>1.Pass运行前后IR打印机制：由于MLIR也有Pass，也提供了类似于LLVM针对Pass运行前后打印IR，方便开发者观察Pass运行的效果，主要选项有：print-before、print-after等，该功能依赖于Pass的插桩机制。<br>2.Action机制：提供细粒度的调试、追踪能力。Action机制主要解决MLIR框架中只支持IR单次处理的问题。例如开发者需要处理多次IR运行的情况，如果没有Action机制只能通过debug机制获得log后再进行文本分析，而通过Action机制可以方便实现这样的功能，目前在MLIR框架提供了Debug Counter的功能，可以指定Pass运行在满足一定条件下IR的情况（例如跳过多少次、执行多少次信息）。<br>3.Reduce机制：为了帮助Pass运行定位问题，MLIR社区提供了mlir-reduce工具，当Pass运行过程中如果发生错误（或者不符合预期）可以通过该高能工具将相关的IR片段抽取出来。mlir-reduce根据需要抽取的操作创建Reduction-Tree寻找最小IR片段。<br>错误捕捉回复机制：针对Pass运行提供了参数mlir-pass-pipeline-crash-reproducer用于捕捉出错的Pass以及Pass运行的IR，同时还会添加一些额外的信息，这些用于重放待执行的IR。</p>
+<h2 id="2-5表描述语言及工具"><a href="#2-5表描述语言及工具" class="headerlink" title="2.5表描述语言及工具"></a>2.5表描述语言及工具</h2><p>MLIR作为LLVM项目的一部分，也使用TD描述操作、类型、方言等。由于MLIR在使用TD时有自己含义，所以MLIR框架提供了mlir-tblgen工具，将TD文件转转化为C++相关代码，mlir-tblgen工具在转化过程也分为两步：将TD转化为记录（Record）和将记录转化为C++代码，生成的C++可以和MLIR框架配合使用。<br>这一过程非常类似于llvm-tblgen工具，在《深入理解LLVM：代码生成》中第6章介绍了TD文法、转化过程。虽然mlir-tblgen生成的最终代码和llvm-tblgen生成的代码目的有所不同，但是过程基本一致，本书不再详细介绍这一过程，在后续章节中如果使用TD到，会直接描述对应的C++代码，读者如果不熟悉这一过程可以参考《深入理解LLVM：代码生成》。</p>
+<h2 id="2-6其它公共功能"><a href="#2-6其它公共功能" class="headerlink" title="2.6其它公共功能"></a>2.6其它公共功能</h2><p>MLIR还提供位置追踪、文档生成、并行编译和Python交互等能力。</p>
+<h3 id="2-6-1位置追踪"><a href="#2-6-1位置追踪" class="headerlink" title="2.6.1位置追踪"></a>2.6.1位置追踪</h3><p>操作的来源（包括其原始位置和变换后的位置）在编译过程中应该非常容易被追溯。这是为了解决在复杂编译系统中缺乏透明性问题，因为在复杂编译系统中，很难了解最终表示是如何从原始表示中构造出来的完整过程。在编译一些安全性至关重要的应用程序时，尤为突出。在这类程序中，跟踪降级和优化步骤是软件认证程序的重要组成部分。当使用安全代码（例如加密协议，或对隐私敏感的数据进行操作的算法）进行操作时，编译器常会碰到看似冗余或繁琐的计算，这些计算会嵌在源程序的功能语义中，可以防止暴露关键信息或加强代码安全以防止网络攻击或故障攻击。而准确地将高层次信息传播到较低层的一个间接目标就是帮助实现安全且可追溯的编译过程。<br>MLIR提供了位置信息的表示形式，并鼓励在整个编译过程中处理和传播位置信息。位置信息可用于保留产生操作的源程序堆栈踪迹，以便生成调试信息。甚至通过位置信息可以让编译器产生诊断信息的方式变得标准化，并可用于各种测试工具。位置信息也是可扩展的，允许编译器引用它们自定义的位置跟踪系统，或者AST节点信息，也可以是LLVM风格的文件—行—列（File—Line—Column）信息，甚至是DWARF调试信息或其它高质量编译实现所需的信息。</p>
+<h3 id="2-6-2文档生成"><a href="#2-6-2文档生成" class="headerlink" title="2.6.2文档生成"></a>2.6.2文档生成</h3><p>框架提供了自动文档生成功能，只要方言、操作、接口等定义时在TD中都会有概述（summary）、详细描述（description）、参数（parameter）、返回值（result）等信息，MLIR提供的mlir-tblgen可以直接抓取这些信息自动生成文档。这是非常典型的代码即文档的敏捷开发模式。</p>
+<h3 id="2-6-3并行编译"><a href="#2-6-3并行编译" class="headerlink" title="2.6.3并行编译"></a>2.6.3并行编译</h3><p>MLIR的一个重要需求是可以利用多核计算机来加快编译速度。Pass管理器支持并发遍历和修改中间表示，这可以通过操作的“与上方隔离（isolated-from-above）”属性提供的不变量来实现（该属性要求静态单赋值中的Use—Def链无法跨越这些操作的区域使用，即打断了Use—Def链），因此具有这种行为的操作定义了可以并行处理的区域。<br>这个需求也是MLIR没有全局Use—Def链的原因。在MLIR使用全局对象的方式是通过符号表条目进行引用，使用常量则是通过操作关联的属性实现。<br>注意：虽然MLIR支持并行编译，但是在内部实现中仍然存在一些数据是多线程共享，因此在并行编译时任何需要锁，这导致了并行编译并没有完成实现线性扩展的能力[ <a target="_blank" rel="noopener" href="https://llvm.org/devmtg/2024-04/slides/Keynote/Amini-Niu-HowSlowIsMLIR.pdf%EF%BC%8C2024%E5%B9%B47%E6%9C%88%E8%AE%BF%E9%97%AE%E3%80%82]%E3%80%82">https://llvm.org/devmtg/2024-04/slides/Keynote/Amini-Niu-HowSlowIsMLIR.pdf，2024年7月访问。]。</a></p>
+<h3 id="2-6-4Python交互"><a href="#2-6-4Python交互" class="headerlink" title="2.6.4Python交互"></a>2.6.4Python交互</h3><p>为了方便Python开发者方便进行MLIR开发，在MLIR项目实现了Python和C++进行交互的模块，该模块依赖pybind11实现。关于Python和C++如何进行交互，以及如何使用pybind11，内容相对独立，本书不再进行介绍，读者可以参考其它文档学习。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/05/19/MLIR-Overview3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/13/MLIR-Overview2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/04/13/MLIR-Overview2/" class="post-title-link" itemprop="url">第1章：再谈MLIR</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-04-13 18:56:47" itemprop="dateCreated datePublished" datetime="2024-04-13T18:56:47+08:00">2024-04-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>10k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="第1章-绪论"><a href="#第1章-绪论" class="headerlink" title="第1章 绪论"></a>第1章 绪论</h1><p>MLIR是多层IR的简称，为什么需要引入MLIR？要回答这个问题需要先回顾一下当下编译器现状。我们知道LLVM最为最流行的编译基础设施，被广泛地用于各种编译器中，其中最主要的原因是LLVM框架提供了大量的基于LLVM IR的优化，同时可以将LLVM IR生成众多后端的机器码。LLVM提供的各种功能几乎都是围绕LLVM IR进行，对编译器的开发者来说非常方便，例如要实现一款新语言的编译，只需要将新语言编译成LLVM IR就可以复用LLVM的中端优化和后端代码生成能力，从而高效实现一款编译器。<br>然而随着时间的推移，我们可以发现两个问题：一方面，越来越多的语言接入LLVM IR之前都需要实现自己的前端IR，用于处理语言特殊的优化，以及方便将语言降级到LLVM IR。</p>
+<p>例如现在很多高级语言都会使用LLVM作为其中后段。如下所示：</p>
+<img src="/2024/04/13/MLIR-Overview2/17130062044277.jpg" class="">
+
+
+<p>每个语言都会有自己的AST，除了AST以外这些语言还得有自己的IR来做language- specific optimization，但是他们的IR最后往往都会接到同样的后端，比如说LLVM IR上来做代码生成，来在不同的硬件上运行。这些语言专属的IR被叫做Mid-Level IR，而且不通语言自己的IR的优化会有重复的部分，但很难互相复用代码，重复造了很多轮子。</p>
+<p>另一方面，越来越多的新硬件出现，它们通常用于专用领域，这些领域通常引入了DSL（Domain Specific Language，领域编程语言），而针对DSL的编译优化除了传统的编译优化知识外，通用还需要相关的领域知识，而这在LLVM IR通常很难表达和优化。例如TensorFlow系统其编译过程非常复杂，如下所示：</p>
+<img src="/2024/04/13/MLIR-Overview2/17130062461393.jpg" class="">
+<p>一个Tensorflow的Graph被执行可以有若干条途径，例如可以直接通过Tensorflow Executor来调用一些手写的op-kernel函数；或者将TensorFlow Graph转化到自己的XLA HLO，由XLA HLO再转化到LLVM IR上调用CPU、GPU或者转化到TPU IR生成TPU代码执行；对于特定的后端硬件，可以转化到TensorRT、或者像是nGraph这样的针对特殊硬件优化过的编译工具来跑；或者转化到TFLite格式进一步调用NNAPI来完成模型的推理。</p>
+<p>而MLIR则是希望通过引入多层IR的方式解决上面的两个问题：通过多层IR提供方便DSL接入，同时提供针对领域相关的优化。下面通过一个例子直接的看一下MLIR的基本概念。<br>假设我们有一个PyTorch的模型，代码如</p>
+<figure class="highlight plaintext"><figcaption><span>Linear(nn.Module):</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">def __init__(self): </span><br><span class="line">super(Linear, self).__init__()</span><br><span class="line">self.linear = nn.Linear(16, 10)</span><br><span class="line"></span><br><span class="line">def forward(self, x): </span><br><span class="line">return self.linear(x)</span><br><span class="line"></span><br><span class="line">linear = Linear()</span><br><span class="line">mlir_module = torch_mlir.compile(linear, torch.ones( 1, 16), output_type=torch_mlir.OutputType.TOSA)</span><br></pre></td></tr></table></figure>
+
+<p>代码使用Linear建立一个全联接的神经网络，这个神经网络做的事情非常简单，对于输入x计算得到y，而矩阵A和骗至b是网络模型参数，在神经网络训练时得到参数，在推理时使用参数。</p>
+<img src="/2024/04/13/MLIR-Overview2/17130063949094.jpg" class="">
+<p>而作为编译器开发者希望模型执行足够快，所以可以通过编译的方式生成可执行的代码，并在编译过程进行优化。向PyTorch这样的AI框架通常会将代码变成HIR和LIR，分别进行图优化和算子优化，然后再生成代码，正如图2提到的一样，除了编译和优化工作外需要框架考虑不同后端。<br>而MLIR则是期望通过设计多层IR表达不同层次的功能，让编译器都能重用这些IR，同时在MLIR中对这次不同层次的IR进行针对性的优化，从而达到最优性能。</p>
+<p>例如在MLIR设计了一个接入层IR（实际上称为方言）TOSA（Tensor Operation Set Architecture），可以将上述代码转换为TOSA方言表达的代码。</p>
+<figure class="highlight plaintext"><figcaption><span>@forward(%arg0: tensor<1x16xf32>) -> tensor<1x10xf32> &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">    %0 = &quot;tosa.const&quot;() &#123;value = dense&lt;&quot;0xC44B...&quot;&gt; : tensor&lt;1x16xf32&gt;&#125; : () -&gt; tensor&lt;1x16xf32&gt;</span><br><span class="line">    %1 = &quot;tosa.const&quot;() &#123;value = dense&lt;&quot;0xA270...&quot;&gt; : tensor&lt;1x10xf32&gt;&#125; : () -&gt; tensor&lt;1x10xf32&gt;</span><br><span class="line">    %2 = &quot;tosa.reshape&quot;(%arg0) &#123;new_shape = [1, 1, 16]&#125; : (tensor&lt;1x16xf32&gt;) -&gt; tensor&lt;1x16xf32&gt;</span><br><span class="line">    %3 = &quot;tosa.matmul&quot;(%2, %0) : (tensor&lt;1x1x16xf32&gt;, tensor&lt;1x16x10xf32&gt;) -&gt; tensor&lt;1x1x10xf32&gt;</span><br><span class="line">    %4 = &quot;tosa.reshape&quot;(%3) &#123;new_shape = [1, 10]&#125; : (tensor&lt;1x1x10xf32&gt;) -&gt; tensor&lt;1x10xf32&gt;</span><br><span class="line">    %5 = &quot;tosa.add&quot;(%4, %1) : (tensor&lt;1x10xf32&gt;, tensor&lt;1x10xf32&gt;) -&gt; tensor&lt;1x10xf32&gt;</span><br><span class="line">    return %5 : tensor</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>经过这样的处理后，则就将Python代码描述的模型转换为MLIR代码。这里先暂不对MLIR进行详细介绍，我们仅仅简单介绍如何阅读上述代码。</p>
+<ol>
+<li>形如“dialect.operation”的字符串表示，方言为dialenct，操作为operation，方言的目的管理Operation，而Operation表述一定功能。例如func.func表示func方言里面的func操作。上述整个代码表示定义一个func方言的func操作。</li>
+<li>形如“%arg0: tensor&lt;1x16xf32&gt;”，其中%arg0表示变量名，tensor&lt;1x16xf32&gt;表示类型。这里%arg0时参数，其类型为tensor类型，并且tesnor是二维的，第一维的长度为1，地二维的长度为16，tensor的数据元素类型为float32（简写f32）。</li>
+<li>形如“%0 &#x3D; &#x3D; “tosa.const”() {value &#x3D; dense&lt;”0xC44B…”&gt; : tensor&lt;1x16xf32&gt;} : () -&gt; tensor&lt;1x16xf32&gt;”中的%0表示临时定义的变量；它使用tosa方言的const操作生成，其中const操作可以接受属性参数，其属性为value，而value是dense类型，value的类型为tensor&lt;1x16xf32&gt;，%0的类型也是tensor&lt;1x16xf32&gt;。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//定义函数forward，接受参数arg0，参数类型为tensor&lt;1x16xf32&gt;，函数的返回类型为tensor&lt;1x10xf32&gt;</span><br><span class="line">func.func @forward(%arg0: tensor&lt;1x16xf32&gt;) -&gt; tensor&lt;1x10xf32&gt; &#123;</span><br><span class="line">//定义常量，类型为tensor&lt;1x16xf32&gt;。常量是通过tosa.const操作创建，tosa.const操作接受属性value，其中value类型为tensor&lt;1x16xf32&gt;</span><br><span class="line">    %0 = &quot;tosa.const&quot;() &#123;value = dense&lt;&quot;0xC44B...&quot;&gt; : tensor&lt;1x16xf32&gt;&#125; : () -&gt; tensor&lt;1x16xf32&gt;</span><br><span class="line">    //定义常量，类型为tensor&lt;1x10xf32&gt;。常量是通过tosa.const操作创建，tosa.const操作接受属性value，其中value类型为tensor&lt;1x10xf32&gt;</span><br><span class="line">    %1 = &quot;tosa.const&quot;() &#123;value = dense&lt;&quot;0xA270...&quot;&gt; : tensor&lt;1x10xf32&gt;&#125; : () -&gt; tensor&lt;1x10xf32&gt;</span><br><span class="line">    //对arg0进行类型进行变换，从类型tensor&lt;1x16xf32&gt;变成tensor&lt;1x1x16xf32&gt;</span><br><span class="line">    %2 = &quot;tosa.reshape&quot;(%arg0) &#123;new_shape = [1, 1, 16]&#125; : (tensor&lt;1x16xf32&gt;) -&gt; tensor&lt;1x1x16xf32&gt;</span><br><span class="line">    //对%2和%0进行类matmul计算，输入类型为tensor&lt;1x1x16xf32&gt;, tensor&lt;1x16x10xf32&gt;，输出类型为tensor&lt;1x1x10xf32&gt;</span><br><span class="line">    %3 = &quot;tosa.matmul&quot;(%2, %0) : (tensor&lt;1x1x16xf32&gt;, tensor&lt;1x16x10xf32&gt;) -&gt; tensor&lt;1x1x10xf32&gt;</span><br><span class="line">    //对%3进行类型进行变换，从类型tensor&lt;1x1x10xf32&gt;变成tensor&lt;1x10xf32&gt;</span><br><span class="line">    %4 = &quot;tosa.reshape&quot;(%3) &#123;new_shape = [1, 10]&#125; : (tensor&lt;1x1x10xf32&gt;) -&gt; tensor&lt;1x10xf32&gt;</span><br><span class="line">    //对%4和%1进行张量加法，输入和输出类型都是tensor&lt;1x10xf32&gt;</span><br><span class="line">    %5 = &quot;tosa.add&quot;(%4, %1) : (tensor&lt;1x10xf32&gt;, tensor&lt;1x10xf32&gt;) -&gt; tensor&lt;1x10xf32&gt;</span><br><span class="line">    //返回%5，类型为tensor&lt;1x10xf32&gt;</span><br><span class="line">    return %5 : tensor</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>从上面的代码注释可以看出，它是Python代码的另外一种实现。也可以说通过工具将Python代码实现成为以tosa方言中的操作。</p>
+<p>虽然通过TOSA方言可以将Python代码表示出来，但是TSOA中的操作非常高级，需要进一步降级，从而描述如何实现这些操作。例如matmul执行的是矩阵乘，而矩阵乘法需要通过循环实现。</p>
+<p>在MLIR社区中提供了linalg方言，它有一些命名操作（如matmul等）和通用操作（如generic），这个方言是承上启下的，接受上层代码的降级，同时提供一些优化功能，并降级到更为底层的方言。例如上面的代码可以进一步降级为使用linlag方言描述的代码，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#map0 = affine_map&lt;(d0, d1, d2) -&gt; (d0, d2)&gt;</span><br><span class="line">#map1 = affine_map&lt;(d0, d1, d2) -&gt; (d2, d1)&gt;</span><br><span class="line">#map2 = affine_map&lt;(d0, d1, d2) -&gt; (d0, d1)&gt; </span><br><span class="line">func.func @forward(%arg0: tensor&lt;1x16xf32&gt;) -&gt; tensor&lt;1x10xf32&gt; &#123;</span><br><span class="line">  %cst = arith.constant dense&lt;&quot;0xA270...&quot;&gt; : tensor&lt;1x10xf32&gt;</span><br><span class="line">    %cst_0 = arith.constant dense&lt;&quot;0xC44B...&quot;&gt; : tensor&lt;16x10xf32&gt;</span><br><span class="line">    %0 = linalg.generic &#123;indexing_maps = [#map0, #map1, #map2], iterator_types = [&quot;parallel&quot;, &quot;parallel&quot;, &quot;reduction&quot;]&#125; ins(%arg0, %cst_0 : tensor&lt;1x16xf32&gt;, tensor&lt;16x10xf32&gt;) outs(%cst : tensor&lt;1x10xf32&gt;)</span><br><span class="line">    &#123;</span><br><span class="line">        ^bb0(%arg1: f32, %arg2: f32, %arg3: f32):</span><br><span class="line">            %1 = arith.mulf %arg1, %arg2 : f32</span><br><span class="line">            %2 = arith.addf %arg3, %1 : f32</span><br><span class="line">            linalg.yield %2 : f32</span><br><span class="line">    &#125; -&gt; tensor&lt;1x10xf32&gt;</span><br><span class="line">    return %0 : tensor&lt;1x10xf32&gt;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>在上面的代码中有两类特殊的操作，分别是affine_map和linalg.generic。其中affine_map定义的仿射变换的定义域和值域，例如#map0 &#x3D; affine_map&lt;(d0, d1, d2) -&gt; (d0, d2)&gt;表示定义一个仿射变换，输入的定义域可以通过三个维度(d0, d1, d2)遍历得到，而输出的值域通过二个维度(d0, d2)遍历得到。<br>而linalg.eneric则是提供复杂的操作，它的输入有仿射变换规则、迭代方式，输入和输出参数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">//定义仿射变换</span><br><span class="line">#map0 = affine_map&lt;(d0, d1, d2) -&gt; (d0, d2)&gt;</span><br><span class="line">#map1 = affine_map&lt;(d0, d1, d2) -&gt; (d2, d1)&gt;</span><br><span class="line">#map2 = affine_map&lt;(d0, d1, d2) -&gt; (d0, d1)&gt; </span><br><span class="line">func.func @forward(%arg0: tensor&lt;1x16xf32&gt;) -&gt; tensor&lt;1x10xf32&gt; &#123;</span><br><span class="line">    %cst = arith.constant dense&lt;&quot;0xA270...&quot;&gt; : tensor&lt;1x10xf32&gt;</span><br><span class="line">    %cst_0 = arith.constant dense&lt;&quot;0xC44B...&quot;&gt; : tensor&lt;16x10xf32&gt;</span><br><span class="line">    //定义linalg的通用操作，这个操作接受属性indexing_map、iterator_types，描述的针对输入参数%args0和%cst_0进行迭代，生成输出%cst</span><br><span class="line">    %0 = linalg.generic &#123;indexing_maps = [#map0, #map1, #map2], iterator_types = [&quot;parallel&quot;, &quot;parallel&quot;, &quot;reduction&quot;]&#125; ins(%arg0, %cst_0 : tensor&lt;1x16xf32&gt;, tensor&lt;16x10xf32&gt;) outs(%cst : tensor&lt;1x10xf32&gt;)</span><br><span class="line">    &#123;</span><br><span class="line">        //这是一个基本块，和一般的SSA不同，这里基本块有参数arg1、arg2和args3.</span><br><span class="line">        ^bb0(%arg1: f32, %arg2: f32, %arg3: f32):</span><br><span class="line">            // arg1和arg2相乘，在arg3相加得到输出。</span><br><span class="line">            %1 = arith.mulf %arg1, %arg2 : f32</span><br><span class="line">            %2 = arith.addf %arg3, %1 : f32</span><br><span class="line">            linalg.yield %2 : f32</span><br><span class="line">    &#125; -&gt; tensor&lt;1x10xf32&gt;</span><br><span class="line">    return %0 : tensor&lt;1x10xf32&gt;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>注意：这里仅仅是演示其中一种降级方法，在这个方法中可以看到乘法和加法都放在基本块中。当然还可以先乘后加。如何降级是非常复杂的，在后续文章会详细介绍。</p>
+<p>同理linalg中的操作非常复杂，generic仅仅描述了它的功能，具体的实现仍然不确定，所以进一步使用仿射进行描述其真实的实现，结果如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">memref.global &quot;private&quot; constant @__constant_16x10xf32 : memref&lt;16x10xf32&gt; = dense&lt;&quot;0xC44B...&quot;&gt;</span><br><span class="line">memref.global &quot;private&quot; constant @__constant_1x10xf32 : memref&lt;1x10xf32&gt; = dense&lt;&quot;0xA270...&quot;&gt;</span><br><span class="line">func.func @forward(%arg0: memref&lt;1x16xf32&gt;, %arg1: memref&lt;1x10xf32&gt;) &#123;</span><br><span class="line">    %0 = memref.get_global @__constant_1x10xf32 : memref&lt;1x10xf32&gt;</span><br><span class="line">    %1 = memref.get_global @__constant_16x10xf32 : memref&lt;16x10xf32&gt;</span><br><span class="line">    memref.copy %0, %arg1 : memref&lt;1x10xf32&gt; to memref&lt;1x10xf32&gt;</span><br><span class="line">    affine.for %arg2 = 0 to 10 &#123;</span><br><span class="line">        affine.for %arg3 = 0 to 16 &#123;</span><br><span class="line">            %2 = affine.load %arg0[0, %arg3] : memref&lt;1x16xf32&gt;</span><br><span class="line">            %3 = affine.load %1[%arg3, %arg2] : memref&lt;16x10xf32&gt;</span><br><span class="line">            %4 = affine.load %arg1[0, %arg2] : memref&lt;1x10xf32&gt;</span><br><span class="line">            %5 = arith.mulf %2, %3 : f32</span><br><span class="line">            %6 = arith.addf %4, %5 : f32</span><br><span class="line">            affine.store %6, %arg1[0, %arg2] : memref&lt;1x10xf32&gt;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个代码片段中可以看出其实现已经非常接近我们传统的代码，例如memref方言描述的数据的内存布局，affine.for表示的是一个循环，affine.load和affine.store描述的是如何从memref加载、写数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">//定义个全局常量，并提供了初始化的数据</span><br><span class="line">memref.global &quot;private&quot; constant @__constant_16x10xf32 : memref&lt;16x10xf32&gt; = dense&lt;&quot;0xC44B...&quot;&gt;</span><br><span class="line">memref.global &quot;private&quot; constant @__constant_1x10xf32 : memref&lt;1x10xf32&gt; = dense&lt;&quot;0xA270...&quot;&gt;</span><br><span class="line">func.func @forward(%arg0: memref&lt;1x16xf32&gt;, %arg1: memref&lt;1x10xf32&gt;) &#123;</span><br><span class="line">    %0 = memref.get_global @__constant_1x10xf32 : memref&lt;1x10xf32&gt;</span><br><span class="line">    %1 = memref.get_global @__constant_16x10xf32 : memref&lt;16x10xf32&gt;</span><br><span class="line">    // 为arg1赋初值，使用copy操作进行</span><br><span class="line">    memref.copy %0, %arg1 : memref&lt;1x10xf32&gt; to memref&lt;1x10xf32&gt;</span><br><span class="line">    //定义外层循环，循环空间从0到10，步长默认为1</span><br><span class="line">    affine.for %arg2 = 0 to 10 &#123;</span><br><span class="line">         //定义内层循环，循环空间从0到16，步长默认为1</span><br><span class="line">        affine.for %arg3 = 0 to 16 &#123;</span><br><span class="line">            %2 = affine.load %arg0[0, %arg3] : memref&lt;1x16xf32&gt;</span><br><span class="line">            %3 = affine.load %1[%arg3, %arg2] : memref&lt;16x10xf32&gt;</span><br><span class="line">            %4 = affine.load %arg1[0, %arg2] : memref&lt;1x10xf32&gt;</span><br><span class="line">            %5 = arith.mulf %2, %3 : f32</span><br><span class="line">            %6 = arith.addf %4, %5 : f32</span><br><span class="line">            affine.store %6, %arg1[0, %arg2] : memref&lt;1x10xf32&gt;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用Affine方言描述的代码就非常容易转换到LLVM IR，得到的LLVM IR如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">    ... ...</span><br><span class="line">    ^bb1(%20: i64): // 2 preds: ^bb0, ^bb4</span><br><span class="line">    %21 = llvm.icmp &quot;slt&quot; %20, %5 : i64</span><br><span class="line">    llvm.cond_br %21, ^bb2(%4 : i64),</span><br><span class="line">    ^bb5 ^bb2(%22: i64): // 2 preds: ^bb1, ^bb3</span><br><span class="line">    %23 = llvm.icmp &quot;slt&quot; %22, %7 : i64</span><br><span class="line">    llvm.cond_br %23, ^bb3, ^bb4</span><br><span class="line">    ^bb3: // pred: ^bb2</span><br><span class="line">    ... ...</span><br><span class="line">    %46 = llvm.intr.masked.load %45, %36, %0 &#123;alignment = 4 : i32&#125; : (!llvm.ptr&lt;vector&lt;2xf32&gt;&gt;, vector&lt;2xi1&gt;, vector&lt;2xf32&gt;) -&gt; vector&lt;2xf32&gt;</span><br><span class="line">    %47 = llvm.fmul %30, %41 : vector&lt;2xf32&gt;</span><br><span class="line">    %48 = llvm.fadd %46, %47 : vector&lt;2xf32&gt; llvm.intr.masked.store %48, %45, %36 &#123;alignment = 4 : i32&#125; : vector&lt;2xf32&gt;, vector&lt;2xi1&gt; into !llvm.ptr&lt;vector&lt;2xf32&gt;&gt;</span><br><span class="line">    %49 = llvm.add %22, %8 : i64 llvm.br ^bb2(%49 : i64)</span><br><span class="line">    ^bb4: // pred: ^bb2</span><br><span class="line">    %50 = llvm.add %20, %6 : i64</span><br><span class="line">    llvm.br ^bb1(%50 : i64)</span><br><span class="line">    ^bb5: // pred: ^bb1</span><br><span class="line">    llvm.return</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>然后再利用LLVM可以将LLVM IR进行优化以及针对目标架构完成代码生成。<br>具体转换过程可参考：<br><a target="_blank" rel="noopener" href="https://file.elecfans.com/web2/M00/7E/0E/poYBAGOC6bKAZAQyADt7O8jLZCE607.pdf">https://file.elecfans.com/web2/M00/7E/0E/poYBAGOC6bKAZAQyADt7O8jLZCE607.pdf</a></p>
+<p>通过这个例子，我们可以进一步得到如下信息：</p>
+<ol>
+<li>MLIR通过多方言的形式，逐步将抽象、高层的代码降级到底层代码。</li>
+<li>降级过程中使用了一个非常便于优化的方言，例如Affine是多面体编译的抽象，非常方便进行循环相关的优化</li>
+<li>在降级过程并不唯一，开发者可以根据自己的代码意图选择合适的降级路线。从而实现代码性能最优。</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/04/13/MLIR-Overview2/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/16/ADT-Algorithm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/03/16/ADT-Algorithm/" class="post-title-link" itemprop="url">ADT-算法</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-16 18:41:50" itemprop="dateCreated datePublished" datetime="2024-03-16T18:41:50+08:00">2024-03-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>570</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>ADT提供了一些算法，主要用于补充std缺失部分，用于简化开发，最为典型的算法是zip和enumerate</p>
+<h1 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h1><figure class="highlight plaintext"><figcaption><span>v1 </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">  std::vector&lt;int&gt; v2 = &#123;1, 4, 3, 6&#125;;</span><br><span class="line">  EXPECT_TRUE(all_of_zip(v1, v2, [](int v1, int v2) &#123; return v1 &lt;= v2; &#125;));</span><br><span class="line">  EXPECT_FALSE(all_of_zip(v1, v2, [](int L, int R) &#123; return L &lt; R; &#125;));</span><br></pre></td></tr></table></figure>
+
+<h1 id="enumerate"><a href="#enumerate" class="headerlink" title="enumerate"></a>enumerate</h1><p>遍历容器的元素，</p>
+<figure class="highlight plaintext"><figcaption><span>foo </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  for (auto X : llvm::enumerate(foo)) &#123;</span><br><span class="line">    ++X.value();</span><br><span class="line">  &#125;</span><br><span class="line">  EXPECT_THAT(foo, ElementsAre(&#x27;b&#x27;, &#x27;c&#x27;, &#x27;d&#x27;));</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  std::vector&lt;PairType&gt; Results;</span><br><span class="line"></span><br><span class="line">  for (auto X : llvm::enumerate(std::vector&lt;int&gt;&#123;1, 2, 3&#125;)) &#123;</span><br><span class="line">    Results.emplace_back(X.index(), X.value());</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/16/ADT-Algorithm/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/16/ADT-StringBit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/03/16/ADT-StringBit/" class="post-title-link" itemprop="url">ADT-String和Bit容器</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-16 18:31:40" itemprop="dateCreated datePublished" datetime="2024-03-16T18:31:40+08:00">2024-03-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="String"><a href="#String" class="headerlink" title="String"></a>String</h1><p>ADT中提供的字符串有一个典型的特点，通常不分配内存，而是公用内存。因此在使用ADT中相关的String类型，需要特别小心。</p>
+<h2 id="StringRef"><a href="#StringRef" class="headerlink" title="StringRef"></a>StringRef</h2><p>ADT中提供的字符串类，这个类并不会针对的分配内存，它包含一个const char*和length分别表示指向的对字符串和长度。它和原始的字符串共享内存，因此StringRef大多数操作都是Immutable，即操作都是返回原始字符串的一个Copy，例如front（）返回字符串的第一个字符的Copy，而不是原始字符串的引用；再例如Copy会重新生成分配一块内存，然后再构造StringRef。</p>
+<p>另外ADT还提供了StringLiteral，它继承于StringRef，它接受一个字符串字面量作为输入，主要目的为了避免全局String对象的构造。而基于StringLiteralADT还提供了StringSwitch的功能，类似于swith-case，实现case功能，但case仅仅是将满足匹配的情况下将结果设置为最后的输入参数。</p>
+<h2 id="SmallString"><a href="#SmallString" class="headerlink" title="SmallString"></a>SmallString</h2><p>SmallString本身继承于SmallVector，也就是它使用SmallVector作为字符串真正的存储，同时它又提供了一些字符串的API，例如find、compare、startswith等，这个字符串相关的API实际上会将SmallVector的底层存储（实际是char*）作为StringRef的输入，所以这些API在使用时都先构造一个StringRef，然后调用StringRef中相关的API。</p>
+<h2 id="Twine"><a href="#Twine" class="headerlink" title="Twine"></a>Twine</h2><p>是ADT中一个特殊的字符串类，它的主要目的是方便多个字符串（或者数字）连接成一个字符串，它在设计时并不会直接连接两个输入，而是通过树的形式将两个输入转化为树的左右子树。因此Twine不会真正的分配内存，可以直接构造Twine对象，也可以将多个Twine对象通过concat形成一颗Twine树，在执行toStringRef后才会将树中所有的节点示例化一个SmallString的对象，并返回为StringRef。</p>
+<h2 id="std中的string"><a href="#std中的string" class="headerlink" title="std中的string"></a>std中的string</h2><p>在底层采用了char*作为存储结构，提供了一系列的API包括增删改查等。实际上ADT中提供的string相关类都是对std中string的增强，用于特殊场景。例如StringRef只是共享字符串，所以方便表示一个字串等。</p>
+<h1 id="位容器"><a href="#位容器" class="headerlink" title="位容器"></a>位容器</h1><p>ADT中Bit相关类型更多的是对std的补充。</p>
+<h2 id="BitVector-SmallBitVector"><a href="#BitVector-SmallBitVector" class="headerlink" title="BitVector&#x2F;SmallBitVector"></a>BitVector&#x2F;SmallBitVector</h2><p>使用SmallVector<uintptr_t>作为底层存储结构，用于提供位操作。<br>SmallBitVector则是使用一个unitptr_t作为底层存储，因此它只能管理32位或者64位（依赖于OS），它也提供了一系列的API，在实现时将unintptr_x直接转换位SmallVector使用，从而直接使用BitVector</p>
+<h2 id="SpareBitVector"><a href="#SpareBitVector" class="headerlink" title="SpareBitVector"></a>SpareBitVector</h2><p>ADT中实现的一个稀疏位操作，它的目的是尽可能的只存储非零的位信息。适合于位数据特别大的场景。它在实现时采用两层结构，第一层基于链表，第二层基于数组，数据长度固定（默认位128位），表示一个元素。然后链表将所有的元素链接起来，它的结构如下所示：</p>
+
+
+
+<p>使用链表的好处非常方便添加或者删除位信息。当然对于一些位操作，例如intersect、union则较为复杂，需要处理两层结构。</p>
+<p>此外ADT在还提供了一系列的位操作，主要用于替代std中操作，例如bitfield等，主要原因时std中并未支持一些API。</p>
+<h2 id="PackedVector"><a href="#PackedVector" class="headerlink" title="PackedVector"></a>PackedVector</h2><p>借助BitVector实现了一个压缩Vector。它除了能接受push_back接口外还可以接受“！”、“｜”位运算操作。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/16/ADT-StringBit/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/16/ADT-Graph/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/03/16/ADT-Graph/" class="post-title-link" itemprop="url">ADT中图和迭代器介绍</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-16 18:21:20" itemprop="dateCreated datePublished" datetime="2024-03-16T18:21:20+08:00">2024-03-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="图"><a href="#图" class="headerlink" title="图"></a>图</h1><p>ADT中定义了一个有向图结构，LLVM中一些图会基于它进行实现。</p>
+<h2 id="DirectedGraph"><a href="#DirectedGraph" class="headerlink" title="DirectedGraph"></a>DirectedGraph</h2><p>ADT中提供的一个有向图基类，这个类描述图的三个信息：节点、边和图。以及提供了构图的基本API（如connect）以及findNode、findEdgesTo、findIncomingEdgesToNode等图中常用的操作。<br>但是这个类不包含节点数据信息，所以在使用时需要对Node进行扩展。</p>
+<h1 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h1><p>ADT提供了一系列的迭代器，用于遍历图或者寻找子图。</p>
+<h2 id="图特质"><a href="#图特质" class="headerlink" title="图特质"></a>图特质</h2><p>最常见的图遍历方式为深度遍历和宽度遍历，深度遍历一般需要借助于栈实现，宽度遍历一般需要借助队列实现。ADT中提供df_iterator、bf_itertor等辅助迭代器用于遍历图，使用df_iterator、bf_itertor要求被遍历的对象继承GraphTraits，并实现一些基础的API，包括识别根节点，子节点迭代器、访问子节点。</p>
+<figure class="highlight plaintext"><figcaption><span>NodeRef           - 图中节点类型</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> typedef ChildIteratorType - 迭代器定义如何迭代图的子节点</span><br><span class="line"> static NodeRef getEntryNode(const GraphType &amp;) - 图的根节点</span><br><span class="line"> static ChildIteratorType child_begin(NodeRef) - 节点的第一个子节点</span><br><span class="line"> static ChildIteratorType child_end  (NodeRef) - 节点的最后一个子节点</span><br></pre></td></tr></table></figure>
+<p> <br>GraphTraits除了上述的接口外，还有一些使用其他场景的接口，例如适用于获取所有节点、边识别的情况。但是对于df_iterator、bf_itertor、po_iterator、scc_iterator迭代器的只需要实现上面的定义即可。</p>
+<h2 id="df-iterator"><a href="#df-iterator" class="headerlink" title="df_iterator"></a>df_iterator</h2><p>ADT中df_iterator包含了两个字段，分别是Visited和VisitStack，它们分别是SmallPtrSet和std::vector类型，其中Visited表示已经访问的节点，VisitStack表示待访问的节点。df_iterator还提供了一个特别的实现，即Visited可以使用外部存储空间，不需要df_iterator分配。所以提供了df_ext_iterator用于标识Visited使用外部空间的情况。除了df_iterator、df_ext_iterator外还提供了idf_iterator、idf_ext_iterator用于逆序访问图的节点。</p>
+<h2 id="bf-iterator"><a href="#bf-iterator" class="headerlink" title="bf_iterator"></a>bf_iterator</h2><p>类似于df_iterator，bf_iterator也包括三个字段，分别是Visited、VisitQueue和Level，它们分别是SmallPtrSet、std::queue和unsigned类型，其中Visited表示已经访问的节点，VisitStack表示待访问的节点、Level表示图的访问层次。</p>
+<h2 id="po-iterator"><a href="#po-iterator" class="headerlink" title="po_iterator"></a>po_iterator</h2><p>df_iterator是默认的preorder顺序访问图，为了顺利对图进行后续遍历，提供了po_iterator。它的实现和df_itertator非常类似，区别在于构建po_iterator时先构造VisitStack，在遍历时依次从VisitStack的尾部获取元素，从而实现后序遍历。<br>例外基于po_ext_iterator可以提供更方便的功能，即当重启后序遍历时，外部空间中Visited中存放的节点表示不需要再次访问了。<br>另外开发者可以继承po_iterator_storage，实现自己的insertEdge、finishPostorder，这两个API可以位PreOrder、PostOrder记录一些信息。<br>基于po_iterator可以非常方便的实现ReversePostOrderTraversal，它是po_iterator中VisitStack的逆序访问。</p>
+<h2 id="scc-iterator"><a href="#scc-iterator" class="headerlink" title="scc_iterator"></a>scc_iterator</h2><p>获取强连通分量。从图中依次获取强连通分量，该算法是基于Tarjan的DFS实现。在图遍历是也只需要子节点迭代器。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/16/ADT-Graph/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/16/ADT-Set/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/03/16/ADT-Set/" class="post-title-link" itemprop="url">ADT中Set容器介绍</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-16 17:21:27" itemprop="dateCreated datePublished" datetime="2024-03-16T17:21:27+08:00">2024-03-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="LLVM中Set"><a href="#LLVM中Set" class="headerlink" title="LLVM中Set"></a>LLVM中Set</h1><p>ADT中提供了一系列Set相关的集合，由于很多Set是基于Map，建议读者先阅读Map容器。</p>
+<h2 id="DenseSet、SmallDenseSet"><a href="#DenseSet、SmallDenseSet" class="headerlink" title="DenseSet、SmallDenseSet"></a>DenseSet、SmallDenseSet</h2><p>DenseSet基于DenseMap实现的Set，对于DenseMap来说，Set中元素作为Map的Key，Map的Value是一个固定Empty值。同样地SmallDenseSet是基于SmallDenseMap实现的Set（默认空间更小，只有4个元素）。</p>
+<h2 id="SmallSet"><a href="#SmallSet" class="headerlink" title="SmallSet"></a>SmallSet</h2><p>SmallSet是ADT提供的一个集合，专门处理元素较少的场景。它的底层使用SmallVector和std::set作为存储结构，当SmallSet的元素较少时使用SmallVector，当元素超过SmallVector中栈空间的大小时，将SmallVector转化为std::set。<br>添加数据使用insert。</p>
+<h2 id="SmallPtrSet"><a href="#SmallPtrSet" class="headerlink" title="SmallPtrSet"></a>SmallPtrSet</h2><p>SmallSet是处理一般元素，当处理指针的时候会使用SmallPtrSet。因为SmallSet底层使用SmallVector或者std::set，在存储时会根据对象的类型（是否支持Copy函数）进行Copy构造对象。而使用指针可以提供更好的性能，无需进行Copy构造。<br>SmallPtrSet只能接受指针类型，同样地其内存布局也分为两种：一个小数组（分配在栈上）和一个指针（分配在堆上），当元素个数较少时使用数组进行管理，当元素较多时使用指针进行管理。使用数组时元素按照顺序存放，查找也按照顺序进行；当使用指针时会对指针进行Hash，然后计算对应位置，因此可能存在Hash冲突问题，解决Hash冲突的方法也是开发定址法。<br>添加数据使用insert。</p>
+<h2 id="StringSet"><a href="#StringSet" class="headerlink" title="StringSet"></a>StringSet</h2><p>它继承于StringMap，key为StringRef，Value类型为null。对String期望获得较高性能。添加数据使用insert，且只支持单元素添加，不像SmallSet、SmallPtrSet可以支持一次添加多个元素。。</p>
+<h2 id="SparseSet"><a href="#SparseSet" class="headerlink" title="SparseSet"></a>SparseSet</h2><p>这个容器目的时为Set提供更高查询、插入、删除效率，相应地该容器需要较多的额外存储空间。它的设计如下：</p>
+<img src="/2024/03/16/ADT-Set/17105840687046.jpg" class="">
+
+<p>使用一个SmallVector存储真正的Value；使用一个数组存储存储Value在SmallVector对应的索引位置（Index），而Value在数组也有一个索引，它是通过一个Hash计算得到。<br>通常来说，使用SpareSet的性能比HashTable性能更好，它的查询、插入、删除一般是常量数量级别，依赖于插入或者删除的操作的执行顺序。</p>
+<h2 id="SpareMultiSet"><a href="#SpareMultiSet" class="headerlink" title="SpareMultiSet"></a>SpareMultiSet</h2><p>它和SpareSet类似，但是支持多个重复元素。它的设计和SparseSet也非常类似，最大的区别对SmallVector存储的数据进行了升级，在SparseSet中SmallVector存储的Value，而SparseMultiSet中SmallVector存放的是一个结构，这个结构不仅仅包括了Value，还包括了双向链表，用于将相同的Value节点串起来。</p>
+<h2 id="ImmutableSet"><a href="#ImmutableSet" class="headerlink" title="ImmutableSet"></a>ImmutableSet</h2><p>类似于ImmuatbleMap，也是使用平衡二叉树实现，当添加、删除元素时都会创建一颗新的平衡二叉树。</p>
+<h2 id="SetVector"><a href="#SetVector" class="headerlink" title="SetVector"></a>SetVector</h2><p>ADT中提供了一个容器，要求元素不能重复（Set的基本功能），同时提供了元素顺序访问的能力。在底层使用SmallVector和DenseSet。默认情况下，元素顺序插入到SmallVector中，同时会将元素插入到DenseSet，DenseSet主要用于保证元素不能重复。<br>这个容器还可以接受一个额外的参数N，表示元素较少场景中的使用。在元素较少场景，只使用SmallVector，不使用DenseSet，所以在插入元素时需要遍历SmallVector，确保元素唯一。<br>该容器对外接口基本上以SmallVector为主，甚至可以将整个SmallVector暴露出去。</p>
+<h2 id="UniqueVector"><a href="#UniqueVector" class="headerlink" title="UniqueVector"></a>UniqueVector</h2><p>这也是一个特殊的似于Set的容器，它要求数据成员不能重复，同时提供了元素顺序访问的能力。在底层使用std::vector保存真实的数据，同时使用std::map&lt;T, unsigned&gt;已经在Vector存放的元素。它非常类似于SetVector，但是在底层使用map，所以map中会储存一个ID。这个容器使用成本比较高，但是它能和std标准算法直接交互。</p>
+<h2 id="FoldingSet"><a href="#FoldingSet" class="headerlink" title="FoldingSet"></a>FoldingSet</h2><p>这个集合提供了特殊功能，第一针对集合的元素进行增强，集合元素需要额外继承于FoldingSetNode，FoldingSetNode提供了一个机制，计算元素唯一ID的函数Profile，开发者需要根据元素的特点自定义如何形成这个唯一ID（FoldingSetNodeID）。第二集合提供额外的处理能力，例如GetOrInsertNode函数会根据ID计算Node是否已经存在，如果存在则丢弃新插入的Node返回原来的Node，否则新插入Node。RemoveNode删除特定Node。</p>
+<p>该容器的实现基于一个连续的内存为主，称为Buckets，每个Bucket又是一个单链表，用于将相同的Hash值管理起来。其结果如下所示：</p>
+<img src="/2024/03/16/ADT-Set/17105840389108.jpg" class="">
+
+
+<p>FoldingSet也不会执行元素的析构函数，只是将元素从FoldingSet管理的结构中移除。<br>SmallSet只能处理对象引用，SmallPtrSet只能处理对象指针<br>FoldingSet使用方法：<br>1）定义Node继承于FlodingSetNode，实现Profile函数（目的是计算对象的ID）<br>2）定义FlodingSet<br>3）通过FindNodeOrInsertPos、GetOrInsertNode、RemoveNode使用集合</p>
+<h1 id="std中Set实现"><a href="#std中Set实现" class="headerlink" title="std中Set实现"></a>std中Set实现</h1><p>非常类似于Map也是采用红黑树进行实现。只不过key和value相同。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/16/ADT-Set/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/16/ADT-Map/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/03/16/ADT-Map/" class="post-title-link" itemprop="url">ADT中Map容器介绍</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-16 17:03:21" itemprop="dateCreated datePublished" datetime="2024-03-16T17:03:21+08:00">2024-03-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>LLVM本身提供了一些Map相关的容器，同时在LLVM还可以直接std中标准map容器，该如何正确使用map？</p>
+<h1 id="LLVM中Map容器"><a href="#LLVM中Map容器" class="headerlink" title="LLVM中Map容器"></a>LLVM中Map容器</h1><h2 id="DenseMap"><a href="#DenseMap" class="headerlink" title="DenseMap"></a>DenseMap</h2><p>LLVM提供DenseMap的目的为了加速使用Map的效率。它具有以下特点：</p>
+<ol>
+<li><p>针对key、value组合成一个Pair，然后根据Map的初始长度分配一段连续的内存，其中每个pair作为内存的元素。因此Densemap是Key-Value组合在一起的连续内存。其存储结构如下：</p>
+<img src="/2024/03/16/ADT-Map/17105802768390.jpg" class="">
+</li>
+<li><p>DenseMap需要解决存储时Hash的问题，对于常见类型作为Key时LLVM项目中已经提供了Hash算法，而对于自定义Key时需要实现自己的Hash算法；</p>
+</li>
+<li><p>当对Key进行Hash后，如果产生冲突，则进行二次散列（实现是基于当前的位置+变化的偏移）。</p>
+</li>
+<li><p>由于DenseMap底层本质上采用了数组进行存储，所以需要区别不同Key的状态用于标记元素的有效性，例如设置为1《Bit表示空；2《Bit表示元素曾经有用过，但现在已经被删除，设置为Tombe，此时这个槽位并不能被再次占用。</p>
+</li>
+<li><p>DenseMap还考虑了自动内存的扩展，当使用元素超过3&#x2F;4时会自动扩容；当Tomeb元素超过一定比例（1&#x2F;8）会对DenseMap重写构造，并将Tombe对应的槽位进行真正回收重用。因此增删元素会导致DenseMap扩容&#x2F;缩减，进而引起迭代器失效。另外扩容时会删除旧缓存中的元素(析构Key与Value)，因此需要注意Key与Value成员的所有权问题。</p>
+</li>
+<li><p>需要自己实现迭代器，否则无法遍历容器数据。</p>
+</li>
+</ol>
+<p>本意DenseMap希望提供高性能的Map，但是2014年LLVM大会提供的材料表明DenseMap效果和std中map、unordered_map相比并不完全占优，相反在Insert、lookup性能均裂于unordered_map。</p>
+<h2 id="SmallDenseMap"><a href="#SmallDenseMap" class="headerlink" title="SmallDenseMap"></a>SmallDenseMap</h2><p>DenseMap在对分配时最低要求64个元素，所以在数据量较少时存在内存浪费问题，所以提供了一个小数组模拟底层存储（初始默认值为4个元素），当元素超过64时就退化为DensMap。<br>SmallDenseMap底层使用一个Union组合一个数组和DenseMap。</p>
+<h2 id="ImmutableMap"><a href="#ImmutableMap" class="headerlink" title="ImmutableMap"></a>ImmutableMap</h2><p>ADT中提供了不可变Map，它的底层存储时基于平衡二叉树，但是它最大的特点是不袁允许对于Map进行修改，例如插入或者删除元素后都会新生成一个新的ImmutableMap。因此它更适合用于一次构造，多次查询的场景。</p>
+<h2 id="IndexedMap"><a href="#IndexedMap" class="headerlink" title="IndexedMap"></a>IndexedMap</h2><p>这是一个特殊的Map，接受两个参数。代码如下：</p>
+<figure class="highlight plaintext"><figcaption><span><typename T, typename ToIndexT </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class IndexedMap &#123;</span><br></pre></td></tr></table></figure>
+
+<p>第一个参数为Map的类型，第二个参数为索引位置计算的函数。在底层它使用了SmallVector作为存储结构，同时使用函数计算元素在SmallVector的位置。</p>
+<h2 id="IntervalMap"><a href="#IntervalMap" class="headerlink" title="IntervalMap"></a>IntervalMap</h2><p>这是LLVM特意为Live Interval设计的数据结构，key是一个区间，value是值，key可以支持前闭后闭、前闭后开两种区间。<br>IntervalMap采用树形进行存储，分为两类结点：中间结点和叶子结点，叶子结点存放的区间和值，一个叶子结点可能包括多个区间，例如[(start1,end1),value1]，[(start2,end2),value2，[(start3,end3),value3]。主要原因是IntervalMap设计时期望访问能按照CacheLine对其，假设CacheLine为64字节，按照3倍CacheLine设计存储空间（即192字节），而192个字节可能包括多个区间。而中间结点目的是将区间形成一棵树，方便插入、删除和查找。<br>由于IntervalMap以区间为Key，当插入新的元素后会尝试进行区间合并（当然合并时Value必须相等，并且区间是相邻）。</p>
+<h2 id="StringMap"><a href="#StringMap" class="headerlink" title="StringMap"></a>StringMap</h2><p>ADT为了处理String，特别引入StringMap类型，主要是因为String的长度不固定，所以一般需要分配在堆中，所以不太适合直接使用DenseMap进行处理。<br>StringMap的结构如下所示：</p>
+<img src="/2024/03/16/ADT-Map/17105803752754.jpg" class="">
+
+<p>可以看到StringMap使用连续内存来处理Key-Value，但是又把Key&#x2F;Value真实的值放在堆中。<br>除了底层存储不同以外StringMap在很多地方类似与DenseMap，比如Hash冲突、Key不允许重复，同样地StringMap也会存在扩缩容的问题。</p>
+<p>默认长度为16.<br>所以StringMap更适合的场景是对key、value连续访问，元素个数不多或者hash冲突不严重的场景，且尽可能少的发生扩缩容。</p>
+<h1 id="LLVM其中高级Map"><a href="#LLVM其中高级Map" class="headerlink" title="LLVM其中高级Map"></a>LLVM其中高级Map</h1><h2 id="ValueMap"><a href="#ValueMap" class="headerlink" title="ValueMap"></a>ValueMap</h2><p>ValueMap本质上利用DenseMap实现LLVM特殊的需求，例如Value可以被其它的Instruction使用，但是Value发生了变化（例如被删除、RACU），那么Value的使用者需要更新变化情况，使用ValueMap就非常有用。ValueMap存储Value和使用的映射关系，当Value变化时，例如从V1变到V2，则老得映射V1-》Target可以被删除，并添加一个新的映射V2-》Target。<br>注意：需要通过Value中delete或者replaceAllUseWith对应的API调用才能完成更新。</p>
+<h2 id="MapVector"><a href="#MapVector" class="headerlink" title="MapVector"></a>MapVector</h2><p>这个类型是利用DenseMap和std::vector组合的一个新的类型，它和DensMap最大的区别是Value会按照顺序进行存储。这样在一些map的遍历中可以保证顺序。<br>实际上MapVector首先将Key存储在DenseMap中，如同时将《key、value》的Pair再插入vector中，所以key会被插入两次，因此有空间浪费。但是MapVector相对于vector来说查询效率可能更好，因此查询之前总是先通过DenseMap查询key是否存在，如果key不存在则无需到vector中查询，如果key存在则仍然需要遍历vector。</p>
+<h2 id="SmallMapVector"><a href="#SmallMapVector" class="headerlink" title="SmallMapVector"></a>SmallMapVector</h2><p>SmallMapVector和MapVectorhe非常类似，唯一的不同点是SmallMapVector中的Vector使用的是SmallVector而不是std::vector。</p>
+<h2 id="IntEqClasses"><a href="#IntEqClasses" class="headerlink" title="IntEqClasses"></a>IntEqClasses</h2><p>这是对整数进行等价类划分，所以它也类似于Map功能。具体方式比较简单，将容器中所有整数进行划分，相同的就是一个等价类。划分完成中每个整数都有一个唯一的等价类标号。<br>IntEqClasses底层使用smallvector进行实现，如果确定两个元素是等价类，使用join进行连接，连接后返回等价类中第一个元素的索引，当使用compress后等价类标号从0开始依次增加（不再是等价类第一个元素的索引）。</p>
+<h1 id="Std中Map容器"><a href="#Std中Map容器" class="headerlink" title="Std中Map容器"></a>Std中Map容器</h1><h2 id="Map-multiMap"><a href="#Map-multiMap" class="headerlink" title="Map&#x2F;multiMap"></a>Map&#x2F;multiMap</h2><p>Map采用红黑树进行实现，它时一种平衡二叉树，能保证树的高度大约是对数，在插入、删除、查找时复杂度为哦（nlog（n），由于红黑树保证树的平衡，所以在插入、删除时需要对树进行再平衡，所以性能略差，但是对于查找友好（由于红黑树的特性，可以认为构建的map是以key进行排序进行的）。</p>
+<p>Multimap和map最大的区别是key是可以重复的。因此mulltimap提供的一些API和Map略有不同，multimap可能返回iterator，用于表示可能存在多个Key-Value，而Map通常返回pair即可。</p>
+<h2 id="unordered-map-undered-multimap"><a href="#unordered-map-undered-multimap" class="headerlink" title="unordered_map&#x2F;undered_multimap"></a>unordered_map&#x2F;undered_multimap</h2><p>undered_map采用的是链表方式实现，和DenseMap类似。但是又有所不同，undered-map中的key是连续的，但是value采用了链表的方式进行存储，所以在解决冲突时较为简单。但是通常插入时需要使用malloc进行分配。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/16/ADT-Map/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"c853ec00cc9d13bc22336b7d45d1416e"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

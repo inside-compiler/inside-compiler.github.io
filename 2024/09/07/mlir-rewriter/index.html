@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="操作匹配和重写是MLIR中最重要的概念，通过操作匹配和重写实现方言降级和操作变换。在MLIR中为了实现编译和优化功能，一般需要将高级方言的操作转换（Convert）到低级方言的操作，该过程一般也称为降级（Lowering），实现编译功能；或者将方言中的操作变换（Transform）到本方言中的其它的操作，从而实现操作优化功能；它们都依赖于操作匹配和重写机制。匹配是编译原理中非常常见的问题，例如编译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第6章：操作匹配和重写(1)">
+<meta property="og:url" content="http://example.com/2024/09/07/mlir-rewriter/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="操作匹配和重写是MLIR中最重要的概念，通过操作匹配和重写实现方言降级和操作变换。在MLIR中为了实现编译和优化功能，一般需要将高级方言的操作转换（Convert）到低级方言的操作，该过程一般也称为降级（Lowering），实现编译功能；或者将方言中的操作变换（Transform）到本方言中的其它的操作，从而实现操作优化功能；它们都依赖于操作匹配和重写机制。匹配是编译原理中非常常见的问题，例如编译">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/09/07/mlir-rewriter/17257033263174.jpg">
+<meta property="og:image" content="http://example.com/2024/09/07/mlir-rewriter/17257033509910.jpg">
+<meta property="og:image" content="http://example.com/2024/09/07/mlir-rewriter/17257034065069.jpg">
+<meta property="article:published_time" content="2024-09-07T11:13:49.000Z">
+<meta property="article:modified_time" content="2025-06-15T05:58:00.540Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="MLIR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/09/07/mlir-rewriter/17257033263174.jpg">
+
+
+<link rel="canonical" href="http://example.com/2024/09/07/mlir-rewriter/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/09/07/mlir-rewriter/","path":"2024/09/07/mlir-rewriter/","title":"第6章：操作匹配和重写(1)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第6章：操作匹配和重写(1) | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1%E6%93%8D%E4%BD%9C%E5%8C%B9%E9%85%8D%E8%AE%BE%E8%AE%A1%E5%92%8C%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">6.1操作匹配设计和实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-1%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">6.1.1模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-2%E9%87%8D%E5%86%99"><span class="nav-number">1.2.</span> <span class="nav-text">6.1.2重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-3%E5%BA%94%E7%94%A8"><span class="nav-number">1.3.</span> <span class="nav-text">6.1.3应用</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/07/mlir-rewriter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第6章：操作匹配和重写(1) | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第6章：操作匹配和重写(1)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-09-07 19:13:49" itemprop="dateCreated datePublished" datetime="2024-09-07T19:13:49+08:00">2024-09-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>操作匹配和重写是MLIR中最重要的概念，通过操作匹配和重写实现方言降级和操作变换。在MLIR中为了实现编译和优化功能，一般需要将高级方言的操作转换（Convert）到低级方言的操作，该过程一般也称为降级（Lowering），实现编译功能；或者将方言中的操作变换（Transform）到本方言中的其它的操作，从而实现操作优化功能；它们都依赖于操作匹配和重写机制。<br>匹配是编译原理中非常常见的问题，例如编译器后端实现的指令匹配。常见的匹配方法有：宏展开、树匹配、DAG（有向无环图）匹配等，DAG匹配因为其匹配效率和性能优势被广泛用在当前编译器中。在第2章IR结构中提到，每一个操作中CFG区域[ 虽然MLIR区域包括CFG和Graph两种类型，但大多数区域都是CFG区域，只有很少的不要求代码执行顺序的区域才是Graph区域，例如代码的顶级操作module，它的嵌套操作包含global、func等无关顺序的操作，所以module操作是Graph类型。]的IR都满足SSA特性，根据SSA特性对于Use—Def非常容易获得，而整个程序的Use—Def信息通常是一个DAG，因此实现一套基于DAG的匹配和重写机制可能满足MLIR编译优化的大多数场景。<br>MLIR的操作匹配和重写机制吸收其它编译项目的优点，通过一套针对操作的匹配和重写框架，提供了多种操作模式匹配能力，包含：支持操作一对一、一对多、多对一匹配重写，目前MLIR的匹配&#x2F;重写机制基于Pass框架进行实现，在Pass运行时找到操作锚点后，将操作锚点作为待处理的操作，对操作内嵌的负载IR使用DAG图进行匹配和重写。为了灵活的处理DAG匹配的优先级问题，提供匹配成本模型，开发者可以通过成本模型定义模式匹配的顺序。<br>另外在匹配过程中将常量折叠这样的优化提升至较高的地位，在框架中支持操作的常量折叠，只需要开发者在定于操作时定义常量折叠的实现就可以自动实现常量折叠。当然目前MLIR框架提供的这套操作匹配和重写机制也存在一些不足，不适用于任意操作的匹配，例如CSE这样的优化可以应用于任意的操作，对于这样的优化框架难以提供非常优雅的方式（要多每个操作都提供类似的匹配模版），所以这样的优化自MLIR社区中并未使用操作匹配和重写的框架，而是基于Pass框架进行实现。除此以外，MLIR中Pass机制都要求操作具有IsolatedFromAbove特质，该特质打断了操作的Def–Use关系，因此操作匹配和重写框架也不能支持跨Pass锚点的处理（表示匹配、重写机制也是局部优化），同时匹配、重写机制也要满足5.1.5节介绍的Pass实现约束。<br>本章首先介绍MLIR中操作匹配的设计和实现，然后介绍MLIR中操作变换和方言降级的实现，最后简单介绍MLIR为开发者提供的三种操作匹配方法。</p>
+<h2 id="6-1操作匹配设计和实现"><a href="#6-1操作匹配设计和实现" class="headerlink" title="6.1操作匹配设计和实现"></a>6.1操作匹配设计和实现</h2><p>MLIR以操作为核心进行IR设计和变换，在匹配、重写过程中也是围绕操作进行的。在操作匹配和重写机制中涉及到三个概念，分别是模式（Pattern）、重写（Rewrite）和应用（Applicator）。</p>
+<ul>
+<li>模式：针对操作定义匹配的模式，模式包括待匹配的操作、操作的约束（如操作的接口或者特质）、匹配后生成的操作、操作匹配的成本模型等信息。除此以外模式还提供匹配和重写函数，它们可由mlir-tblgen根据模式的TD定义自动生成，也可由开发者实现。</li>
+<li>重写：针对具体的操作实现操作的添加、删除、移动、替换功能以及相关变化的通知等功能（通知机制是框架最为主要的特征，通过通知机制跟踪变化的操作，从而实现6.2节介绍的贪婪匹配、方言降级）。</li>
+<li>应用：将模式和重写进行组合的驱动，允许定义多个匹配模式、重写实现、成本模型信息，针对多个匹配模式，根据成本模型在每次匹配时都选择最优匹配模式，然后执行匹配和重写。在匹配的过程中，可能存在多种不同类型的模式，例如一般的匹配模式、任意操作的匹配模式和通过PDL定义的模式，当多种类型同时存在时当匹配模式相同时会按照一般匹配模式、任意操作匹配模式、PDL模式依次进行匹配、重写。<br>下面看一下这三部分的具体实现。</li>
+</ul>
+<h3 id="6-1-1模式"><a href="#6-1-1模式" class="headerlink" title="6.1.1模式"></a>6.1.1模式</h3><p>MLIR中DAG匹配由模式确定匹配图中节点，同时也要反映操作以及操作结构、约束信息。而实际上以操作为锚点，准确描述操作的信息就能完成DAG匹配。例如要匹配操作Operation，首先它被其它两个操作使用，另外它由三个操作数，假设第一个操作数是常量记为Operand1，而第二个操作数是另一个操作的输出，其类型记为Sub-Op1，第三个操作数是一个操作的输出，其类型记为Sub-Op2，再假如Sub-Op1也由两个操作数，分别为Operand2和Sub-Op3。如果要匹配锚点操作，本质上就是在整个图中匹配子图，子图结构如图6-1所示。</p>
+<img src="/2024/09/07/mlir-rewriter/17257033263174.jpg" class="">
+<p>MLIR定义Pattern结构用于描述模式，其中Pattern包括的数据成员主要是匹配基础信息，包括成本、待匹配的目标、匹配后的操作。同时还定义了RewritePattern继承于Pattern，在Pattern类的基础上增加了成员函数match、rewrite、matchAndRewrite等。另外为了方便社区开发者的使用，定义了ConversionPattern继承于RewritePattern，并添加了类型的支持；定义OpRewritePattern、OpInterfaceRewritePattern、OpTraitRewritePattern等模式分别用于操作模式、带接口的操作模式和带特质的操作模式。目前Pattern的类继承结构如图6-2所示。</p>
+<img src="/2024/09/07/mlir-rewriter/17257033509910.jpg" class="">
+
+<p>模式的定义有三种方法，在本节介绍通过C++代码方式的定义模式。假设定义一个模式MyPattern如代码6-1所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">class MyPattern: public RewritePattern&#123;</span><br><span class="line">public:</span><br><span class="line">//定义MyPattern的构造方式，模式匹配的操作为MyOp</span><br><span class="line">MyPattern(PatternBenefit benefit, MLIRContext* context)</span><br><span class="line">:RewritePattern(MyOp::getOperationName(), benefit, context)&#123;&#125;</span><br><span class="line">//除了定义匹配锚点操作的模式外，还可以定义匹配任意操作的模式，例如匹配任意操作的</span><br><span class="line">//模式可以设置匹配类型为MatchAnyOpTypeTag，它本质上是一个占位符</span><br><span class="line">//在匹配过程时会特殊处理这个类型</span><br><span class="line">MyPattern(PatternBenefit benefit)</span><br><span class="line">:RewritePattern(benefit, MatchAnyOpTypeTag())&#123;&#125;</span><br><span class="line">//重载match和rewrite函数</span><br><span class="line">//根据模式的锚点操作，match进一步确定匹配操作的信息，比如可以要求操作的操作数样子</span><br><span class="line">//是否包含某一个特质或者某一种接口等</span><br><span class="line">LogicalResult match(Operation* op) const override;</span><br><span class="line">//如果匹配成功后，调用rewrite函数完成操作重写，开发者根据业务需要可以删除、</span><br><span class="line">//更新操作，或者增加新的操作等</span><br><span class="line">void rewrite(Operation* op, PatternRewriter&amp; rewriter);</span><br><span class="line">//将match和rewrite组合在一起，提供一个入口。注意基类RewritePattern的</span><br><span class="line">//matchAndRewrite就是调用match和rewrite，开发者只需重载match和rewrite</span><br><span class="line">//开发者也可以重载matchAndRewrite</span><br><span class="line">LogicalResult matchAndRewrite(Operation* op,PatternRewriter&amp; rewriter);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>当然开发者需要实现指定匹配操作，可以直接让MyPattern直接继承于模版类OpRewritePattern，它接受操作类型作为模版参数，例如可以定义模式为Struct MyPattern: public OpRewritePattern<MyOp>，则MyPattern仅仅匹配MyOp操作。。</p>
+<h3 id="6-1-2重写"><a href="#6-1-2重写" class="headerlink" title="6.1.2重写"></a>6.1.2重写</h3><p>MLIR社区对于重写机制的基础能力进行实现，包括了操作的修改、添加、更新、删除等。开发者只需要根据匹配结果调用重写机制中的相关API完成业务即可。目前社区关于重写的类结构图如图6-3所示。</p>
+<img src="/2024/09/07/mlir-rewriter/17257034065069.jpg" class="">
+
+<p>注意：在代码6-1中rewriter方法中使用PatternRewriter中的API对操作进行更新、插入、删除等处理，而不能直接使用类Opeartion中的方法（Operation也继承于OpBuilder），原因是PatternRewriter不仅仅调用Opeartion中的方法，还提供了通知机制，该通知机制可以把相关变化的操作通知给其他组件，从而保证递归处理的正确性。<br>在图6-3中有几个值得注意的地方：</p>
+<ul>
+<li>除IRRewriter外，其他派生类都继承于PatternRewriter。IRRewriter和PatternRewriter最大的区别是：<em>IRRewriter可以针对任意的操作进行重写</em>，而PatternRewriter仅仅针对当前正在处理的操作进行重写。所以IRRewriter通常只有在无法使用PatternRewriter时才会使用。</li>
+<li>ConversionPatternRewriter主要用于方言降级中，它主要是提供了方言降级中需要使用的一些功能，例如对于基本块参数类型的转换等方法。</li>
+<li>GreedyPatternRewriteDriver主要用于优化变换中，它主要提供了贪婪的方法用于递归处理操作的匹配和重写，它有两个派生类，分别是RegionPatternRewriteDriver和MultiOpPatternRewriteDriver，这两个派生类分别针对区域中的操作、多个操作进行匹配、重写。<br>下面通过TD描述的方式简单定义一个模式的匹配、重写。如代码6-2所示。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//定义操作OpN，它们位于test方言中，定义了TEST_OP记录。操作包含两个操作数</span><br><span class="line">//两个操作数都是I32类型，输出为I32类型</span><br><span class="line">def OpN : TEST_Op&lt;&quot;op_n&quot;&gt; &#123;</span><br><span class="line">  let arguments = (ins I32, I32);</span><br><span class="line">  let results = (outs I32);</span><br><span class="line">&#125;</span><br><span class="line">//定义OpP操作，包括六个操作数，都是I32类型。输出为I32类型</span><br><span class="line">def OpP : TEST_Op&lt;&quot;op_p&quot;&gt; &#123;</span><br><span class="line">  let arguments = (ins I32, I32, I32, I32, I32, I32);</span><br><span class="line">  let results = (outs I32);</span><br><span class="line">&#125;</span><br><span class="line">//定义一个匹配模式，匹配操作OpN，第一个操作数为变量b</span><br><span class="line">//第二个操作数为OpP操作定义的变量，由于OpP的输出为I32类型</span><br><span class="line">//所以OpP可以作为OpN操作的输入</span><br><span class="line">//OpP包含六个操作数，分别是变量a、b、c、d、e、f</span><br><span class="line">//模式的重写规则是：使用变量b替换整个OpN操作</span><br><span class="line">def TestNestedOpEqualArgsPattern :</span><br><span class="line">  Pat&lt;(OpN $b, (OpP $a, $b, $c, $d, $e, $f)), (replaceWithValue $b)&gt;;</span><br></pre></td></tr></table></figure>
+<p>通过mlir-tblgen工具可以将代码6-2翻译成C++代码，如代码6-3所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">//它要匹配操作的名字为test.op_n即OpN操作，该模式的优先级为2，原因是OpN包含了</span><br><span class="line">//子操作OpP，没有包含子操作的默认优先级为1，优先级高一般会先匹配</span><br><span class="line">struct TestNestedOpEqualArgsPattern : public ::mlir::RewritePattern &#123;</span><br><span class="line">  TestNestedOpEqualArgsPattern(::mlir::MLIRContext *context)</span><br><span class="line">      : ::mlir::RewritePattern(&quot;test.op_n&quot;, 2, context, &#123;&#125;) &#123;&#125;</span><br><span class="line">//重写matchAndRewrite操作</span><br><span class="line">  ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,</span><br><span class="line">      ::mlir::PatternRewriter &amp;rewriter) const override &#123;</span><br><span class="line">    // 创建7个临时变量，分别对于OpN和OpP的操作数</span><br><span class="line">    ::mlir::Operation::operand_range f(op0-&gt;getOperands());</span><br><span class="line">...</span><br><span class="line">    ::mlir::Operation::operand_range b(op0-&gt;getOperands());</span><br><span class="line">    ::mlir::Operation::operand_range b0(op0-&gt;getOperands());</span><br><span class="line">    ::llvm::SmallVector&lt;::mlir::Operation *, 4&gt; tblgen_ops;</span><br><span class="line">    // 定义匹配操作的图结构，包括以下条件</span><br><span class="line">//OpP操作是OpN的第二个操作数，OpN的第一个操作数b和OpP的第二个操作数相同</span><br><span class="line">    tblgen_ops.push_back(op0);</span><br><span class="line">//OpN操作对象</span><br><span class="line">    auto castedOp0 = ::llvm::dyn_cast&lt;::test::OpN&gt;(op0); (void)castedOp0;</span><br><span class="line">//第一额操作数，记为b0</span><br><span class="line">    b0 = castedOp0.getODSOperands(0);</span><br><span class="line">    &#123;</span><br><span class="line">    //第二操作数记为Op1，Op1的类型为OpP</span><br><span class="line">      auto *op1 = (*castedOp0.getODSOperands(1).begin()).getDefiningOp();</span><br><span class="line">...</span><br><span class="line">       auto castedOp1 = ::llvm::dyn_cast&lt;::test::OpP&gt;(op1); (void)castedOp1;</span><br><span class="line">      if (!(castedOp1))&#123;</span><br><span class="line">        return rewriter.notifyMatchFailure(op1, [&amp;](::mlir::Diagnostic &amp;diag) &#123;</span><br><span class="line">          diag &lt;&lt; &quot;castedOp1 is not ::test::OpP type&quot;;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">      a = castedOp1.getODSOperands(0);</span><br><span class="line">...</span><br><span class="line">      f = castedOp1.getODSOperands(5);</span><br><span class="line">      tblgen_ops.push_back(op1);</span><br><span class="line">    &#125;</span><br><span class="line">//要求OpN对象的第一个操作数和OpP的第二个操作数相同</span><br><span class="line">    if (!(*b.begin() == *b0.begin()))&#123;</span><br><span class="line">      return rewriter.notifyMatchFailure(op0, [&amp;](::mlir::Diagnostic &amp;diag) &#123;</span><br><span class="line">        diag &lt;&lt; &quot;Operands &#x27;b&#x27; and &#x27;b0&#x27; must be equal&quot;;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    // 重写，用b替换OpN操作对象</span><br><span class="line">    auto odsLoc = rewriter.getFusedLoc(&#123;tblgen_ops[0]-&gt;getLoc(), tblgen_ops[1]-&gt;getLoc()&#125;); (void)odsLoc;</span><br><span class="line">    ::llvm::SmallVector&lt;::mlir::Value, 4&gt; tblgen_repl_values;</span><br><span class="line"></span><br><span class="line">    for (auto v: ::llvm::SmallVector&lt;::mlir::Value, 4&gt;&#123; b &#125;) &#123;</span><br><span class="line">      tblgen_repl_values.push_back(v);</span><br><span class="line">    &#125;</span><br><span class="line">    rewriter.replaceOp(op0, tblgen_repl_values);</span><br><span class="line">    return ::mlir::success();</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>使用TD的方式和开发者自定义C++代码方式完全一致，但两者在灵活性以及功能完备性略有差异，我们将在6.3节详细讨论。</p>
+<h3 id="6-1-3应用"><a href="#6-1-3应用" class="headerlink" title="6.1.3应用"></a>6.1.3应用</h3><p>当开发者定义好匹配模式以及重写机制后，就可以将其组合进行使用，在MLIR社区提供了PatternApplicator机制，可以将其组合起来进行使用，它接受三个信息：</p>
+<ul>
+<li>定义好的模式集合，每个模式都定义了如何匹配和重写操作。</li>
+<li>自定义的重写机制；如果社区提供的PatternRewriter不满足开发者的需要，可以自行实现，应用可以使用自定义的PatternRewriter。</li>
+<li>自定义的模式成本模型：允许开发者重新为模式定义收益。</li>
+<li>对操作进行匹配和重写：针对操作调用它的matchAndRewrite函数实现匹配和重写。<br>一个典型的使用如代码6-4所示：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">class MyPattern : public RewritePattern&#123;</span><br><span class="line">public:</span><br><span class="line">MyPattern(PatternBenefit benefit, MLIRContext* context)</span><br><span class="line">:RewritePattern(MyOp::getOperationName(), benefit, context)&#123;&#125;</span><br><span class="line">//假设开发者实现了match和rewriter函数，这里忽略</span><br><span class="line">&#125;;</span><br><span class="line">//将所有带匹配的模式收集到一个集合中。这里只有一个模式MyPattern</span><br><span class="line">void collectMyPatterns(RewritePatternSet&amp; patterns, MLIRContext* ctx)&#123;</span><br><span class="line">patterns.add&lt;MyPattern&gt;(/*benefit=*/1,ctx);</span><br><span class="line">&#125;</span><br><span class="line">//自定义重写机制PatternRewriter</span><br><span class="line">class MyPatternRewriter : public PatternRewriter&#123;</span><br><span class="line">public:</span><br><span class="line">MyPatternRewriter(MLIRContext* ctx): PatternRewriter(ctx)&#123;&#125;</span><br><span class="line">//根据需要实现PatternRewriter相关的添加、删除、修改、更新的操作</span><br><span class="line">&#125;;</span><br><span class="line">//针对操作定义驱动</span><br><span class="line">void applyMyPatternDriver(Operation* op,</span><br><span class="line">const FrozenRewritePatternSet&amp; patterns)&#123;</span><br><span class="line">//初始化PatternRewriter</span><br><span class="line">MyPatternRewriterrewriter(op-&gt;getContext());</span><br><span class="line">//创建应用并为应用定义模式的成本模型and apply our costmodel.</span><br><span class="line">PatternApplicator applicator(patterns);</span><br><span class="line">applicator.applyCostModel([](const Pattern&amp; pattern)&#123;</span><br><span class="line">//成本模型的输入为模式，输出为模式的收益。这里仅仅是演示示例</span><br><span class="line">//直接使用模式的收益，开发者可以根据自己的需要重新调整模式的收益</span><br><span class="line">return pattern.getBenefit();</span><br><span class="line">&#125;);</span><br><span class="line">//对操作进行匹配和重新</span><br><span class="line">LogicalResult result = applicator.matchAndRewrite(op, rewriter);</span><br><span class="line">if(failed(result))&#123;</span><br><span class="line">//...匹配或者重新失败，则没有任何模式适用，开发者可以输出必要的信息，并返回</span><br><span class="line">&#125;</span><br><span class="line">//...模式匹配和重写成功，开发者也可以输出必要的信息，并返回</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过应用将匹配、重写机制进行组合，从而方便实现针对操作的匹配和重写。MLIR框架提供了两种经典的匹配、重写应用，分别是贪婪匹配和方言降级。</p>
+<span id="more"></span>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MLIR/" rel="tag"># MLIR</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/08/03/mlir-ControlFlow/" rel="prev" title="mlir_ControlFlow">
+                  <i class="fa fa-angle-left"></i> mlir_ControlFlow
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/09/08/gen-zgc/" rel="next" title="分代ZGC概述">
+                  分代ZGC概述 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"f43b293015112db27198e943d7768582"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

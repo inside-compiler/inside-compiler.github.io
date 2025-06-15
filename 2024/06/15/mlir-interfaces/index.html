@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="特质为一组属性、操作或者类型进行通用操作（而非一个属性、操作或者类型），并且处理的属性、操作或者类型。在实现过程中被一组操作、类型或者属性直接继承，这就产生一个问题，能否为继承于同一特质的操作、类型或者属性提供动态绑定的能力，而非完全的静态绑定能力？接口正是基于这一诉求产生的。接口和特质有一些类似的地方，实际上接口的功能基于特质实现的，在本节后续内容详细介绍相关原理。可以为方言、操作、类型和属性定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第4章（3）：接口">
+<meta property="og:url" content="http://example.com/2024/06/15/mlir-interfaces/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="特质为一组属性、操作或者类型进行通用操作（而非一个属性、操作或者类型），并且处理的属性、操作或者类型。在实现过程中被一组操作、类型或者属性直接继承，这就产生一个问题，能否为继承于同一特质的操作、类型或者属性提供动态绑定的能力，而非完全的静态绑定能力？接口正是基于这一诉求产生的。接口和特质有一些类似的地方，实际上接口的功能基于特质实现的，在本节后续内容详细介绍相关原理。可以为方言、操作、类型和属性定">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/06/15/mlir-interfaces/17257006008043.jpg">
+<meta property="og:image" content="http://example.com/2024/06/15/mlir-interfaces/17257007752956.jpg">
+<meta property="article:published_time" content="2024-06-15T10:02:41.000Z">
+<meta property="article:modified_time" content="2025-06-15T05:58:00.537Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="MLIR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/06/15/mlir-interfaces/17257006008043.jpg">
+
+
+<link rel="canonical" href="http://example.com/2024/06/15/mlir-interfaces/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/06/15/mlir-interfaces/","path":"2024/06/15/mlir-interfaces/","title":"第4章（3）：接口"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第4章（3）：接口 | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-1%E6%96%B9%E8%A8%80%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">4.3.1方言接口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%8E%A5%E5%8F%A3%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.接口定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-MLIR%E6%A1%86%E6%9E%B6%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.2.</span> <span class="nav-text">2.MLIR框架如何使用接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%B8%B8%E8%A7%81%E6%96%B9%E8%A8%80%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%A7%88"><span class="nav-number">1.3.</span> <span class="nav-text">3.常见方言接口概览</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-2%E6%93%8D%E4%BD%9C%E3%80%81%E5%B1%9E%E6%80%A7%E5%92%8C%E7%B1%BB%E5%9E%8B%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.</span> <span class="nav-text">4.3.2操作、属性和类型接口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%93%8D%E4%BD%9C%E6%8E%A5%E5%8F%A3%E7%9A%84%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.1.</span> <span class="nav-text">1.操作接口的示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%93%8D%E4%BD%9C%E6%8E%A5%E5%8F%A3%E7%9A%84C-%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.</span> <span class="nav-text">2.操作接口的C++实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%8E%A5%E5%8F%A3%E6%A1%86%E6%9E%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">2.3.</span> <span class="nav-text">2.接口框架机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E6%93%8D%E4%BD%9C%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%AE%9A%E4%B9%89%E3%80%81%E6%B3%A8%E5%86%8C%E5%92%8C%E4%BD%BF%E7%94%A8"><span class="nav-number">2.4.</span> <span class="nav-text">4.操作接口的定义、注册和使用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E5%AE%9A%E4%B9%89%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.4.1.</span> <span class="nav-text">接口定义介绍</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E6%B3%A8%E5%86%8C"><span class="nav-number">2.4.2.</span> <span class="nav-text">接口注册</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E4%BD%BF%E7%94%A8"><span class="nav-number">2.4.3.</span> <span class="nav-text">接口使用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C%E3%80%81%E5%B1%9E%E6%80%A7%E5%92%8C%E7%B1%BB%E5%9E%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%A7%88TODO"><span class="nav-number">2.5.</span> <span class="nav-text">5.常见操作、属性和类型接口概览TODO</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/15/mlir-interfaces/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第4章（3）：接口 | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第4章（3）：接口
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-15 18:02:41" itemprop="dateCreated datePublished" datetime="2024-06-15T18:02:41+08:00">2024-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>特质为一组属性、操作或者类型进行通用操作（而非一个属性、操作或者类型），并且处理的属性、操作或者类型。在实现过程中被一组操作、类型或者属性直接继承，这就产生一个问题，能否为继承于同一特质的操作、类型或者属性提供动态绑定的能力，而非完全的静态绑定能力？接口正是基于这一诉求产生的。接口和特质有一些类似的地方，实际上接口的功能基于特质实现的，在本节后续内容详细介绍相关原理。<br>可以为方言、操作、类型和属性定义接口，而方言接口使用比较特殊，所以在本节按照使用方式将接口分为两类：方言接口和操作、属性、类型接口，下面分开介绍。</p>
+<h3 id="4-3-1方言接口"><a href="#4-3-1方言接口" class="headerlink" title="4.3.1方言接口"></a>4.3.1方言接口</h3><p>在MLIR中每一个方言都是一种IR，不同的IR完成不同的功能。但是不同的方言之间可能存在一些共性，例如一些优化可以适用于多种方言，比如内联。但是不同的方言的对于内联的处理有所不同，对于这样的诉求，定义一个方言接口如DialectInlinerInterface，让打算实现内联的方言都实现该接口中相关API，从而完成动态绑定能力。</p>
+<h4 id="1-接口定义"><a href="#1-接口定义" class="headerlink" title="1.接口定义"></a>1.接口定义</h4><p>在MLIR框架中定义了方言接口基类DialectInterfaceBase::Base&lt;&gt;，开发者定义的方言接口，需要继承于该基类。然后针对不同的方言，继承方言接口并实现方言特殊的处理。例如内联接口定义为代码4-10所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class DialectInlinerInterface :</span><br><span class="line">    public DialectInterface::Base&lt;DialectInlinerInterface&gt; &#123;</span><br><span class="line">public:</span><br><span class="line">  //如果区域scr能够内联到区域dst中则返回true</span><br><span class="line">  //参数valueMapping包含了区域src所有需要重映射的值，例如可以用它判断</span><br><span class="line">//初始基本块的参数能否替代区域src的值</span><br><span class="line">  virtual bool isLegalToInline(Region *dest, Region *src,</span><br><span class="line">                               IRMapping &amp;valueMapping) const &#123;</span><br><span class="line">    return false;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>根据内联接口，不同的方言可以特例化实现，例如方言affine内联的实现如代码4-11所示。</p>
+<figure class="highlight plaintext"><figcaption><span>AffineInlinerInterface : public DialectInlinerInterface &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">  //方言affine有特殊的内联约束，例如。这里忽略具体实现</span><br><span class="line">  bool isLegalToInline(Region *dest, Region *src,</span><br><span class="line">                       IRMapping &amp;valueMapping) const final &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">//当方言实现接口，需要将接口注册到方言中，通常在方言的构造函数</span><br><span class="line">AffineDialect::AffineDialect(MLIRContext *context) ... &#123;</span><br><span class="line">  addInterfaces&lt;AffineInlinerInterface&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-MLIR框架如何使用接口"><a href="#2-MLIR框架如何使用接口" class="headerlink" title="2.MLIR框架如何使用接口"></a>2.MLIR框架如何使用接口</h4><p>在使用方言接口时，需要根据方言获取对应的接口，然后根据接口可以使用接口相关API，示例如代码4-12所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Dialect *dialect = ...;</span><br><span class="line">//将方言强制转换为接口</span><br><span class="line">if (DialectInlinerInterface *interface = dyn_cast&lt;DialectInlinerInterface&gt;(dialect)) &#123;</span><br><span class="line">  //强制转换成功，说明方言实现相关的接口，就可以使用接口</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>方言和方言接口本身并没有继承关系，实际也是利用dyn_cast的能力，完成方言对象到接口对象的转换。这一点和3.3.2节中从Operation*到具体操作的强制类型转换类似，不同的是方言对象本身包含了已经注册的接口，所以在dyn_cast时无需构造接口对象，只需要从已经注册的接口对象中查询是否包含强制类型转换的接口对象，如果存在直接返回查询到的接口对象即可，如果查询不到，则返回空。<br>另外MLIR框架对内联还辅助实现一个集合类（DialectInterfaceCollection）帮助访问所有内联，该集合类方便找到各种对象对应的方言，从而方便开发者通过集合对象统一访问方言接口，感兴趣的读者可以查看源码了解详细内容。</p>
+<h4 id="3-常见方言接口概览"><a href="#3-常见方言接口概览" class="headerlink" title="3.常见方言接口概览"></a>3.常见方言接口概览</h4><h3 id="4-3-2操作、属性和类型接口"><a href="#4-3-2操作、属性和类型接口" class="headerlink" title="4.3.2操作、属性和类型接口"></a>4.3.2操作、属性和类型接口</h3><p>MLIR框架还允许分别为操作、属性和类型提供接口，这三类接口的实现和使用方法几乎一致，本节以操作接口为例进行介绍。</p>
+<h4 id="1-操作接口的示例"><a href="#1-操作接口的示例" class="headerlink" title="1.操作接口的示例"></a>1.操作接口的示例</h4><p>假设有这样一个需求，在编译优化过程中希望得到操作的运行时计算花费的成本，然后根据计算成本进行优化，例如将计算密集型的任务调度到GPGPU上执行。由于不同的操作计算成本各有差异、而且计算成本还可能依赖输入，例如scf方言中的for操作对于不同的输入其计算成本时不同，为此我们定义一个接口，对于需要计算成本的操作都使用这个接口约束，接口对应的TD实现如代码4-12所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def ComputationCostInterface : OpInterface&lt;&quot;ComputationCostInterface&quot;&gt; &#123;</span><br><span class="line">  let description = [&#123; &quot;get Op computation cost&quot; //描述信息：获取操作的计算成本</span><br><span class="line">  &#125;];</span><br><span class="line">  let cppNamespace = &quot;::mlir&quot;; //命名空间</span><br><span class="line">  let methods = [</span><br><span class="line">      //定义接口方法</span><br><span class="line">      InterfaceMethod&lt;</span><br><span class="line">        /*desc=*/[&#123; //方法描述</span><br><span class="line">        &#125;],</span><br><span class="line">        /*retType=*/&quot;int64_t&quot;, //方法的返回值</span><br><span class="line">        /*methodName=*/&quot;getComputationCost&quot;, //方法名</span><br><span class="line">        /*args=*/(ins) //方法的入参，本里没有参数</span><br><span class="line">      &gt;,</span><br><span class="line">  ];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用mlir-tblgen工具将代码4-12翻译成记录然后在翻译成C++代码。我们不再关注记录，仅仅关注生成的C++代码。由于生成的C++代码比较复杂，理解起来比较困难，所以下面先介绍操作接口的一些基础知识。</p>
+<h4 id="2-操作接口的C-实现"><a href="#2-操作接口的C-实现" class="headerlink" title="2.操作接口的C++实现"></a>2.操作接口的C++实现</h4><p>在C++中，为了方便实现自定义接口，框架提供了OpInterface基类用于支持自定义操作、属性和类型接口，它们的类结构如图4-1所示。</p>
+<img src="/2024/06/15/mlir-interfaces/17257006008043.jpg" class="">
+
+<p>OpState在3.3节已经看到，它包含了一个字段Operation*，而模版类Op、Interface和OpInterface分别提供了一些公共能力，特别是通过Interface类实现了接口的动态绑定能力。下面对这三个类进一步展开介绍。<br>操作接口直接继承于OpInterface，OpInterface的定义如代码4-14所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename ConcreteType, typename Traits&gt;</span><br><span class="line">class OpInterface</span><br><span class="line">    : public detail::Interface&lt;ConcreteType, Operation *, Traits,</span><br><span class="line">                               Op&lt;ConcreteType&gt;, OpTrait::TraitBase&gt; &#123;</span><br><span class="line">public:</span><br><span class="line">  //定义辅助类型，方便代码开发，可以少写代码</span><br><span class="line">  using Base = OpInterface&lt;ConcreteType, Traits&gt;;</span><br><span class="line">  using InterfaceBase = detail::Interface&lt;ConcreteType, Operation *, Traits,  Op&lt;ConcreteType&gt;, OpTrait::TraitBase&gt;;</span><br><span class="line">  using InterfaceBase::InterfaceBase;</span><br><span class="line">protected:</span><br><span class="line">  //给定操作返回操作接口真正的实例对象。</span><br><span class="line">//这个函数也是将操作强制类型转换到操作接口的关键，dyn_cast会使用这个函数</span><br><span class="line">  static typename InterfaceBase::Concept *getInterfaceFor(</span><br><span class="line">Operation *op) &#123;</span><br><span class="line">    OperationName name = op-&gt;getName();</span><br><span class="line">    //根据操作名获取操作元数据，元数据存放在MLIRContext中</span><br><span class="line">    if (std::optional&lt;RegisteredOperationName&gt; rInfo = </span><br><span class="line">name.getRegisteredInfo()) &#123;</span><br><span class="line">      //元数据中包含操作接口，直接返回</span><br><span class="line">      if (auto *opIface = rInfo-&gt;getInterface&lt;ConcreteType&gt;())</span><br><span class="line">        return opIface;</span><br><span class="line">      //元数据中不包含操作接口，则尝试获取方言接口</span><br><span class="line">      return rInfo-&gt;getDialect().getRegisteredInterfaceForOp&lt;</span><br><span class="line">ConcreteType&gt;( op-&gt;getName());</span><br><span class="line">    &#125;</span><br><span class="line">    //如果没有操作元数据，则直接从方言中获取方言接口</span><br><span class="line">    if (Dialect *dialect = name.getDialect())</span><br><span class="line">      return dialect-&gt;getRegisteredInterfaceForOp&lt;ConcreteType&gt;(name);</span><br><span class="line">    return nullptr;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如代码4-14注释所示，代码中最重要的函数是getInterfaceFor，它的目的是给定一个操作获取操作接口实现或者方言接口实现，通过该函数开发者能方便的从操作对象得到接口对象，实现过程也需要借助于dyn_cast来完成。不过需要注意的是在dyn_cast实现强制类型转换的过程本质上通过Operation<em>重新构造了具体操作接口，构造过程在模版类OpInterface中。模版类OpInterface继承于Interface，Interface提供了一个关键的字段Concept</em>，是具体操作真正实现的接口，它也是具体操作通过接口实现动态绑定的关键。Interface的实现如代码4-15所示。</p>
+<figure class="highlight plaintext"><figcaption><span><typename ConcreteType, typename ValueT, typename Traits,</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">          typename BaseType,</span><br><span class="line">          template &lt;typename, template &lt;typename&gt; class&gt; class BaseTrait&gt;</span><br><span class="line">class Interface : public BaseType &#123;</span><br><span class="line">public:</span><br><span class="line">  using Concept = typename Traits::Concept;</span><br><span class="line">  ...</span><br><span class="line">//给定一个值，构造Interface</span><br><span class="line">//当对操作直接赋值给一个接口类型时调用这个显式构造函数，</span><br><span class="line">//在构造函数中调用getInterfaceFor获取操作的具体接口实现</span><br><span class="line">explicit Interface(ValueT t = ValueT()) : BaseType(t),</span><br><span class="line">conceptImpl(t ? ConcreteType::getInterfaceFor(t) : nullptr) &#123;</span><br><span class="line">assert((!t || conceptImpl) &amp;&amp;</span><br><span class="line">&quot;expected value to provide interface instance&quot;);</span><br><span class="line">&#125;</span><br><span class="line">//其它构造Interface的构造函数，可以显式提供参数.</span><br><span class="line">Interface(ValueT t, const Concept *conceptImpl)</span><br><span class="line">: BaseType(t), conceptImpl(const_cast&lt;Concept *&gt;(conceptImpl)) &#123;</span><br><span class="line">assert(!t || ConcreteType::getInterfaceFor(t) == conceptImpl);</span><br><span class="line">&#125;</span><br><span class="line">  ...</span><br><span class="line">private:</span><br><span class="line">  //conceptImpl指针指向真正接口实现对象</span><br><span class="line">  Concept *conceptImpl;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>代码4-14中定义了getInterfacefor函数，4-15中为Interface定义了构造函数。当开发者使用dyn_cast&lt;*<em>Interface&gt;(concreteOp</em>)将具体操作对象转换到接口时，就是调用模版类Interface的构造函数实现。<br>模版类Interface中最关键的是字段Concept*，它指向操作接口真实的实现，当为具体操作实现不同的Concept并将其注册到Interface中就能实现接口的动态绑定能力。模版类Interface又继承于Op类，目的是为了实现具体操作和接口之间的关联，模版类Op实现在3.3节已经提到，这里不再展开。</p>
+<h4 id="2-接口框架机制"><a href="#2-接口框架机制" class="headerlink" title="2.接口框架机制"></a>2.接口框架机制</h4><p>模版类Interface中的Concept指针是接口实现动态绑定的关键。下面我们看看是如何实现的。针对代码4-12来说，接口ComputationCostInterface定义一个函数getComputationCost，允许开发者进行重载实现。这个功能对应的C++代码如代码4-16所示。</p>
+<figure class="highlight plaintext"><figcaption><span>ComputationCostInterface &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    virtual int64_t getComputationCost() const = 0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>本质上就是在接口ComputationCostInterface中提供一个虚函数，同时让具体的类继承于该接口并重载相关API，当实例化不同的派生类时就实现了动态绑定的能力。但是在MLIR框架中，对象不允许存在虚函数，所以需要提供一套模拟虚函数的实现机制。<br>注意：C++的虚函数实现可以简单总结为几个关键点：为定义虚函数类生成一个虚函数表，虚函数表的条目个数等于虚函数的个数，每个条目存放的时虚函数的地址，虚函数表只会存储虚函数的地址，非虚函数无须存储，因为非虚函数在编译器就可以确定函数调用的地址。当派生类继承基类时，如果派生类重载虚函数，则派生类对应的虚函数表中对应条目更新为派生类重载的虚函数地址，否则重用基类的虚函数地址。对于有虚函数的类在实例化对象时，都会为对象额外分配一个指针的空间（称为vptr），同时将vptr指向类的虚函数表关联。这样通过指针调用虚函数时，总是从指针访问到对象的vptr，再通过vptr指向的虚函数表找到真正调用的函数，具体虚函数的指向过程可以参考其它资料。<br>为了模拟虚函数的执行，一定需要一个机制来模拟虚函数表，同时允许派生类重写接口中的APIs。为此MLIR框架引入了Concept的概念，就是模版类Interface中的Concept指针，它指向接口的具体实现。这意味着一个接口提供了几种实现，例如ComputationCostInterface通过mlir-tblgen工具生成的部分代码片段如代码4-17所示。</p>
+<figure class="highlight plaintext"><figcaption><span>mlir &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">class ComputationCostInterface;</span><br><span class="line">namespace detail &#123;</span><br><span class="line">    //定义特质，操作、类型和类型可以继承于特质</span><br><span class="line">struct ComputationCostInterfaceInterfaceTraits &#123;</span><br><span class="line">  //Concept是一个结构体，它只有成员变量，每个成员变量都是函数指针，</span><br><span class="line">  //这些函数指针模拟了接口类声明API的实现，所以增加了额外的参数</span><br><span class="line">  //Concept本质上是为了模拟虚函数表，所以它不会有任何实现</span><br><span class="line">  struct Concept &#123;</span><br><span class="line">//该方法来自于接口定义文件，包含额外两个参数，Concept*和Operation*</span><br><span class="line">//Concept*模拟C++中的this指针</span><br><span class="line">//Operation*表示一个非静态的接口API</span><br><span class="line">int64_t (*getComputationCost)(const Concept *impl, ::mlir::Operation *);</span><br><span class="line">  &#125;;</span><br><span class="line"> </span><br><span class="line">  //Model是接口的默认实现，即当开发者没有重载接口时使用Model作为接口实现</span><br><span class="line">  template&lt;typename ConcreteOp&gt;</span><br><span class="line">  class Model : public Concept &#123;</span><br><span class="line">  public:</span><br><span class="line">using Interface = ::mlir::ComputationCostInterface;</span><br><span class="line">//通过继承关系，将Model中的接口实现传递至基类</span><br><span class="line">Model() : Concept&#123;getComputationCost&#125; &#123;&#125;</span><br><span class="line">            //针对接口中的API提供默认实现</span><br><span class="line">static inline int64_t getComputationCost(const Concept *impl, ::mlir::Operation *tablegen_opaque_val);</span><br><span class="line">  &#125;;</span><br><span class="line">   //FallbackModel是MLIR框架提供的逃生模型，主要原因时MLIR是开放生态，可能</span><br><span class="line">  //存在一些场景，例如使用了未注册的操作，或者操作未实现接口，</span><br><span class="line">//对于这样的情况可以通过该机制定义逃生模型，一般该模型实现会关联到方言</span><br><span class="line">  //当开发者使用FallbackModel时需要通过？？？方式注册才能使用</span><br><span class="line">  //模板参数ConcreteOp指的是继承于FallbackModel的具体接口实现</span><br><span class="line">  template&lt;typename ConcreteOp&gt;</span><br><span class="line">  class FallbackModel : public Concept &#123;</span><br><span class="line">  public:</span><br><span class="line">using Interface = ::mlir::ComputationCostInterface;</span><br><span class="line">FallbackModel() : Concept&#123;getComputationCost&#125; &#123;&#125;</span><br><span class="line">            //针对接口中的API提供默认实现</span><br><span class="line">static inline int64_t getComputationCost(const Concept *impl, ::mlir::Operation *tablegen_opaque_val);</span><br><span class="line">  &#125;;</span><br><span class="line">  //ExternalModel是MLIR框架提供给开发者实现接口的基类</span><br><span class="line">//该接口实现也有默认实现，适用于开发者没有重新实现接口的情况</span><br><span class="line">  //ExternalModel有两个模板参数，第一个是接口实现类，第二个参数是适用的操作类型</span><br><span class="line">  //这样的设计确保ExternalModel作用于具体的操作</span><br><span class="line">  template&lt;typename ConcreteModel, typename ConcreteOp&gt;</span><br><span class="line">  class ExternalModel : public FallbackModel&lt;ConcreteModel&gt; &#123;</span><br><span class="line">  public:</span><br><span class="line">using ConcreteEntity = ConcreteOp;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line">...</span><br><span class="line">&#125; // namespace detail</span><br><span class="line"></span><br><span class="line">//定义接口类</span><br><span class="line">class ComputationCostInterface : public ::mlir::OpInterface&lt;ComputationCostInterface, detail::ComputationCostInterfaceInterfaceTraits&gt; &#123;</span><br><span class="line">public:</span><br><span class="line">  using ::mlir::OpInterface&lt;ComputationCostInterface, detail::ComputationCostInterfaceInterfaceTraits&gt;::OpInterface;</span><br><span class="line">  //定义辅助类，通过ComputationCostInterface::Trait可以访问到特质</span><br><span class="line">  //这个特质非常重要，自动将接口转化为特质，一方面让接口和特质在实现层面统一</span><br><span class="line">  //即具体操作定义时可以把接口和特质看做相同的。</span><br><span class="line">  template &lt;typename ConcreteOp&gt;</span><br><span class="line">     struct Trait : public detail::ComputationCostInterfaceTrait&lt;ConcreteOp&gt; &#123;&#125;;</span><br><span class="line">  //接口对外提供的API</span><br><span class="line">  int64_t getComputationCost();</span><br><span class="line">&#125;;</span><br><span class="line">//接口特质类的定义和实现，在本例中特质没有任何API</span><br><span class="line">namespace detail &#123;</span><br><span class="line">  template &lt;typename ConcreteOp&gt;</span><br><span class="line">  struct ComputationCostInterfaceTrait : public ::mlir::OpInterface&lt;ComputationCostInterface, detail::ComputationCostInterfaceInterfaceTraits&gt;::Trait&lt;ConcreteOp&gt; &#123;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;// namespace detail</span><br><span class="line">&#125; // namespace mlir</span><br><span class="line">//Model和FallbackModel中关于接口中的API的默认实现</span><br><span class="line">namespace mlir &#123;</span><br><span class="line">//Model类中API的实现，可以看到并没有使用Concept*参数</span><br><span class="line">//通过对Operation*进行类型转换后调用具体操作API实现</span><br><span class="line">template&lt;typename ConcreteOp&gt;</span><br><span class="line">int64_t detail::ComputationCostInterfaceInterfaceTraits::Model&lt;</span><br><span class="line">ConcreteOp&gt;::getComputationCost(const Concept </span><br><span class="line">*impl, ::mlir::Operation *tablegen_opaque_val) &#123;</span><br><span class="line">  return (llvm::cast&lt;ConcreteOp&gt;(tablegen_opaque_val)).</span><br><span class="line">getComputationCost();</span><br><span class="line">&#125;</span><br><span class="line">//FallbackModel类中API的实现，通过参数Concept*调用API实现</span><br><span class="line">//参数Concept*指向一个接口实现对象</span><br><span class="line">//由于接口实现可以由开发者动态提供，因此实现了动态绑定功能</span><br><span class="line">template&lt;typename ConcreteOp&gt;</span><br><span class="line">int64_t detail::ComputationCostInterfaceInterfaceTraits::FallbackModel&lt;</span><br><span class="line">ConcreteOp&gt;::getComputationCost(const Concept </span><br><span class="line">*impl, ::mlir::Operation *tablegen_opaque_val) &#123;</span><br><span class="line">  //注意impl的静态类型为Concept，真实类型为具体的接口实现对象</span><br><span class="line">//所以可以使用static_cast进行类型转换</span><br><span class="line">  return static_cast&lt;const ConcreteOp *&gt;(impl)-&gt; </span><br><span class="line">getComputationCost(tablegen_opaque_val);</span><br><span class="line">&#125;</span><br><span class="line">&#125; // namespace mlir</span><br><span class="line"></span><br><span class="line">//接口API的默认实现，可以看到它通过getImpl()找到真正的接口实现</span><br><span class="line">//原因是接口继承于模板类Interface</span><br><span class="line">//而Interface在构造对象时通过getInterfaceFor找到了真正的接口实现</span><br><span class="line">int64_t mlir::ComputationCostInterface::getComputationCost() &#123;</span><br><span class="line">  return getImpl()-&gt;getComputationCost(getImpl(), getOperation());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单可以总结一下，一方面接口定义会自动生成特质，从而将接口看作特质的一种。另外接口通过定义Concept类结构，如图4-2所示。</p>
+<img src="/2024/06/15/mlir-interfaces/17257007752956.jpg" class="">
+<p>允许开发者提供不同的接口实现，并将接口实现注册到操作中，从而实现接口动态绑定。</p>
+<h4 id="4-操作接口的定义、注册和使用"><a href="#4-操作接口的定义、注册和使用" class="headerlink" title="4.操作接口的定义、注册和使用"></a>4.操作接口的定义、注册和使用</h4><p>接口的定义和使用相对复杂，原因是接口定义会生成特质和接口实现类，因此接口中包含额外的信息，本节先介绍TD中接口定义和注册，最后介绍如何使用接口。</p>
+<h5 id="接口定义介绍"><a href="#接口定义介绍" class="headerlink" title="接口定义介绍"></a>接口定义介绍</h5><p>代码4-12是一个简单的接口示例，使用mlir-tblgen工具将其转化为记录，得到代码4-18所示。</p>
+ <figure class="highlight plaintext"><figcaption><span>ComputationCostInterface &#123;// Interface Trait NativeTrait InterfaceTrait OpInterfaceTrait OpInterface</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">  code description = [&#123;...  &#125;];</span><br><span class="line">  string cppInterfaceName = &quot;ComputationCostInterface&quot;;</span><br><span class="line">  string cppNamespace = &quot;::mlir&quot;;</span><br><span class="line">  list&lt;InterfaceMethod&gt; methods = [...]; // 接口成员函数和静态函数</span><br><span class="line">  string extraClassDeclaration = &quot;&quot;;</span><br><span class="line">  code extraSharedClassDeclaration = [&#123;&#125;];</span><br><span class="line">  string extraClassOf = &quot;&quot;;</span><br><span class="line">  list&lt;Interface&gt; baseInterfaces = [&#123;&#125;];</span><br><span class="line">  string trait = &quot;ComputationCostInterface::Trait&quot;;</span><br><span class="line">  code extraConcreteClassDeclaration = [&#123;&#125;];</span><br><span class="line">  code extraConcreteClassDefinition = [&#123;&#125;];</span><br><span class="line">  code extraTraitClassDeclaration = [&#123;&#125;];</span><br><span class="line">  string verify = &quot;&quot;;</span><br><span class="line">  bit verifyWithRegions = 0;</span><br><span class="line">  list&lt;Trait&gt; dependentTraits = [];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码4-18中有几个字段虽然为空，但是在一些场景也被广泛使用，主要包含：</p>
+<ul>
+<li>extraClassDeclaration：为接口定义C++代码，这些代码出现在接口类中（代码4-17中ComputationCostInterface），由于这些代码仅仅出现在接口类中，且没有给开发者提供重写的机会，这意味着所有继承于接口的具体操作都共享这一部分代码，因此通常会将接口实现过程公共、不变的代码声明为extraClassDeclaration，这样当具体操作强制类型转换为接口时可以使用这些代码。</li>
+<li>extraTraitClassDeclaration：为接口对应的特质定义C++代码，该代码仅仅出现在特质中（代码4-17中ComputationCostInterfaceTrait），当接口被视为特质使用时可以使用这些代码。</li>
+<li>extraSharedClassDeclaration：由于TD中接口定义可以自动生成特质类和接口类，该字段表示定义C++代码既出现在特质类中也会出现在接口类中（代码4-17中ComputationCostInterface和ComputationCostInterfaceTrait）。只有当代码需要被特质和接口共享时才会使用这个字段。</li>
+<li>methods：接口定义的APIs，包括一般的成员函数也包括静态函数，成员函数本质上是虚函数和，两者在TD中定义差别不大，成员函数可以使用$_op这样的占位符用于指代当前的操作，在mlir-tblgen工具自动生成的C++代码中成员函数会增加一个额外的参数参数指代操作。<br>这里以成员函数为例介绍相关的字段，成员函数指的是TD中使用InterfaceMethod定义的函数，它包括一下字段：</li>
+<li>description：成员函数的描述。</li>
+<li>returnType：成员函数的返回值。</li>
+<li>methodName：成员函数的名字。</li>
+<li>arguments：成员函数的参数，由于函数可以没有参数，所以该字段可以为空。</li>
+<li>methodBody：成员函数实现，可以为空。如果提供了该内容，在mlir-tblgen工具自动该生成的代码中它出现在接口默认实现中（代码4-17中Model），不会出现其它地方，实际上定义了该字段，继承于该接口的具体操作也不能重写该成员函数，它和extraClassDeclaration非常类似。</li>
+<li>defaultImplementation：成员函数的默认实现体，可以为空。如果提供了该内容，在mlir-tblgen工具自动该生成的代码中它出现在特质中（代码4-17中ComputationCostInterfaceTrait），由于特质被具体操作直接继承，所以相当于操作提供默认成员函数的实现，如嗲吗4-17所示Model中相关接口成员函数的实现就是转发到具体操作中相关API实现。</li>
+</ul>
+<h5 id="接口注册"><a href="#接口注册" class="headerlink" title="接口注册"></a>接口注册</h5><p>接口要想被使用，首先要进行注册。而操作接口依赖操作元数据，每个操作中都包含一个成员InterfaceMap，正如名字所示，它以键值对的形式存放操作实现的接口，其中key为接口的ID，value为接口的实现。<br>当操作要使用接口，必须先调用模板基类类Op的成员方法attachInterface将操作的接口注册到元数据中，在注册过程中首先构造接口对象，然后再插入到操作元数据中。<br>默认情况下，即开发者没有实现自己的接口实现类，MLIR框架在创建操作元数据时，具体来说是通过addOperation注册操作时会创建元数据，并调用attachInterface注册接口，此时会将Model作为默认实现注册到元数据。当开发者定义继承于ExternalModel实现了自己的接口实现类,需要在接口使用前通过attachInterface将接口实现类注册到具体操作。<br>目前MLIR为了防止接口实现类对于框架的影响，只允许注册一次接口实现类，也就说说对于一个具体操作，在TD中显式指定了接口，那么Model类会被注册；所以实际常见的是为具体操作新增一个接口（即它没有出现在具体操作的定义中），通过实现ExternalModel并将其注册到具体操作上。<br>所以通常是ExternalModel为操作动态注册或者延时注册接口（可能的情况是接口尚未实现），但这有一个潜在的风险，即开发者忘记为接口注册这些需要动态注册的接口，在运行时就会出错。在规范开发时可以为具体操作调用declarePromisedInterface将需要实现、但尚未实现的接口注册到方言的unresolvedPromisedInterfaces结构中，这样发生错误时能准确给出哪些接口尚未实现。</p>
+<h5 id="接口使用"><a href="#接口使用" class="headerlink" title="接口使用"></a>接口使用</h5><p>当接口定好以后，就可以在操作定义时使用这个接口。假设我们有三个操作Conv2D1、Conv2D2和Conv2D3需要实现接口，其定义示意如代码4-19所示，关于操作定义更详细的介绍参考第3.3节。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//第一种接口使用方法：将接口ComputationCostInterface看作特质使用</span><br><span class="line">def Uniform_Conv2D1Op: Uniform_Op&lt;&quot;Conv2D1&quot;, [ComputationCostInterface]&gt;</span><br><span class="line">//第二种接口使用方法：使用DeclareOpInterfaceMethods记录修饰接口</span><br><span class="line">def Uniform_Conv2D2Op: Uniform_Op&lt;&quot;Conv2D2&quot;, [DeclareOpInterfaceMethods&lt;ComputationCostInterface&gt;]&gt;</span><br><span class="line">//第三种接口使用方法：使用DeclareOpInterfaceMethods记录修饰接口</span><br><span class="line">//并指明接口重载的方法</span><br><span class="line">def Uniform_Conv2D3Op: Uniform_Op&lt;&quot;Conv2D3&quot;, [DeclareOpInterfaceMethods&lt;ComputationCostInterface, &quot;getComputationCost&quot;&gt;]&gt;</span><br></pre></td></tr></table></figure>
+<p>对于这三种使用方法其效果略有不同。<br>对于第一种使用方法，将接口视为特质来使用，本质上是使用接口中定义的特质ComputationCostInterfaceTraits，而非真正的接口。这样的使用方式实际上将接口退化为特质使用，操作并没有对接口中成员函数重载。<br>对于第二种使用方法来说，通过DeclareOpInterfaceMethods修饰接口，表示操作生成的C++代码中包含接口中成员函数的声明，接口中成员函数的实现需要开发者自己完成。但是对于接口中methodBody和defaultImplementation已经实现的成员函数并不会重新声明。<br>对于第三种使用方法来说，通过DeclareOpInterfaceMethods修饰接口时还指定接口的成员函数列表，列表中的函数是有默认实现的成员函数（即defaultImplemtation字段指定了默认实现）。通过该方法，mlir-tblgen工具为具体操作生成的C++代码中不仅仅包含接口中成员函数的声明，还包含重载函数的声明，开发者需要实现这些函数。关于接口更详细的使用方法可以参考官网[ 接口使用介绍：<a target="_blank" rel="noopener" href="https://mlir.llvm.org/docs/Interfaces/%E3%80%822024%E5%B9%B48%E6%9C%88%E8%AE%BF%E9%97%AE%E3%80%82]%E3%80%82">https://mlir.llvm.org/docs/Interfaces/。2024年8月访问。]。</a></p>
+<h4 id="5-常见操作、属性和类型接口概览TODO"><a href="#5-常见操作、属性和类型接口概览TODO" class="headerlink" title="5.常见操作、属性和类型接口概览TODO"></a>5.常见操作、属性和类型接口概览TODO</h4><span id="more"></span>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MLIR/" rel="tag"># MLIR</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/06/15/mlir-traits/" rel="prev" title="第4章（2）：特质">
+                  <i class="fa fa-angle-left"></i> 第4章（2）：特质
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/07/02/Introduction-of-DartVM/" rel="next" title="Introduction_of_DartVM">
+                  Introduction_of_DartVM <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"fbd43c5e98cbecadbd08ff7fa11624bb"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

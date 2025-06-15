@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta property="og:type" content="website">
+<meta property="og:title" content="Inside Compiler">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="inside compiler">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Inside Compiler</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2049/10/06/llvm-cg-errata/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+              <span class="post-sticky-flag" title="置顶">
+                <i class="fa fa-thumbtack"></i>
+              </span><a href="/2049/10/06/llvm-cg-errata/" class="post-title-link" itemprop="url">《深入理解LLVM：代码生成》勘误表</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2049-10-06 15:33:38" itemprop="dateCreated datePublished" datetime="2049-10-06T15:33:38+08:00">2049-10-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="勘误表"><a href="#勘误表" class="headerlink" title="勘误表"></a>勘误表</h1><p>2025年6月更新网友反馈如下问题，待下一次印刷时修正。</p>
+<p>1.第42页，图3-6b中in、out求解有问题。</p>
+<img src="/2049/10/06/llvm-cg-errata/17499581954471.jpg" class="">
+<p>在3-6b中，中间左侧代码，x&#x3D;2时in和out是正确的，当y&#x3D;3时in为（2、T、T）、out为（2、3、T）；中间右侧代码，x&#x3D;3时in为（3、T、T）、out为（3、2、T）。</p>
+<p>2.第54页关于控制依赖描述错误，缺少部分内容。</p>
+<img src="/2049/10/06/llvm-cg-errata/17499581411514.jpg" class="">
+
+<p>这段注意中“如果基本块 A 支配基本块 B，那么基本块 A 执行一定会导致基本块 B 也会执行（根据支配定义所有经过基本块 A 的路径都经过基本块 B），所以不认为基本块 A 控制基本块 B。”缺少了部分前提。应该修改为：<br>如果基本块A支配基本块B，且基本块B逆支配基本块A，那么基本块A执行一定会导致基本块B也会执行。（根据支配、逆支配定义所有经过基本块A的路径都经过基本块B），所以不认为基本块A控制基本块B。</p>
+<p>3.第210页，代码9-3的标题错误。</p>
+<img src="/2049/10/06/llvm-cg-errata/17499583960826.jpg" class="">
+<p>印刷校正前疏忽导致9-3标题错误。代码9-3是对clang编译后的LLVM IR调整后的LLVM IR，其目的是为了触发尾代码优化，而非书中提到的经过尾代码优化后的LLVM IR。</p>
+<img src="/2049/10/06/llvm-cg-errata/17499584262522.jpg" class="">
+<p>4.第24页在讨论SSA析构时有读者xfan对2-14提出疑问，为什么此时SSA析构不考虑IR并行执行的？该例是JVM C1中IR析构的处理方式，如下</p>
+<img src="/2049/10/06/llvm-cg-errata/17499665831153.jpg" class="">
+<p>原因是在JVM的C1进行构造IR已经考虑过，所以在析构时不用再考虑。由于书中没有明确提及这一点，给读者造成误解，抱歉。后续会稍微补充相关背景知识。</p>
+<p>感谢泽文和他的小伙伴xfan、bloomsky等，发现了上述问题，感谢。</p>
+<p>2025年1月第二版次印刷修正了如下错误。</p>
+<ol>
+<li><p>部分图文不一致说明<br>由于印刷原因，书中部分图文不完全一致。书中文字介绍图中蓝色线由于印刷统一印刷为红色线，例如在第97页第二段提到：DAG中chain关系用蓝色虚线，实际印刷为红色虚线，glue关系用蓝色实线，实际印刷为红色实线。故图7-7中红色虚线表示chain关系，在本书其它地方类似。</p>
+</li>
+<li><p>在”5.2.1 循环识别“这一小节的第一段最后一句“逆序遍历待控制流对应的支配树”修正为“逆序遍历待分析的控制流对应的支配树”。</p>
+</li>
+<li><p>45 页表3-3 liveuse集合 错误<br>p75 代码6-6上 calss -&gt;class</p>
+</li>
+<li><p>p53：到达基本块 6 的所有路径都经过基本块 2</p>
+<p> p159：LiveRefGens[rx] –&gt; LiveRegGens[rx]</p>
+<p> p237：Indexe –&gt;Indexes</p>
+<p>  p251：REG_SEQUCENCE –&gt; REG_SEQUENCE</p>
+<p>  p336：PROT顺序 –&gt; RPOT顺序</p>
+<p> p396：垃圾回收期 –&gt; 垃圾回收器</p>
+</li>
+<li><p>书中“寄存器分配前的调度算法…而寄存器分配后的调度算法…还需要关注寄存器分配的压力”。<br>这里的“寄存器分配前”和“寄存器分配后”写反了。</p>
+</li>
+</ol>
+<p>感谢网友 @ywgrit，@punkyc，@IanIsMyUsername，@mengdouer，sunshaoce 的反馈。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2049/10/06/llvm-cg-errata/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/22/llvm-cg-reference/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/12/22/llvm-cg-reference/" class="post-title-link" itemprop="url">《深入理解LLVM：代码生成》参考资料</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-12-22 10:23:49" itemprop="dateCreated datePublished" datetime="2024-12-22T10:23:49+08:00">2024-12-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>584</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>本书在写作过程中参考了同类的LLVM书籍，主要有以下5本，读者可以进一步阅读。</p>
+<ol>
+<li>LLVM COOKBOOK： <a target="_blank" rel="noopener" href="https://github.com/hiro-9999/book-2/blob/master/LLVM%2520Cookbook.pdf">https://github.com/hiro-9999/book-2/blob/master/LLVM%20Cookbook.pdf</a> 2015</li>
+<li>Learn LLVM 12：<a target="_blank" rel="noopener" href="https://github.com/xiaoweiChen/Learn-LLVM-12">https://github.com/xiaoweiChen/Learn-LLVM-12</a> 2021.5</li>
+<li>LLVM Techniques, Tips, and Best Practices：<a target="_blank" rel="noopener" href="https://github.com/xiaoweiChen/LLVM-Techniques-Tips-and-Best-Practies">https://github.com/xiaoweiChen/LLVM-Techniques-Tips-and-Best-Practies</a> 2021.4</li>
+<li>Getting Started with LLVM Core Libraries（LLVM编译实战教程）中英文书籍地址：<a target="_blank" rel="noopener" href="https://getting-started-with-llvm-core-libraries-zh-cn.readthedocs.io/zh_CN/latest/">https://getting-started-with-llvm-core-libraries-zh-cn.readthedocs.io/zh_CN&#x2F;latest&#x2F;</a>；<a target="_blank" rel="noopener" href="https://faculty.sist.shanghaitech.edu.cn/faculty/songfu/course/spring2018/CS131/llvm.pdf">https://faculty.sist.shanghaitech.edu.cn/faculty/songfu/course/spring2018/CS131/llvm.pdf</a></li>
+<li>CPU0： <a target="_blank" rel="noopener" href="http://jonathan2251.github.io/lbt/index.html#">http://jonathan2251.github.io/lbt/index.html#</a></li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/12/22/llvm-cg-reference/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/13/V8-StringConstructor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/11/13/V8-StringConstructor/" class="post-title-link" itemprop="url">V8 StringConstructor实现机制</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-11-13 20:43:30" itemprop="dateCreated datePublished" datetime="2024-11-13T20:43:30+08:00">2024-11-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/V8/" itemprop="url" rel="index"><span itemprop="name">V8</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="一、StringConstructor-JS规范"><a href="#一、StringConstructor-JS规范" class="headerlink" title="一、StringConstructor JS规范"></a>一、StringConstructor JS规范</h2><img src="/2024/11/13/V8-StringConstructor/V8-Specification.png" class title="v8-specification">
+
+<h2 id="二、V8-StringConstructor实现"><a href="#二、V8-StringConstructor实现" class="headerlink" title="二、V8 StringConstructor实现"></a>二、V8 StringConstructor实现</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/11/13/V8-StringConstructor/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/08/gen-zgc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/09/08/gen-zgc/" class="post-title-link" itemprop="url">分代ZGC概述</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-09-08 19:13:49" itemprop="dateCreated datePublished" datetime="2024-09-08T19:13:49+08:00">2024-09-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/GC/" itemprop="url" rel="index"><span itemprop="name">GC</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>2023年9月19日发布的JDK 21中正式发布了分代ZGC（下文简称ZGC），ZGC是目前业界最新、最复杂的垃圾回收器。垃圾回收器一直是JDK中最热门技术，根据JDK版本支持的策略，JDK 8、JDK 11、JDK 17和JDK 21是目前长期支持的版本。目前这四个版本共支持七种垃圾回收器，分别是串行回收（简称Serial GC）、并行回收（Parallel Scavenge，简称Parallel GC）、并发标记清除（Concurrent Mark Sweep，简称CMS）、垃圾优先（Garbage First，简称G1）、Shenandoah GC、ZGC、Epsilon（实验特性，仅支持分配不回收，实际场景中不会采用）。其中ZGC经过近年来JDK中最热门的技术，经过近10年的发展，在2017年发布的JDK 11中提供单代ZGC为实验特性，在2020年发布的JDK 17中正式将单代ZGC升级为产品特性，在2023年发布的JDK 21正式支持分代ZGC。目前已经有不少互联网公司在实际产品中开始使用最新版本的ZGC，它是一款完全无停顿的垃圾回收器，目前应用停顿时间基本上都小于1毫秒，同时支持堆内存最高可达64TB。<br>以2022年 Per linden在演讲[<a target="_blank" rel="noopener" href="https://cr.openjdk.org/~pliden/slides/ZGC-OracleDevLive-2022.pdf]%E4%B8%AD%E7%BB%99%E5%87%BA%E7%9A%84%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E4%B8%BA%E4%BE%8B%EF%BC%8C%E9%92%88%E5%AF%B9SPECjbb%C2%AE2015%E6%B5%8B%E8%AF%95%E5%A5%97%E4%BD%BF%E7%94%A8G1%E5%92%8CZGC%EF%BC%88%E5%85%B6%E4%B8%ADG1%E4%BB%8EJDK9%E4%BB%A5%E5%90%8E%E5%B0%B1%E6%98%AF%E9%BB%98%E8%AE%A4%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%EF%BC%89%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%8F%91%E7%8E%B0G1%E5%AF%BC%E8%87%B4%E5%BA%94%E7%94%A8%E7%9A%84%E5%81%9C%E9%A1%BF%E6%97%B6%E9%97%B4%E5%A4%A7%E7%BA%A6%E5%9C%A8300~500%E6%AF%AB%E7%A7%92%EF%BC%8C%E8%80%8CZGC%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%83%85%E5%86%B5%E4%B8%8B%E4%B8%8D%E8%B6%85%E8%BF%87200%E5%BE%AE%E7%A7%92%EF%BC%8C%E5%81%9C%E9%A1%BF%E6%97%B6%E9%97%B4%E7%BA%A6%E4%B8%BA%E5%8E%9F%E6%9D%A5%E7%9A%84%E5%8D%83%E5%88%86%E4%B9%8B%E4%B8%80%E3%80%82%E6%B5%8B%E8%AF%95%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%E6%89%80%E7%A4%BA%EF%BC%88%E5%B7%A6%E5%9B%BE%E5%8D%95%E4%BD%8D%E4%B8%BAms%EF%BC%8C%E5%9B%BE%E4%B8%AD%E7%9C%8B%E4%B8%8D%E5%88%B0ZGC%E7%9A%84%E5%81%9C%E9%A1%BF%E6%97%B6%E9%97%B4%EF%BC%9B%E5%8F%B3%E5%9B%BE%E5%B0%86%E5%8D%95%E4%BD%8D%E5%88%87%E6%8D%A2%E4%B8%BAus%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0zgc%E5%81%9C%E9%A1%BF%E6%97%B6%E9%97%B4%E4%B8%8D%E8%B6%85%E8%BF%87200us%EF%BC%89%EF%BC%9A">https://cr.openjdk.org/~pliden/slides/ZGC-OracleDevLive-2022.pdf]中给出的测试数据为例，针对SPECjbb®2015测试套使用G1和ZGC（其中G1从JDK9以后就是默认的垃圾回收器），可以发现G1导致应用的停顿时间大约在300~500毫秒，而ZGC大多数情况下不超过200微秒，停顿时间约为原来的千分之一。测试效果如下所示（左图单位为ms，图中看不到ZGC的停顿时间；右图将单位切换为us，可以看到zgc停顿时间不超过200us）：</a></p>
+<img src="/2024/09/08/gen-zgc/17258405203063.jpg" class="">
+<img src="/2024/09/08/gen-zgc/17258405437124.jpg" class="">
+
+
+<p>同时和G1相比吞吐量并没有明显下降（吞吐量下降约2%左右），如下图所示：</p>
+<img src="/2024/09/08/gen-zgc/17258406205052.jpg" class="">
+
+
+<p>上面以128G的堆空间为例进行测试，如果堆空间进一步扩大，ZGC的会表现的更为优异。<br>从设计和实现效果来看，ZGC适合大内存、停顿时间要求低的场景，如金融、大数据等用户体验越来越重要的场景中发挥着关键作用。ZGC为什么能够表现的这么优异？主要原因是ZGC是完全并发垃圾回收器（JVM中的垃圾回收线程和Java应用线程并发地运行，即在内存对象发生移动时也不要去Java应用暂停），将堆空间分为新生代和老生代，垃圾回收可以并发回收新生代和老生代空间，在垃圾回收的同时应用程序还可以并发执行。用Minor GC表示新生代回收（绿色表示），Major GC表示老生代回收（红色表示），Mutator表示应用（蓝色表示），ZGC执行示意图如下：</p>
+<img src="/2024/09/08/gen-zgc/17257734878123.jpg" class="">
+
+
+<p>由于ZGC是完全并发执行，设计和实现也非常复杂，回收算法采用标记-压缩（Mark-Compact）为基础，标记-压缩算法是跟踪法回收，通过根对象标记遍历标记所有活跃对象，压缩活跃对象实现内存回收。涉及到关键技术有：着色指针、读屏障、写屏障、栈帧屏障等。</p>
+<h2 id="1并发回收原理概述"><a href="#1并发回收原理概述" class="headerlink" title="1并发回收原理概述"></a>1并发回收原理概述</h2><p>并发回收有多种实现原理，最为直观的方法是目标空间不变性，将堆空间分为From和To来两个空间，Mutator在运行时产生对象（分配内存），GC工作线程（称为Collector）负责回收已经死亡的对象（将活跃对象搬移到To空间）。由于对象之间存在引用关系，Muator和Collector并发执行时可以同时访问一个对象（Mutator通常修改对象、Collector负责搬移对象），需要优雅设计处理并发问题。最直观的思路是：在垃圾回收启动后，无论是Mutator还是Collector访问对象，只要发现对象还没有转移到目标空间，就会先启动转移。当发现对象已经转移时，则通过转发指针获得目标空间中的对象并访问演示了Mutator写对象时先转移对象到目标空间，再在目标空间中写对象。</p>
+<p>这个过程通常要借助读屏障（Load Barrier）完成上述功能。<br>其他并发回收原理还有源空间不变性、引用不变性，可以参考相关书籍。</p>
+<h2 id="2并发回收步骤"><a href="#2并发回收步骤" class="headerlink" title="2并发回收步骤"></a>2并发回收步骤</h2><p>ZGC并发垃圾回收采用标记-压缩。整个回收过程可以分为3个阶段：分别为标记（mark）、转移（relocate或者copy）和重定位（remap）。这3个阶段完成的功能如下。<br>1）标记：从根集合出发，标记活跃对象，此时内存中存在活跃对象和死亡对象。<br>2）转移：把活跃对象转移（复制）到新的内存空间，原来的内存空间可以回收。<br>3）重定位：因为对象的内存地址发生了变化，所以所有指向对象老地址的指针都要调整到对象新的地址上。<br>并发垃圾回收就是将这3步都实现为并发执行。</p>
+<p>在这3个阶段执行前，通常需要一个安全点执行阶段，安全点执行阶段是串行执行，此时Mutator会暂停执行，安全点的目的是为了同步Collector的工作状态。在非并发回收中，所有的工作都在安全点执行，Mutator会一直暂停，这个时间称为应用的暂停时间。<br>这3个阶段在实现时进一步划分为8步：<br>1)初始标记：暂停Mutator执行，设置标记转态以及完成根集合初始标记、完成Remap；<br>2)并发标记：和Mutator并发执行，并完成标记、Remap；<br>3)结束标记：暂停Mutator执行，完成所有对象标记、Remap；<br>4)标记空间释放：并发执行，在标记过程中会使用标记栈来存储待标记对象，此时可以释放未使用的标记栈空间；<br>5)重置转移集：并发执行，准备好待转移对象使用的空间；<br>6)选择转移集：并发执行，选择新生代或者老生代需要转移的页面；<br>7)初始转移：暂停Mutator执行，设置Rermap状态，完成根集合转移；<br>8)并发转移：并发执行，根据转移集将活跃对象转移至新的内存空间（页面）；<br>在初始标记、结束标记、初始选择这3步还需要暂停Java应用执行，所以ZGC还是存在一定的停顿时间，但是为了减少这3步的停顿时间，ZGC还引入了高效并发根标记技术。</p>
+<h2 id="3并发根标记"><a href="#3并发根标记" class="headerlink" title="3并发根标记"></a>3并发根标记</h2><p>在标记时，首先从根集合触发。根集合通常线程的栈帧、全局变量、锁、类元数据等信息。其中最耗时的是线程栈帧遍历，线程栈帧包含了函数调用链的所有栈帧，需要将所有的栈帧都进行遍历，这将非常耗时。一个高效的并发标记方法是引入栈帧屏障技术。简单说为栈帧引入一个WaterMark，当SP（栈顶指针）大于WaterMark说明访问早期的栈，需要Mutator进行标记处理，当SP小于WaterMark说明是新增的函数调用，可以通过记录新增函数的对象，并进行遍历。<br>通过并发根标记技术，可以大大减少停顿时间，从而使得ZGC的停顿时间从几毫秒降至微秒级别。</p>
+<h2 id="4高效标记"><a href="#4高效标记" class="headerlink" title="4高效标记"></a>4高效标记</h2><p>垃圾回收的第一个阶段遍历根集合，对所有活跃对象进行标记。由于回收动作分成不同步骤，所以在标记完活跃对象后，需要将活跃对象状态保持下来（即对象是活跃）。由于状态和对象一一对应，所以最简单的设计是为每个对象关联一个状态信息，当识别对象是活跃状态后更新对象的状态，但是这带来两个问题：一方面是需要内存空间保持状态信息，另一方面是有额外的对象内存访问（通常需要访问对象后获取状态）。一个优化的设计是采用着色指针，即将对象的活跃保存在指针地址中，而不需要真实访问对象。<br>在分代ZGC中将地址的低16位用作对象状态，示意图如下所示：</p>
+<img src="/2024/09/08/gen-zgc/17257732739624.jpg" class="">
+
+<p>其中RRRRMM、mm、FF、rr的含义如下：</p>
+<img src="/2024/09/08/gen-zgc/17257733080380.jpg" class="">
+
+
+<p>在Load时将着色的指针转换为正常地址，在Store时将正常地址进行着色。例如在x86_64架构下，读屏障为：</p>
+<figure class="highlight plaintext"><figcaption><span>rax, 0x10(rbx)</span><a target="_blank" rel="noopener" href="//读取对象">link</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shrq rax, $address_shift//右移，找到对应的着色状态</span><br><span class="line">ja slow_path         //如果状态不正确，进入slow path，否则直接向下执行</span><br></pre></td></tr></table></figure>
+<p>这里可以看出，在读屏障时会有额外两条指令（上述的shrq和ja）<br>写屏障为：</p>
+<figure class="highlight plaintext"><figcaption><span>0x10(rbx), $stroe_bad_mask//判断对象着色状态是否正确</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">jnz slow_path         //如果状态不正确，进入slow path，否则直接向下执行</span><br><span class="line">shlq rax, $address_shift//左移</span><br><span class="line">orq rax, $color//添加着色信息</span><br><span class="line">movq 0x10(rbx), rax//更新对象地址</span><br><span class="line">这里可以看出，在写屏障时会有额外四条指令（上述的testl、jnz、shlq和orq）</span><br></pre></td></tr></table></figure>
+
+<h2 id="5分代回收"><a href="#5分代回收" class="headerlink" title="5分代回收"></a>5分代回收</h2><p>基于对象生命周期管理，有弱分代理论假设和强分代理论假设两种。<br>1）弱分代理论假设：假定对象分配内存后很快使用，并且使用后很快就不再使用（内存可以释放）。<br>2）强分代理论假设：假定对象长期存活后，未来此类对象还将长期存活。<br>基于弱分代理论将内存管理划分成多个空间进行管理，基于强分代理论可以优化GC执行的效率，不回收识别的长期存活对象，从而加快GC 的执行效率。<br>值得一提的是，目前弱分代理论在高级语言中普遍得到证实和认可，但是对于强分代理论只在一些场景中适用。目前弱分代理论和强分代理论在JVM 中均有体现。</p>
+<p>所以将内存划分为多个区域，每个区域单独执行垃圾回收，能提供应用的吞吐量，减少暂停时间。通常将堆空间划分为两个，分别是新生代和老生代。新生代的垃圾回收称为Minor GC，老生代的垃圾回收称为Major GC。<br>通常新生代较小，老生代较大。在Minor GC执行时，对新生代中活跃对象进行标记，通常会从根集合开始跟踪遍历对象，同时为了加速新生代的遍历，记录了老生代到新生代对象的引用，称为引用集（记为RSet），将RSet也作为新生代的根跟踪标记活跃对象。Minor GC标记如下所示：</p>
+<img src="/2024/09/08/gen-zgc/17257734423602.jpg" class="">
+
+<p>RSet通常使用写屏障，即在老生代对象关联新生代对象时记录老生代到新生代的引用，放在RSet中。<br>Major GC会回收整个堆空间。可以执行一次Minor GC，然后在执行老生代回收。这样做的好处是：借助一次Minor GC，新生代对老生代的引用不会包含过时引用；同时可以清空新生代。Major GC执行示意图如下所示：</p>
+<img src="/2024/09/08/gen-zgc/17257734570006.jpg" class="">
+
+
+<p>分代回收存在Minor GC、Major GC，并且都采用了标记-压缩算法，由于Minor GC、Major GC和Mutator都可以并发执行，即都可以修改同一个对象。而Collector和Mutator之间的并发执行通过读屏障、写屏障和栈帧屏障实现。但是Minor GC和Major GC之间也必须考虑并发同步问题，否则也会出错。<br>例如在Major GC执行过程中，有触发了Minor GC，当Major GC已经标记了老生代的一个对象ObjOld，这个对象有一个指向新生代的对象（ObjNew）引用。但是Minor GC已经完成了对象的转移，此时ObjOld指向一个过时的对象（实际上对象已经被回收，这是一块非法内存），ObjOld在转移前必须更新指针才能保证GC正确性。<br>为此ZGC进行了以下设计：</p>
+<ul>
+<li>Minor GC执行过程中不能启动新的Minor GC和Major GC；</li>
+<li>Major GC执行过程中不能启动新的Major GC；</li>
+<li>Major GC执行过程中可以启动新的Minor GC；并且可以启动多轮Minor GC；</li>
+<li>Major GC执行会启动一个“特殊的”Minor GC，这个“特殊的”Minor GC不仅仅执行新生代回收，还会将新生代到老生代的引用记录在老生代的标记栈中；</li>
+<li>多个GC请求会进行排队，依次处理，最终决定执行Minor GC还是Major GC；</li>
+<li>Minor GC在转移过程，对象可以晋升到老生代，在晋升过程中需要更新RSet中对象的状态信息（例如Remap）；</li>
+<li>Minor GC执行转移过程中定义转发信息（保存对象转移前后的地址信息），并且在Minor GC标记执行完成对象完成重定位；</li>
+<li>Minor GC执行标记过程中会使用Major GC的转发信息，并且在Minor GC标记执行完成对象完成重定位；</li>
+<li>Major GC执行转移过程中定义转发信息，并且在Major GC标记执行完成对象完成重定位。</li>
+</ul>
+<h2 id="6分代ZGC的优势与不足"><a href="#6分代ZGC的优势与不足" class="headerlink" title="6分代ZGC的优势与不足"></a>6分代ZGC的优势与不足</h2><p>上面着重讨论了分代ZGC的关键技术，使得ZGC可以支持TB级内存，同时以非常短的停顿时间完成垃圾回收。但是ZGC也存在一些不足，统计数据表明ZGC的吞吐量较G1下降约2%，主要原因是ZGC采用了读写屏障，会带来额外的负担。同时需要指出的是，复杂的实现也会消耗额外的内存（即所谓的底噪比较高）。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/09/08/gen-zgc/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/07/mlir-rewriter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/09/07/mlir-rewriter/" class="post-title-link" itemprop="url">第6章：操作匹配和重写(1)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-09-07 19:13:49" itemprop="dateCreated datePublished" datetime="2024-09-07T19:13:49+08:00">2024-09-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>操作匹配和重写是MLIR中最重要的概念，通过操作匹配和重写实现方言降级和操作变换。在MLIR中为了实现编译和优化功能，一般需要将高级方言的操作转换（Convert）到低级方言的操作，该过程一般也称为降级（Lowering），实现编译功能；或者将方言中的操作变换（Transform）到本方言中的其它的操作，从而实现操作优化功能；它们都依赖于操作匹配和重写机制。<br>匹配是编译原理中非常常见的问题，例如编译器后端实现的指令匹配。常见的匹配方法有：宏展开、树匹配、DAG（有向无环图）匹配等，DAG匹配因为其匹配效率和性能优势被广泛用在当前编译器中。在第2章IR结构中提到，每一个操作中CFG区域[ 虽然MLIR区域包括CFG和Graph两种类型，但大多数区域都是CFG区域，只有很少的不要求代码执行顺序的区域才是Graph区域，例如代码的顶级操作module，它的嵌套操作包含global、func等无关顺序的操作，所以module操作是Graph类型。]的IR都满足SSA特性，根据SSA特性对于Use—Def非常容易获得，而整个程序的Use—Def信息通常是一个DAG，因此实现一套基于DAG的匹配和重写机制可能满足MLIR编译优化的大多数场景。<br>MLIR的操作匹配和重写机制吸收其它编译项目的优点，通过一套针对操作的匹配和重写框架，提供了多种操作模式匹配能力，包含：支持操作一对一、一对多、多对一匹配重写，目前MLIR的匹配&#x2F;重写机制基于Pass框架进行实现，在Pass运行时找到操作锚点后，将操作锚点作为待处理的操作，对操作内嵌的负载IR使用DAG图进行匹配和重写。为了灵活的处理DAG匹配的优先级问题，提供匹配成本模型，开发者可以通过成本模型定义模式匹配的顺序。<br>另外在匹配过程中将常量折叠这样的优化提升至较高的地位，在框架中支持操作的常量折叠，只需要开发者在定于操作时定义常量折叠的实现就可以自动实现常量折叠。当然目前MLIR框架提供的这套操作匹配和重写机制也存在一些不足，不适用于任意操作的匹配，例如CSE这样的优化可以应用于任意的操作，对于这样的优化框架难以提供非常优雅的方式（要多每个操作都提供类似的匹配模版），所以这样的优化自MLIR社区中并未使用操作匹配和重写的框架，而是基于Pass框架进行实现。除此以外，MLIR中Pass机制都要求操作具有IsolatedFromAbove特质，该特质打断了操作的Def–Use关系，因此操作匹配和重写框架也不能支持跨Pass锚点的处理（表示匹配、重写机制也是局部优化），同时匹配、重写机制也要满足5.1.5节介绍的Pass实现约束。<br>本章首先介绍MLIR中操作匹配的设计和实现，然后介绍MLIR中操作变换和方言降级的实现，最后简单介绍MLIR为开发者提供的三种操作匹配方法。</p>
+<h2 id="6-1操作匹配设计和实现"><a href="#6-1操作匹配设计和实现" class="headerlink" title="6.1操作匹配设计和实现"></a>6.1操作匹配设计和实现</h2><p>MLIR以操作为核心进行IR设计和变换，在匹配、重写过程中也是围绕操作进行的。在操作匹配和重写机制中涉及到三个概念，分别是模式（Pattern）、重写（Rewrite）和应用（Applicator）。</p>
+<ul>
+<li>模式：针对操作定义匹配的模式，模式包括待匹配的操作、操作的约束（如操作的接口或者特质）、匹配后生成的操作、操作匹配的成本模型等信息。除此以外模式还提供匹配和重写函数，它们可由mlir-tblgen根据模式的TD定义自动生成，也可由开发者实现。</li>
+<li>重写：针对具体的操作实现操作的添加、删除、移动、替换功能以及相关变化的通知等功能（通知机制是框架最为主要的特征，通过通知机制跟踪变化的操作，从而实现6.2节介绍的贪婪匹配、方言降级）。</li>
+<li>应用：将模式和重写进行组合的驱动，允许定义多个匹配模式、重写实现、成本模型信息，针对多个匹配模式，根据成本模型在每次匹配时都选择最优匹配模式，然后执行匹配和重写。在匹配的过程中，可能存在多种不同类型的模式，例如一般的匹配模式、任意操作的匹配模式和通过PDL定义的模式，当多种类型同时存在时当匹配模式相同时会按照一般匹配模式、任意操作匹配模式、PDL模式依次进行匹配、重写。<br>下面看一下这三部分的具体实现。</li>
+</ul>
+<h3 id="6-1-1模式"><a href="#6-1-1模式" class="headerlink" title="6.1.1模式"></a>6.1.1模式</h3><p>MLIR中DAG匹配由模式确定匹配图中节点，同时也要反映操作以及操作结构、约束信息。而实际上以操作为锚点，准确描述操作的信息就能完成DAG匹配。例如要匹配操作Operation，首先它被其它两个操作使用，另外它由三个操作数，假设第一个操作数是常量记为Operand1，而第二个操作数是另一个操作的输出，其类型记为Sub-Op1，第三个操作数是一个操作的输出，其类型记为Sub-Op2，再假如Sub-Op1也由两个操作数，分别为Operand2和Sub-Op3。如果要匹配锚点操作，本质上就是在整个图中匹配子图，子图结构如图6-1所示。</p>
+<img src="/2024/09/07/mlir-rewriter/17257033263174.jpg" class="">
+<p>MLIR定义Pattern结构用于描述模式，其中Pattern包括的数据成员主要是匹配基础信息，包括成本、待匹配的目标、匹配后的操作。同时还定义了RewritePattern继承于Pattern，在Pattern类的基础上增加了成员函数match、rewrite、matchAndRewrite等。另外为了方便社区开发者的使用，定义了ConversionPattern继承于RewritePattern，并添加了类型的支持；定义OpRewritePattern、OpInterfaceRewritePattern、OpTraitRewritePattern等模式分别用于操作模式、带接口的操作模式和带特质的操作模式。目前Pattern的类继承结构如图6-2所示。</p>
+<img src="/2024/09/07/mlir-rewriter/17257033509910.jpg" class="">
+
+<p>模式的定义有三种方法，在本节介绍通过C++代码方式的定义模式。假设定义一个模式MyPattern如代码6-1所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">class MyPattern: public RewritePattern&#123;</span><br><span class="line">public:</span><br><span class="line">//定义MyPattern的构造方式，模式匹配的操作为MyOp</span><br><span class="line">MyPattern(PatternBenefit benefit, MLIRContext* context)</span><br><span class="line">:RewritePattern(MyOp::getOperationName(), benefit, context)&#123;&#125;</span><br><span class="line">//除了定义匹配锚点操作的模式外，还可以定义匹配任意操作的模式，例如匹配任意操作的</span><br><span class="line">//模式可以设置匹配类型为MatchAnyOpTypeTag，它本质上是一个占位符</span><br><span class="line">//在匹配过程时会特殊处理这个类型</span><br><span class="line">MyPattern(PatternBenefit benefit)</span><br><span class="line">:RewritePattern(benefit, MatchAnyOpTypeTag())&#123;&#125;</span><br><span class="line">//重载match和rewrite函数</span><br><span class="line">//根据模式的锚点操作，match进一步确定匹配操作的信息，比如可以要求操作的操作数样子</span><br><span class="line">//是否包含某一个特质或者某一种接口等</span><br><span class="line">LogicalResult match(Operation* op) const override;</span><br><span class="line">//如果匹配成功后，调用rewrite函数完成操作重写，开发者根据业务需要可以删除、</span><br><span class="line">//更新操作，或者增加新的操作等</span><br><span class="line">void rewrite(Operation* op, PatternRewriter&amp; rewriter);</span><br><span class="line">//将match和rewrite组合在一起，提供一个入口。注意基类RewritePattern的</span><br><span class="line">//matchAndRewrite就是调用match和rewrite，开发者只需重载match和rewrite</span><br><span class="line">//开发者也可以重载matchAndRewrite</span><br><span class="line">LogicalResult matchAndRewrite(Operation* op,PatternRewriter&amp; rewriter);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>当然开发者需要实现指定匹配操作，可以直接让MyPattern直接继承于模版类OpRewritePattern，它接受操作类型作为模版参数，例如可以定义模式为Struct MyPattern: public OpRewritePattern<MyOp>，则MyPattern仅仅匹配MyOp操作。。</p>
+<h3 id="6-1-2重写"><a href="#6-1-2重写" class="headerlink" title="6.1.2重写"></a>6.1.2重写</h3><p>MLIR社区对于重写机制的基础能力进行实现，包括了操作的修改、添加、更新、删除等。开发者只需要根据匹配结果调用重写机制中的相关API完成业务即可。目前社区关于重写的类结构图如图6-3所示。</p>
+<img src="/2024/09/07/mlir-rewriter/17257034065069.jpg" class="">
+
+<p>注意：在代码6-1中rewriter方法中使用PatternRewriter中的API对操作进行更新、插入、删除等处理，而不能直接使用类Opeartion中的方法（Operation也继承于OpBuilder），原因是PatternRewriter不仅仅调用Opeartion中的方法，还提供了通知机制，该通知机制可以把相关变化的操作通知给其他组件，从而保证递归处理的正确性。<br>在图6-3中有几个值得注意的地方：</p>
+<ul>
+<li>除IRRewriter外，其他派生类都继承于PatternRewriter。IRRewriter和PatternRewriter最大的区别是：<em>IRRewriter可以针对任意的操作进行重写</em>，而PatternRewriter仅仅针对当前正在处理的操作进行重写。所以IRRewriter通常只有在无法使用PatternRewriter时才会使用。</li>
+<li>ConversionPatternRewriter主要用于方言降级中，它主要是提供了方言降级中需要使用的一些功能，例如对于基本块参数类型的转换等方法。</li>
+<li>GreedyPatternRewriteDriver主要用于优化变换中，它主要提供了贪婪的方法用于递归处理操作的匹配和重写，它有两个派生类，分别是RegionPatternRewriteDriver和MultiOpPatternRewriteDriver，这两个派生类分别针对区域中的操作、多个操作进行匹配、重写。<br>下面通过TD描述的方式简单定义一个模式的匹配、重写。如代码6-2所示。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//定义操作OpN，它们位于test方言中，定义了TEST_OP记录。操作包含两个操作数</span><br><span class="line">//两个操作数都是I32类型，输出为I32类型</span><br><span class="line">def OpN : TEST_Op&lt;&quot;op_n&quot;&gt; &#123;</span><br><span class="line">  let arguments = (ins I32, I32);</span><br><span class="line">  let results = (outs I32);</span><br><span class="line">&#125;</span><br><span class="line">//定义OpP操作，包括六个操作数，都是I32类型。输出为I32类型</span><br><span class="line">def OpP : TEST_Op&lt;&quot;op_p&quot;&gt; &#123;</span><br><span class="line">  let arguments = (ins I32, I32, I32, I32, I32, I32);</span><br><span class="line">  let results = (outs I32);</span><br><span class="line">&#125;</span><br><span class="line">//定义一个匹配模式，匹配操作OpN，第一个操作数为变量b</span><br><span class="line">//第二个操作数为OpP操作定义的变量，由于OpP的输出为I32类型</span><br><span class="line">//所以OpP可以作为OpN操作的输入</span><br><span class="line">//OpP包含六个操作数，分别是变量a、b、c、d、e、f</span><br><span class="line">//模式的重写规则是：使用变量b替换整个OpN操作</span><br><span class="line">def TestNestedOpEqualArgsPattern :</span><br><span class="line">  Pat&lt;(OpN $b, (OpP $a, $b, $c, $d, $e, $f)), (replaceWithValue $b)&gt;;</span><br></pre></td></tr></table></figure>
+<p>通过mlir-tblgen工具可以将代码6-2翻译成C++代码，如代码6-3所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">//它要匹配操作的名字为test.op_n即OpN操作，该模式的优先级为2，原因是OpN包含了</span><br><span class="line">//子操作OpP，没有包含子操作的默认优先级为1，优先级高一般会先匹配</span><br><span class="line">struct TestNestedOpEqualArgsPattern : public ::mlir::RewritePattern &#123;</span><br><span class="line">  TestNestedOpEqualArgsPattern(::mlir::MLIRContext *context)</span><br><span class="line">      : ::mlir::RewritePattern(&quot;test.op_n&quot;, 2, context, &#123;&#125;) &#123;&#125;</span><br><span class="line">//重写matchAndRewrite操作</span><br><span class="line">  ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,</span><br><span class="line">      ::mlir::PatternRewriter &amp;rewriter) const override &#123;</span><br><span class="line">    // 创建7个临时变量，分别对于OpN和OpP的操作数</span><br><span class="line">    ::mlir::Operation::operand_range f(op0-&gt;getOperands());</span><br><span class="line">...</span><br><span class="line">    ::mlir::Operation::operand_range b(op0-&gt;getOperands());</span><br><span class="line">    ::mlir::Operation::operand_range b0(op0-&gt;getOperands());</span><br><span class="line">    ::llvm::SmallVector&lt;::mlir::Operation *, 4&gt; tblgen_ops;</span><br><span class="line">    // 定义匹配操作的图结构，包括以下条件</span><br><span class="line">//OpP操作是OpN的第二个操作数，OpN的第一个操作数b和OpP的第二个操作数相同</span><br><span class="line">    tblgen_ops.push_back(op0);</span><br><span class="line">//OpN操作对象</span><br><span class="line">    auto castedOp0 = ::llvm::dyn_cast&lt;::test::OpN&gt;(op0); (void)castedOp0;</span><br><span class="line">//第一额操作数，记为b0</span><br><span class="line">    b0 = castedOp0.getODSOperands(0);</span><br><span class="line">    &#123;</span><br><span class="line">    //第二操作数记为Op1，Op1的类型为OpP</span><br><span class="line">      auto *op1 = (*castedOp0.getODSOperands(1).begin()).getDefiningOp();</span><br><span class="line">...</span><br><span class="line">       auto castedOp1 = ::llvm::dyn_cast&lt;::test::OpP&gt;(op1); (void)castedOp1;</span><br><span class="line">      if (!(castedOp1))&#123;</span><br><span class="line">        return rewriter.notifyMatchFailure(op1, [&amp;](::mlir::Diagnostic &amp;diag) &#123;</span><br><span class="line">          diag &lt;&lt; &quot;castedOp1 is not ::test::OpP type&quot;;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">      a = castedOp1.getODSOperands(0);</span><br><span class="line">...</span><br><span class="line">      f = castedOp1.getODSOperands(5);</span><br><span class="line">      tblgen_ops.push_back(op1);</span><br><span class="line">    &#125;</span><br><span class="line">//要求OpN对象的第一个操作数和OpP的第二个操作数相同</span><br><span class="line">    if (!(*b.begin() == *b0.begin()))&#123;</span><br><span class="line">      return rewriter.notifyMatchFailure(op0, [&amp;](::mlir::Diagnostic &amp;diag) &#123;</span><br><span class="line">        diag &lt;&lt; &quot;Operands &#x27;b&#x27; and &#x27;b0&#x27; must be equal&quot;;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    // 重写，用b替换OpN操作对象</span><br><span class="line">    auto odsLoc = rewriter.getFusedLoc(&#123;tblgen_ops[0]-&gt;getLoc(), tblgen_ops[1]-&gt;getLoc()&#125;); (void)odsLoc;</span><br><span class="line">    ::llvm::SmallVector&lt;::mlir::Value, 4&gt; tblgen_repl_values;</span><br><span class="line"></span><br><span class="line">    for (auto v: ::llvm::SmallVector&lt;::mlir::Value, 4&gt;&#123; b &#125;) &#123;</span><br><span class="line">      tblgen_repl_values.push_back(v);</span><br><span class="line">    &#125;</span><br><span class="line">    rewriter.replaceOp(op0, tblgen_repl_values);</span><br><span class="line">    return ::mlir::success();</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>使用TD的方式和开发者自定义C++代码方式完全一致，但两者在灵活性以及功能完备性略有差异，我们将在6.3节详细讨论。</p>
+<h3 id="6-1-3应用"><a href="#6-1-3应用" class="headerlink" title="6.1.3应用"></a>6.1.3应用</h3><p>当开发者定义好匹配模式以及重写机制后，就可以将其组合进行使用，在MLIR社区提供了PatternApplicator机制，可以将其组合起来进行使用，它接受三个信息：</p>
+<ul>
+<li>定义好的模式集合，每个模式都定义了如何匹配和重写操作。</li>
+<li>自定义的重写机制；如果社区提供的PatternRewriter不满足开发者的需要，可以自行实现，应用可以使用自定义的PatternRewriter。</li>
+<li>自定义的模式成本模型：允许开发者重新为模式定义收益。</li>
+<li>对操作进行匹配和重写：针对操作调用它的matchAndRewrite函数实现匹配和重写。<br>一个典型的使用如代码6-4所示：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">class MyPattern : public RewritePattern&#123;</span><br><span class="line">public:</span><br><span class="line">MyPattern(PatternBenefit benefit, MLIRContext* context)</span><br><span class="line">:RewritePattern(MyOp::getOperationName(), benefit, context)&#123;&#125;</span><br><span class="line">//假设开发者实现了match和rewriter函数，这里忽略</span><br><span class="line">&#125;;</span><br><span class="line">//将所有带匹配的模式收集到一个集合中。这里只有一个模式MyPattern</span><br><span class="line">void collectMyPatterns(RewritePatternSet&amp; patterns, MLIRContext* ctx)&#123;</span><br><span class="line">patterns.add&lt;MyPattern&gt;(/*benefit=*/1,ctx);</span><br><span class="line">&#125;</span><br><span class="line">//自定义重写机制PatternRewriter</span><br><span class="line">class MyPatternRewriter : public PatternRewriter&#123;</span><br><span class="line">public:</span><br><span class="line">MyPatternRewriter(MLIRContext* ctx): PatternRewriter(ctx)&#123;&#125;</span><br><span class="line">//根据需要实现PatternRewriter相关的添加、删除、修改、更新的操作</span><br><span class="line">&#125;;</span><br><span class="line">//针对操作定义驱动</span><br><span class="line">void applyMyPatternDriver(Operation* op,</span><br><span class="line">const FrozenRewritePatternSet&amp; patterns)&#123;</span><br><span class="line">//初始化PatternRewriter</span><br><span class="line">MyPatternRewriterrewriter(op-&gt;getContext());</span><br><span class="line">//创建应用并为应用定义模式的成本模型and apply our costmodel.</span><br><span class="line">PatternApplicator applicator(patterns);</span><br><span class="line">applicator.applyCostModel([](const Pattern&amp; pattern)&#123;</span><br><span class="line">//成本模型的输入为模式，输出为模式的收益。这里仅仅是演示示例</span><br><span class="line">//直接使用模式的收益，开发者可以根据自己的需要重新调整模式的收益</span><br><span class="line">return pattern.getBenefit();</span><br><span class="line">&#125;);</span><br><span class="line">//对操作进行匹配和重新</span><br><span class="line">LogicalResult result = applicator.matchAndRewrite(op, rewriter);</span><br><span class="line">if(failed(result))&#123;</span><br><span class="line">//...匹配或者重新失败，则没有任何模式适用，开发者可以输出必要的信息，并返回</span><br><span class="line">&#125;</span><br><span class="line">//...模式匹配和重写成功，开发者也可以输出必要的信息，并返回</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过应用将匹配、重写机制进行组合，从而方便实现针对操作的匹配和重写。MLIR框架提供了两种经典的匹配、重写应用，分别是贪婪匹配和方言降级。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/09/07/mlir-rewriter/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/03/mlir-ControlFlow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/08/03/mlir-ControlFlow/" class="post-title-link" itemprop="url">mlir_ControlFlow</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-08-03 19:14:43" itemprop="dateCreated datePublished" datetime="2024-08-03T19:14:43+08:00">2024-08-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>0</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <span id="more"></span>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/03/mlir-optimization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/08/03/mlir-optimization/" class="post-title-link" itemprop="url">mlir_optimization</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-08-03 19:14:20" itemprop="dateCreated datePublished" datetime="2024-08-03T19:14:20+08:00">2024-08-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>0</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <span id="more"></span>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/03/mlir-pass/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/08/03/mlir-pass/" class="post-title-link" itemprop="url">第5章：Pass和Passmanager</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-08-03 19:13:49" itemprop="dateCreated datePublished" datetime="2024-08-03T19:13:49+08:00">2024-08-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>18k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>16 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="第5章：Pass和Passmanager"><a href="#第5章：Pass和Passmanager" class="headerlink" title="第5章：Pass和Passmanager"></a>第5章：Pass和Passmanager</h1><p>MLIR中提供了变换（Transformation）和分析（Analysis）的概念，变换指的是将IR进行优化，生成新的IR（和方言降级略有不同，降级一般不涉及优化，仅仅简单的将某一算子变成一个或多个新类型的操作）；而分析是提供一些信息供优化使用。本节主要讨论变换Pass，最后简单介绍分析管理。<br>注意：MLIR的分析和LLVM中的分析存在很大不同，LLVM分析是以Pass的方式存在，并且可以穿插在变换之间，同时提供了一套相对完善的用法，例如缓存分析结果等。但是MLIR非常困难提供类似于LLVM中的分析Pass，原因是MLIR中IR不统一，基于一种IR的分析很难在其他类型的IR中使用，导致很难提供一套既能在多种IR共享数据，且同时可以作用对多种IR进行分析的框架。所以MLIR中分析是以类的形式存在，仅仅提供多种IR共享数据的能力。</p>
+<h2 id="5-1Pass、Pass管理器和Pass流水线"><a href="#5-1Pass、Pass管理器和Pass流水线" class="headerlink" title="5.1Pass、Pass管理器和Pass流水线"></a>5.1Pass、Pass管理器和Pass流水线</h2><p>MLIR框架提供Pass（遍）、Pass Pipeline（Pass流水线）、OpPassManager（操作Pass管理器）、PassManager（Pass管理器）等功能，方便开发者进行优化或者IR变换。其中Pass主要用于定义针对操作的变换，Pass Pipeline主要用于将多个Pass进行组合排布执行，而PassManager管理Pass和Pass Pipeline。为了方便统一管理Pass和Pass Pipeline，将Pass Pipeline设计为针对一个操作的多个Pass排布，通过OpPassManager结构进行管理（OpPassManager实际上继承于PassManager类型），这样OpPassManager也是针对一个操作，而一个一般的Pass也是针对一个操作，所以它们的地位相同，即它们又可以再次被组合成一个Pass Pipeline，由它们的共同父操作的OpPassManager进行管理。依此类推，所有的Pass可以构成一颗树。<br>假设有一个最顶层操作，为它提供一个Pass Pipeline，由一个OpPassManager进行管理，其中存在两个子Pass Pipeline，见图5-1中Sub OpPassManager1和Sub OpPassManager2，它们分别针对顶层操作的负载IR（payload IR，参考2.1.5节IR结构），而其中Sub OpPassManager1针对的负载操作还可以进一步包括负载IR，所以还可以进一步设计Pass Pipeline。该顶层操作对应的Pass执行排布如图5-1所示。</p>
+<img src="/2024/08/03/mlir-pass/17257019097700.jpg" class="">
+
+<p>本节将对Pass、Pass Pipeline、执行框架等注意展开介绍。</p>
+<h3 id="5-1-1Pass介绍"><a href="#5-1-1Pass介绍" class="headerlink" title="5.1.1Pass介绍"></a>5.1.1Pass介绍</h3><p>MLIR中变换的基础是操作。所以框架中定义了基类OperationPass，所有的Pass都继承于OpeartionPass，它有几个特点：</p>
+<ul>
+<li>针对特定的操作进行处理；对于一般的Pass来说，如果没有指定操作则是针对任意操作进行处理，但是对于Pass Pipeline来说必须指定一些信息，其中包含要针对的操作，否则不能执行。</li>
+<li>提供了一个接口canScheduleOn，用于判断Pass能否运行于特定的操作。</li>
+<li>提供了一个接口getAnalysis，用于获取分析结果。<br>通过基类OperationPass方便过滤需要处理的操作，这是一种过滤条件，即只有操作类型符合要求才会执行。在MLIR框架中还有一些另外的过滤条件，例如MLIR框架还提供了Pass的另外一个基类InterfacePass，表示Pass仅仅作用于某一些接口限定的操作。如果操作没有对应的接口，不会执行相关Pass。<br>注意：由于Pass执行过程中可能因为操作不满足一些条件因此不需要执行Pass，这一功能可以通过接口canScheduleOn进行实现，但需要注意的是，由于针对一个操作可能存在多个Pass，所以Pass执行框架会先遍历该操作所有Pass，如果其中一个Pass不能被执行，则该操作所有的Pass都不会执行，而不是仅仅跳过不能调度执行的Pass。</li>
+</ul>
+<h3 id="5-1-2Pass定义"><a href="#5-1-2Pass定义" class="headerlink" title="5.1.2Pass定义"></a>5.1.2Pass定义</h3><p>Pass可以通过TD文件进行定义。TD中的记录PassBase约定了自定义Pass包括了哪些参数，PassBase对应的代码片段如代码5-1所示。</p>
+<figure class="highlight plaintext"><figcaption><span>PassBase<string passArg,string base>&#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//Pass的名字，在opt命令行中使用</span><br><span class="line">String argument = passArg;</span><br><span class="line">//定义了Pass的基类，这个基类指的是C++类，通过是Operation</span><br><span class="line">String baseClass = base;</span><br><span class="line">//Pass的简单描述，这个描述体现在opt--help输出</span><br><span class="line">String summary = &quot;&quot;;</span><br><span class="line">//Pass的完整描述，这个描述体现在自动生成的文档中</span><br><span class="line">String description = &quot;&quot;;</span><br><span class="line">//Pass的构造函数，如果没有在TD文件中定义，则自动生成一个默认的函数签名</span><br><span class="line">Code constructor=[&#123;&#125;];</span><br><span class="line">//声明Pass依赖的的方言，只有在此处声明后的方言，才可以在该Pass中使用。</span><br><span class="line">//该字段对应的函数为getDependentDialects，在该函数需要将方言注册到</span><br><span class="line">//MLIRContext中，这样Pass才可以使用方言。</span><br><span class="line">//如果没有注册方言，Pass使用相关方言会报错。</span><br><span class="line">list&lt;string&gt; dependentDialects=[];</span><br><span class="line">//Pass的参数</span><br><span class="line">list&lt;Option&gt; options=[];</span><br><span class="line">//Pass的统计信息，在统计Pass信息时使用。在TD文件中定义变量名、描述信息，就可以统计Pass的执行次数，并可以通过PassManager中的enableStatistics函数打开Pass执行次数统计，并在Pass执行结束后输出信息，在mlir-opt工具中可以通过参数mlir-pass-statistics直接使用。</span><br><span class="line">list&lt;Statistic&gt; statistics=[];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>开发者可能会对代码5-1中字段dependentDialects有一些疑问，为什么要在Pass中显式定义依赖的方言？而不是直接在MLIRContext中直接加载方言[ MLIR框架提供的一些工具例如mlir-opt、mlir-translate在开始执行前都会初始化MLIRContext，并注册相应的方言，否则MLIRContext在遍历IR时无法识别操作，就会报错。另外在变换时、方言降级时也需要依赖其它方言，因此早变换和降级过程会生成其它方言中的操作。]？首先要说明的是，Pass中可以使用的方言必须是MLIRContext已经加载过的方言，如果方言未加载则不能使用，如果使用则会报错（找不到对应方言）。<br>但是MLIRContext已经加载的方言比较难以确定，因为方言降级路径不唯一，所以会导致MLIRContext中加载的方言不确定。所以一般会在此处将该Pass所依赖的方言都进行加载，如果方言已经加载搭配MLIRContext中它并不会被重复加载。当然如果可以确定所有进入到该Pass的路径都已经加载了相关方言，Pass可以进行忽略加载方言。例如有一个Pass要处理linalg方言中的操作，如果无论何种路径进入到该Pass时都已经加载过linalg方言，那么该Pass可以不添加依赖再去加载linalg方言。<br>另外还需要注意，方言的加载可能发生在多线程执行环境中，所以方言加载一般需要放在Pass真正运行之前，否则会报“并发运行错误和不安全运行错误”。<br>下面以affine方言中循环不变量外提为例，简单介绍Pass定义。循环中不变量外提是指将循环不变量其提升到循环体的外部，从而加速执行效率。Pass定义如代码5-2所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//Pass名字为affine-loop-invariant-code-motion</span><br><span class="line">//该Pass仅仅适用于操作类型为FuncOp</span><br><span class="line">def AffineLoopInvariantCodeMotion</span><br><span class="line">:Pass&lt;&quot;affine-loop-invariant-code-motion&quot;,&quot;func::FuncOp&quot;&gt;&#123;</span><br><span class="line">//summary是简单描述</span><br><span class="line">let summary=&quot;Hoist loop invariant instructions out side of affine loops&quot;;</span><br><span class="line">//Pass的构造器，通过下面的函数构造C++对象</span><br><span class="line">let constructor=&quot;mlir::createAffineLoopInvariantCodeMotionPass()&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过工具mlir-tblgen翻译代码5-2，得到的记录如代码5-3所示。</p>
+<figure class="highlight plaintext"><figcaption><span>AffineLoopInvariantCodeMotion&#123;//记录的基类为Pass BasePass</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">string argument=&quot;affine-loop-invariant-code-motion&quot;;</span><br><span class="line">string baseClass=&quot;::mlir::OperationPass&lt;func::FuncOp&gt;&quot;;</span><br><span class="line">string summary=&quot;Hoist loop invariant instructions out side of affine loops&quot;;</span><br><span class="line">String description=&quot;&quot;;</span><br><span class="line">String constructor=&quot;mlir::affine::createAffineLoopInvariantCodeMotionPass()&quot;;</span><br><span class="line">list&lt;string&gt; dependentDialects=[];</span><br><span class="line">list&lt;Option&gt; options=[];</span><br><span class="line">list&lt;Statistic&gt; statistics=[];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对照代码5-1非容容易理解代码5-3，继续使用mlir-tblgen运行代码5-3可以得到对应的C++文件，其中Pass定义相关的头文件如代码5-4所示。</p>
+<figure class="highlight plaintext"><figcaption><span>DerivedT></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">class AffineLoopInvariantCodeMotionBase : public ::mlir::OperationPass&lt;func::FuncOp&gt;&#123;</span><br><span class="line">public:</span><br><span class="line">Using Base = AffineLoopInvariantCodeMotionBase;</span><br><span class="line">//辅助类，用于定义Pass</span><br><span class="line">AffineLoopInvariantCodeMotionBase() : ::mlir::OperationPass&lt;func::FuncOp&gt;(::mlir::TypeID::get&lt;DerivedT&gt;())&#123;&#125;</span><br><span class="line">AffineLoopInvariantCodeMotionBase(const AffineLoopInvariantCodeMotionBase &amp;other) : ::mlir::OperationPass&lt;func::FuncOp&gt;(other)&#123;&#125;</span><br><span class="line">//Pass名字，在命令行通过该名字关联到Pass</span><br><span class="line">static const expr::llvm::StringLiteral getArgumentName()&#123;</span><br><span class="line">return ::llvm::StringLiteral(&quot;affine-loop-invariant-code-motion&quot;);</span><br><span class="line">&#125;</span><br><span class="line">.....</span><br><span class="line">//支持LLVM开发体系中dyn_cast功能</span><br><span class="line">static bool classof(const::mlir::Pass *pass)&#123;</span><br><span class="line">return pass-&gt;getTypeID()==::mlir::TypeID::get&lt;DerivedT&gt;();</span><br><span class="line">&#125;</span><br><span class="line">......</span><br><span class="line">//Pass依赖的方言，此处为空</span><br><span class="line">void getDependentDialects(::mlir::DialectRegistry&amp;registry) const override&#123;</span><br><span class="line">&#125;</span><br><span class="line">//定义C++对象的ID宏，用于标识对象</span><br><span class="line">MLIR_DEFINE_EXPLICIT_INTERNAL_INLINE_TYPE_ID(AffineLoopInvariantCodeMotionBase&lt;DerivedT&gt;)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>代码5-4显式Pass继承于C++模板类mlir::OperationPass，这说明了MLIR中变换的基础是操作，所以框架中定义了模板类OperationPass。模板类是MLIR中Pass执行的基础框架部分。<br>在TD文件中定义通用Pass定义（即适用于任意的操作）也非常简单，例如MLIR框架中CSE（Common Sub-express Elimination，公共子表达式消除），其Pass定义如代码5-5所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def CSE:Pass&lt;&quot;cse&quot;&gt;&#123;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样通过工具mlir-tblgen翻译代码5-5，忽略记录信息，直接看对应的C++如代码5-6所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">template&lt;typename DerivedT&gt;</span><br><span class="line">class CSEBase : public ::mlir::OperationPass&lt;&gt;&#123;</span><br><span class="line">public:</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码5-6中mlir::OperationPass&lt;&gt;是一个特殊的类，等价于参数为void，MLIR社区用这个类匹配任意的操作，也称为any操作。<br>为了更好的管理Pass，MLIR社区还提供了PassPipeline，一个PassPipeline示例如代码5-7所示。</p>
+<figure class="highlight plaintext"><figcaption><span>pipelineBuilder(OpPassManager& pm)&#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pm.addPass(std::make_unique&lt;MyPass&gt;());</span><br><span class="line">pm.addPass(std::make_unique&lt;MyOtherPass&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从代码5-7中可以看出一个Pass Pipeline本质上就是一个OpPassManager。Pass和Pass pipeline的管理和执行由顶层的OpPassManager负责，为了简单，这里使用PassManager代替OpPassManager。PassManager首先将所有Pass、Pass pipeline中定义的依赖方言全部加载到PassManager中，只有加载过的方言才能被使用。<br>当PassManager中存在多个Pass时一般会按照Pass定义的顺序执行，所以读者需要特别注意在定义Pass Pipeline时考虑好Pass执行的顺序，否则可能导致一些错误[ 最常见的问题是方言降级过程，在第6章介绍。方言降级也是基于Pass框架实现，方言降级需要考虑类型，而不同的Pass执行顺序可能会导致类型不存在，从而导致降级失败。]，目前对于如何合理的组织Pass完全依赖于使用者，MLIR社区尚未有合理的解决方案。但是对于连续多个Pass Pipeline在一起的情况会进行合并，并对Pass进行排序，按照过滤Pass优先、一般Pass在后的原则进行。<br>当Pass、Pass Pipeline定义完成后，要想使用它们，必须将其注册到MLIContext中。</p>
+<h3 id="5-1-3Pass、Pass-Pipeline注册"><a href="#5-1-3Pass、Pass-Pipeline注册" class="headerlink" title="5.1.3Pass、Pass Pipeline注册"></a>5.1.3Pass、Pass Pipeline注册</h3><p>Pass和Pass Pipeline需要注册至MLIRContext后才能使用。在MLIRCnntext中Pass和Pipeline分别管理，它们各自由一个全局Map管理注册信息。在每个Pass和Pipeline中会调用框架中的函数mlir::registerPass和PassPipelineRegistration分别将Pass和Pipeline注册到全局变量中。在构造PassManager时将相关的Pass、Pipeline进行初始化。<br>在使用mlir-tblgen运行代码5-3时，除了生成代码5-4的内容外，还有将Pass注册的辅助代码，代码如5-8所示。</p>
+<figure class="highlight plaintext"><figcaption><span>Pass</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">inline void registerAffineLoopInvariantCodeMotion()&#123;</span><br><span class="line">::mlir::registerPass([]()-&gt;std::unique_ptr&lt;::mlir::Pass&gt;&#123;</span><br><span class="line">return mlir::affine::createAffineLoopInvariantCodeMotionPass();</span><br><span class="line">&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在代码5-8中，函数mlir::registerPass本质上通过一个全局变量管理所有注册的Pass，该变量是Map结构，其中key为TD文件中的passArg，表示pass的名字；而value为一个结构体，包含了（passArg，description，functor）其中passArg和key相同，description表示Pass的描述，而functor则是registerPass中参数，这个参数是一个函数指针，会调用Pass的构造器。<br>除了代码5-8外，工具mlir-tblgen还会生成代码将TD文件中所有定义的Pass都注册的一个辅助函数，形如register+groupName+Passes()的函数中，例如方言affine中所有的Pass会有一个对应的辅助函数registerAffinePasses，在registerAffinePasses会调用每一个Pass的注册函数，例如会调用registerAffineLoopInvariantCodeMotion，如代码5-9所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">inline void registerAffinePasses()&#123;</span><br><span class="line">...</span><br><span class="line">registerAffineLoopInvariantCodeMotion();</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>除了自动生成的代码外，开发者需要实现Pass的构造函数，用于构造一个Pass对象。实现过程中通常会定义一个类继承于上述自动生成的类，例如LoopInvariantCodeMotion继承于代码5-4中的AffineLoopInvariantCodeMotionBase，并且在Pass的构造函数中实例化对象，如代码5-10所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//runOnOperation函数MLIR框架调用</span><br><span class="line">struct LoopInvariantCodeMotion</span><br><span class="line">: public affine::impl::AffineLoopInvariantCodeMotionBase&lt;</span><br><span class="line">LoopInvariantCodeMotion&gt;&#123;</span><br><span class="line">void runOnOperation()override;</span><br><span class="line">...</span><br><span class="line">&#125;;</span><br><span class="line">//创建Pass对象的函数</span><br><span class="line">std::unique_ptr&lt;OperationPass&lt;func::FuncOp&gt;&gt;</span><br><span class="line">mlir::affine::createAffineLoopInvariantCodeMotionPass()&#123;</span><br><span class="line">return std::make_unique&lt;LoopInvariantCodeMotion&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码5-10中最关键的函数为runOnOperation，这个函数在模板类模板类mlir::OperationPass为虚函数，需要开发者进行实现，并描述Pass真正的工作。<br>通过工具mlir-tblgen就可以将Pass定义、注册和MLIR框架结合起来，开发者只需要显式调用Pass注册后就可以触发执行，而MLIR框架会调用到开发者实现的runOnOperation函数，从而执行用户的代码变换。<br>类似于Pass，MLIR社区也提供了Pass Pipeline的注册机制，通过passPipelineRegistration完成Pipeline的注册，注册后也是通过全局变量进行管理Pipeline对象。例如一个Pass Pipeline注册示例如代码5-11所示。</p>
+<figure class="highlight plaintext"><figcaption><span>registerMyPasses()&#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//passPipelineRegistration接受一个functor，这个functor定义一个Pass Pipeline</span><br><span class="line">passPipelineRegistration&lt;&gt;(</span><br><span class="line">&quot;argument&quot;,&quot;description&quot;,[](OpPassManager &amp;pm)&#123;</span><br><span class="line">pm.addPass(std::make_unique&lt;MyPass&gt;());</span><br><span class="line">pm.addPass(std::make_unique&lt;MyOtherPass&gt;());</span><br><span class="line">&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当完成Pass、Pass Pipeline注册后，就可以调用Pass或者Pass Pipeline。以mlir-opt工具为例，想要使用mlir-opt工具执行Pass，首先需要将Pass注册到mlir-opt工具（本节介绍注册函数），然后就可以通过mlir-opt工具执行Pass。例如MLIR框架中提供的mlir-opt工具中会调用registerAffinePasses，表示所有Affine相关的Pass都可以通过mlir-opt工具使用，当用户使用mlir-opt -affine-loop-invariant-code-motion命令就可以触发相关的Pass，并执行代码5-10中的runOnOperation函数。</p>
+<h3 id="5-1-4Pass执行顺序"><a href="#5-1-4Pass执行顺序" class="headerlink" title="5.1.4Pass执行顺序"></a>5.1.4Pass执行顺序</h3><p>看到在Pass定义的时候通常约定要处理的操作，这个操作也称为Pass的锚点，Pass的构造函数会返回模板类OperationPass和对应操作的实例，形如OperationPass<a href="func::FuncOp">func::FuncOp</a>的对象，这样的Pass称为特定Pass（op-specific）。也有一些Pass可以处理任意的操作，例如CSE，它继承于mlir::OperationPass&lt;&gt;，这样的Pass称为通用Pass（op-agnostic），它们的构造函数返回一个基类Pass的指针。<br>对于锚点Pass来说，Pass只需要处理约定的操作，其他无关的操作无需处理。而操作在MLIR中具有层级结构，如果Pass执行顺序也应该和操作定义的层次一致，那么执行效率最高，因为只需要通过一次遍历IR就可以完成所有Pass的执行。因此管理Pass的PassManager对应的Pass Pipeline也应该体现IR结构。官网中给出这样的一个例子，如代码5-12所示。</p>
+<figure class="highlight plaintext"><figcaption><span>&#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">spirv.module &quot;Logical&quot; &quot;GLSL450&quot;&#123;</span><br><span class="line">func @foo()&#123;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码5-12代码片段蕴含IR层级代码5-13所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">`builtin.module`</span><br><span class="line">	`spirv.module`</span><br><span class="line">		`spirv.func`</span><br></pre></td></tr></table></figure>
+<p>对于代码5-13来说，定义的Pass Pipeline也应该按照这样的层级结构。官网提供了一个示例，如代码5-14所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">auto pm = PassManager::on&lt;ModuleOp&gt;(ctx);</span><br><span class="line">//为最顶层PassManage添加Pass</span><br><span class="line">pm.addPass(std::make_unique&lt;MyModulePass&gt;());</span><br><span class="line">//定义子Pass Pipeline</span><br><span class="line">OpPassManager &amp;nestedModulePM = pm.nest&lt;spirv::ModuleOp&gt;();</span><br><span class="line">nestedModulePM.addPass(std::make_unique&lt;MySPIRVModulePass&gt;());</span><br><span class="line">//为子Pass Pipeline在定义子Pass Pipeline</span><br><span class="line">OpPassManager &amp;nestedFunctionPM = nestedModulePM.nest&lt;func::FuncOp&gt;();</span><br><span class="line">nestedFunctionPM.addPass(std::make_unique&lt;MyFunctionPass&gt;());</span><br><span class="line">OpPassManager &amp;nestedAnyPM=nestedModulePM.nestAny();</span><br><span class="line">nestedAnyPM.addPass(createCanonicalizePass());</span><br><span class="line">nestedAnyPM.addPass(createCSEPass());</span><br></pre></td></tr></table></figure>
+<p>代码5-14片段对应的Pass结构如代码5-15所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">OpPassManager&lt;ModuleOp&gt; //最顶层的Pass Pipeline，只能处理ModuleOp</span><br><span class="line">  MyModulePass</span><br><span class="line">  OpPassManager&lt;spirv::ModuleOp&gt;//中间层Pass Pipeline</span><br><span class="line">    MySPIRVModulePass</span><br><span class="line">    OpPassManager&lt;func::FuncOp&gt;//最内层的Pass Pipeline</span><br><span class="line">      MyFunctionPass</span><br><span class="line">      OpPassManager&lt;&gt;//可以处理任意的操作</span><br><span class="line">      Canonicalizer</span><br><span class="line">      CSE</span><br></pre></td></tr></table></figure>
+<p>图5-1描述的就是一种泛化的PassPipeline。<br>注意：默认情况下PassManager要求文件中顶层操作是builtin.module，如果测试文件中不符合该要求，如文件是以func.func为顶层操作，直接运行会报错形如can’t run ‘func.func’ passmanager on ‘builtin.module’ op。可以通过在命令行中添加完整的操作层级，例如–pass-pipeline&#x3D;”builtin.module(func.func(passname))”来解决。<br>由于Pass执行排布和IR结构保持一致，所以可以在遍历IR结构的过程中运行Pass，如果操作是Pass要处理的操作，则运行Pass；否则跳过该操作。对于Pass的执行顺序的约定如下：</p>
+<ul>
+<li>针对一个操作，将执行该Pass Pipeline下所有的可以运行的Pass；也就是说两个类型相同的操作，它们依次执行完各自可以运行的所有Pass[ 这样设计的目的是为了方便同一操作在不同Pass之间的数据复用。当然另一种执行Pass的方案是依次遍历Pass，针对一个Pass将所有需要执行的操作依次执行，这样的方案也是可以的，但可能对缓存不够友好。]。</li>
+<li>如果Pass是OpPassManger，针对操作中的区域、基本块进行遍历，然后针对遍历的每一个操作寻找对应的Pass Pipeline，并执行。<br>Pass可以多线程执行，由于执行时可能会依赖分析Pass，所以需要为操作准备对应的分析Pass即可，当多个并行执行的Pass有一个失败，整体认为并行执行失败。</li>
+</ul>
+<h3 id="5-1-5Pass实现的约束"><a href="#5-1-5Pass实现的约束" class="headerlink" title="5.1.5Pass实现的约束"></a>5.1.5Pass实现的约束</h3><p>Pass执行时针对操作进行处理，Pass框架在设计之初就确定了可以多线程执行，所以Pass实现需要遵守一定的规则，主要限制包括：</p>
+<ul>
+<li>不得检查当前操作的同级操作的状态，不得访问嵌套在这些同级下的操作。因为其他线程可能正在并行修改这些操作。但是可以允许检查祖先&#x2F;父操作的状态。</li>
+<li>不得修改、删除当前操作下嵌套的操作以外的操作的状态。这包括从祖先&#x2F;父块添加、修改或删除其他操作。同样是因为其他线程可能同时对这些操作进行操作。作为例外，当前操作的属性可以自由修改。这是修改当前操作的唯一方法（即不允许修改操作数等）。</li>
+<li>不得在多个Pass的runOnOperation函数调用之间维护可变的状态。因为同一个Pass可以在许多不同的操作上运行，但执行时没有严格的执行顺序保证。当多线程处理时，特定的Pass实例甚至可能不会在IR内的所有操作上执行。因此，一个Pass的运行不应依赖于所处理的操作。</li>
+<li>不得为Pass维护任何全局可变状态，包括使用静态变量。所有可变状态都应该由Pass的实例来维护。</li>
+<li>Pass必须是可复制构造的，PassManager可以创建Pass的多个实例以便并行处理操作。</li>
+<li>Pass针对的操作类型必须符合以下要求：操作必须被注册且被标记为IsolatedFromAbove特质[ 违反该要求，将得到形如trying to schedule a pass on an operation not marked as IsolatedFromAbove的错误。该约束本质上是说明Pass Pipeline中的Pass不能实现跨Pass间的优化。读者需要了解Pass的最小粒度，并非任意的操作都可以作为Pass的锚点。]。<br>Pass的约束非常重要，但对开发者来说并不友好，可能在实现Pass的过程中违反约束导致运行失败，为此MLIR框架提供方便进行匹配——重写机制，在重写机制中定义了很多辅助函数，例如添加、删除、修改等函数方便开发者实现相关功能，该内容在第6章进一步介绍。</li>
+</ul>
+<h3 id="5-1-6Pass插桩机制"><a href="#5-1-6Pass插桩机制" class="headerlink" title="5.1.6Pass插桩机制"></a>5.1.6Pass插桩机制</h3><p>为了方便跟踪Pass的执行，MLIR框架针对Pass执行提供了插桩机制。该机制非常灵活，是一个可定制的插桩框架，通过类PassInstrumentation来检测Pass和分析计算的执行。类PassInstrumentation提供了PassManager的钩子函数来观察各种事件，这些钩子函数主要包括：</p>
+<ul>
+<li>runBeforePipeline：该钩子函数在执行Pass Pipeline之前运行。</li>
+<li>runAfterPipeline：无论Pass Pipeline执行成功与否，该钩子函数在执行Pass Pipeline执行后立即运行。</li>
+<li>runBeforePass：该钩子函数在执行Pass之前运行。</li>
+<li>runAfterPass：该钩子函数在Pass成功执行后立即运行。如果这个钩子被执行，则另一个钩子函数runAfterPassFailed不会执行。</li>
+<li>runAfterPassFailed：该钩子函数在Pass执行失败后立即运行。如果这个钩子被执行，则另一个钩子函数runAfterPass不会执行。</li>
+<li>runBeforeAnalysis：该钩子函数在分析计算之前运行。如果分析请求另一个分析作为依赖项，则可以从当前钩子函数对依赖的runBeforeAnalysis&#x2F;runAfterAnalysis对进行调用。</li>
+<li>runAfterAnalysis：该钩子函数在分析计算后立即运行。<br>和Pass、Pass Pipeline相关的API会被整合到Pass的执行过程。例如PassManager包含一个Pass的场景，首先PassManager的顶层是Pass Pipeline，Pass插桩后其执行过程如图5-2所示。<img src="/2024/08/03/mlir-pass/17257024341066.jpg" class=""></li>
+</ul>
+<p>而插桩中runBeforeAnalysis&#x2F;runAfterAnalysis在Pass执行过程中获取分析结果时会被执行。<br>当开发者实现自己的Pass插桩后，通过PassManager的addInstrumentation接口就可以把插桩注册到PassManager中，并在相应的调用点执行插桩中的回调函数。当然开发者可以注册多个Pass插桩，多个插桩在PassManager以类似堆栈的方式运行，即最后一个插桩执行runBefore<em>钩子函数它对应的runAfter</em>钩子函数将是第一个被执行。类PassInstrumentation保证以线程安全的方式执行钩子函数，因此不需要额外的同步。下面给出一个示例Pass插桩，用于统计支配信息计算次数，由于支配信息计算是分析过程，所以Pass插桩要对分析相关的钩子函数进行实现，如代码5-16所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">//自定义Pass插桩</span><br><span class="line">struct DominanceCounterInstrumentation : public PassInstrumentation&#123;</span><br><span class="line">//设计一个计数器，用于存储支配信息计算的次数</span><br><span class="line">unsigned &amp;count;</span><br><span class="line">DominanceCounterInstrumentation(unsigned &amp;count):count(count)&#123;&#125;</span><br><span class="line">//在分析计算后调用该钩子函数，如果分析是计算支配信息，则累加计数器</span><br><span class="line">void runAfterAnalysis(llvm::StringRef,TypeID id,Operation*)override&#123;</span><br><span class="line">if( id == TypeID::get&lt;DominanceInfo&gt;())</span><br><span class="line">++count;</span><br><span class="line">&#125;</span><br><span class="line">&#125;;</span><br><span class="line">//下面是Pass插桩的使用示例，首先使用前需要找到对应的上下文</span><br><span class="line">MLIRContext *ctx = ...;</span><br><span class="line">PassManager pm(ctx);</span><br><span class="line">//将Pass插桩注册到PassManager中</span><br><span class="line">unsigned domInfoCount;</span><br><span class="line">pm.addInstrumentation(std::make_unique&lt;DominanceCounterInstrumentation&gt;(domInfoCount));</span><br><span class="line">//遍历操作，运行PassManager</span><br><span class="line">ModuleOp m=...;</span><br><span class="line">if(failed(pm.run(m)))</span><br><span class="line">...</span><br><span class="line">//运行完成后则可以通过参数domInfoCount获取全部支配信息的计算次数</span><br><span class="line">llvm::errs() &lt;&lt; &quot;DominanceInfo was computed&quot; &lt;&lt; domInfoCount &lt;&lt; &quot;times!\n&quot;;</span><br></pre></td></tr></table></figure>
+<h3 id="5-1-7标准插桩"><a href="#5-1-7标准插桩" class="headerlink" title="5.1.7标准插桩"></a>5.1.7标准插桩</h3><p>Pass插桩是MLIR框架非常有用的功能，在MLIR社区提供了三个基于Pass插桩的有用实现，包括：时间统计、IR打印、Pass失败捕获。</p>
+<h4 id="1-时间统计"><a href="#1-时间统计" class="headerlink" title="1.时间统计"></a>1.时间统计</h4><p>有一个常见的需求统计Pass执行时间信息，因此MLIR框架在类PassManager有一个函数enableTiming允许开发者针对PassManager统计Pass执行信息。例如mlir-opt工具就是利用该函数实现了Pass信息统计，在使用时通过给mlir-opt传递参数-mlir-timing即可。功能就是基于Pass插桩的能力实现，定义PassTming类，它继承于PassInstrumentation，并实现相关的钩子函数，在钩子函数runBefore<em>中记录起始时间，在钩子函数runAfter</em>中获取结束时间，从而在PassManager运行结束后可以打印Pass的统计信息。<br>Pass执行信息在串行执行和并行执行输出有所不同，读者可以参考官网了解时间统计的具体格式和含义。</p>
+<h4 id="2-IR打印"><a href="#2-IR打印" class="headerlink" title="2.IR打印"></a>2.IR打印</h4><p>IR打印也是利用Pass插桩功能，定义IRPrinterInstrumentation类，它继承于PassInstrumentation，并实现runBeforePass、runAfterPass、runAfterPassFailed截获执行的操作，输出操作，从而实现IR打印。基于这个Pass插桩，MLIR框架实现了和LLVM一样的IR输出。为了便于读者只关注关心的IR，MLIR社区还提供了一系列的参数控制IR打印的范围。常见的命令参数有：</p>
+<ul>
+<li>mlir-print-ir-before：设置关注的Pass，在Pass运行之前打印IR。</li>
+<li>mlir-print-ir-before-all：在每个Pass运行之前都打印IR。</li>
+<li>mlir-print-ir-after：设置关注的Pass，在Pass运行之后打印IR。</li>
+<li>mlir-print-ir-after-all：在每个Pass运行之后都打印IR。</li>
+<li>mlir-print-ir-after-change：如果Pass改变了IR则在Pass执行后打印IR。该选项需要和mlir-print-ir-after或者mlir-print-ir-after-all配合使用。</li>
+<li>mlir-print-ir-after-failure：在Pass执行失败后打印IR。</li>
+<li>mlir-print-ir-module-scope：打印当前操作的顶层操作全部打印出来，该参数需要禁止Pass并发执行（需设置mlir-disable-threading）。</li>
+</ul>
+<h4 id="3-Pass执行失败捕获与重放机制"><a href="#3-Pass执行失败捕获与重放机制" class="headerlink" title="3.Pass执行失败捕获与重放机制"></a>3.Pass执行失败捕获与重放机制</h4><p>Pass在执行过程中可能发生错误，编译系统的输入可能包含了许多操作，而编译器过程中还可以应用多种Pass的组合，但是编译执行过程中可能遇到Pass失败的场景，而这时要准确定位到哪个Pass在对哪个操作处理时发生错误就非常困难。所以MLIR框架提供了Pass失败捕获机制以及重放机制。<br>失败捕获机制的实现原理比较简单，也是基于Pass的插桩机制实现的。定义CrashReproducerInstrumentation类，它继承于PassInstrumentation，并实现runBeforePass、runAfterPass、runAfterPassFailed截获执行的操作。当Pass执行失败运行runAfterPassFailed，将Pass执行失败的信息并将其记录下来。为了准确记录Pass执行失败的信息，还需要记录Pass执行的上下文信息，所以失败捕获机制还会实现Pass插桩中的runBeforePass、runAfterPass函数，在runBeforePass中会记录相关上下文信息，主要包括要执行的Pass以及对应的操作；当Pass成功运行时runAfterPass会删除上下文信息。<br>捕获回放机制在Pass执行失败会将操作以及执行的Pass Pipeline执行记录下来。在Pass执行过程可以传递不同的参数用于记录Pass Pipeline信息。例如可以传递mlir-pass-pipeline-crash-reproducer和mlir-pass-pipeline-local-reproducer，它们分别记录Pass执行失败时操作对应的完整Pass Pipeline、或仅记录失败Pass。传递参数mlir-pass-pipeline-local-reproducer仅仅记录Pass执行失败时最新的Pass Pipeline信息，该选项要求Pass执行不能并行执行（可以通过参数mlir-disable-threading设置），因为并行执行时最新记录的Pass上下文信息可能和失败Pass信息并不相同。而参数mlir-pass-pipeline-crash-reproducer可以支持Pass并发执行。<br>一个捕获回放机制的示例如代码5-17所示。为了记录Pass执行失败的信息，需要在Pass执行时传递参数为mlir-pass-pipeline-crash-reproducer。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">func.func @foo()&#123;</span><br><span class="line">%0=arith.constant 0:i32</span><br><span class="line">return</span><br><span class="line">&#125;</span><br><span class="line">func.func @bar()&#123;</span><br><span class="line">return</span><br><span class="line">&#125;</span><br><span class="line">//下面重放，即针对上面的mlir通过下面的命令可以重现问题</span><br><span class="line">&#123;-#</span><br><span class="line">external_resources:&#123;</span><br><span class="line">mlir_reproducer:&#123;</span><br><span class="line">verify_each:true,</span><br><span class="line">pipeline:&quot;builtin.module(func.func(cse, canonicalize&#123;max-iterations=1 max-num-rewrites=-1 region-simplify=false top-down=false&#125;))&quot;, disable_threading:true </span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">#-&#125;</span><br></pre></td></tr></table></figure>
+<p>同时MLIR社区还提供了重放机制，例如在mlir-opt工具中通过参数-run-reprodcuer可以重新运行指定的操作和Pass Pipeline。这个功能的实现也比较简单，从mlir-reprodcuer中获取Pass Pipeline等信息，然后针对相应的操作执行Pass即可。</p>
+<h2 id="5-2分析和分析管理"><a href="#5-2分析和分析管理" class="headerlink" title="5.2分析和分析管理"></a>5.2分析和分析管理</h2><p>与变换过程一样，分析也是一个重要的概念。它在概念上类似于变换过程，只不过分析仅仅计算特定操作的信息而不修改它。在MLIR中，分析不是Pass，而是独立的类，它们按需延迟计算并缓存以避免不必要的重新计算。也就说是MLIR中的分析需要先定义一个类，用于描述分析过程和分析结果，并在变换Pass中显式的生成分析对象以及调用分析过程。为了使用方便，MLIR引入了AnalysisManager，它仅仅管理分析对象。<br>MLIR中的分析不得对操作进行修改。目前MLIR框架构造分析对象的方式为：通过一个Operation<em>或者Operation</em>和AnalysisManager&amp;为参数的构造函数进行构造（其中参数AnalysisManager用于查询分析依赖）。<br>分析可能会提供额外的钩子函数来控制各种行为：bool isInvalidated(const AnalysisManager::PreservedAnalyses &amp;)。给定一个保留的分析集，如果它确实应该失效，则isInvalidated将返回true。这也允许在分析未明确标记分析结果是否需要保留的情况处理失效情况，例如可以根据其他属性或其他分析集的结果对当前分析集设置保存或失效。如果一个分析依赖另外一个分析，它必须检查依赖的分析是否无效。<br>分析类提供两类结果处理：查询分析结果、保存分析结果。<br>查询分析结果对应API主要有：</p>
+<ul>
+<li>getAnalysis&lt;&gt;：对当前操作进行分析，在必要时构建它，通常在构建分析对象时会进行分析。</li>
+<li>getCachedAnalysis&lt;&gt;：获取当前操作的分析（如果已存在）。</li>
+<li>getCachedParentAnalysis&lt;&gt;：获取给定父操作的分析（如果存在）。</li>
+<li>getCachedChildAnalysis&lt;&gt;：获取给定子操作的分析（如果存在）。</li>
+<li>getChildAnalysis&lt;&gt;：获取给定子操作的分析，在必要时构建它。<br>保存分析结果：使用分析查询结果API得到的分析结果会被缓存，以避免稍后再次使用时不必要的计算。为了避免过时的分析结果，所有分析结果都被假定经过一次使用就无效。为了避免无效，在Pass中必须专门标记已知要保留的分析。提供的API有：</li>
+<li>markAllAnalysesPreserved：保存所有的分析结果。</li>
+<li>markAnalysesPreserved&lt;&gt;：保存指定类的分析结果。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/08/03/mlir-pass/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/02/Introduction-of-DartVM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/07/02/Introduction-of-DartVM/" class="post-title-link" itemprop="url">Introduction_of_DartVM</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-07-02 20:37:23" itemprop="dateCreated datePublished" datetime="2024-07-02T20:37:23+08:00">2024-07-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/virtual-machine/" itemprop="url" rel="index"><span itemprop="name">virtual machine</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>36k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>32 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Dart是Google在2011年10月10号发布的一种用于客户端（web或者移动应用）开发的编程语言，它是为了解决Javascript语言相关问题而设计。它有个基于VM思想实现的运行环境，即DartVM。本文通过阅读DartVM的早期代码和相关文章，了解DartVM的设计思路和整体框架结构。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/07/02/Introduction-of-DartVM/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/15/mlir-interfaces/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/06/15/mlir-interfaces/" class="post-title-link" itemprop="url">第4章（3）：接口</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-15 18:02:41" itemprop="dateCreated datePublished" datetime="2024-06-15T18:02:41+08:00">2024-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>特质为一组属性、操作或者类型进行通用操作（而非一个属性、操作或者类型），并且处理的属性、操作或者类型。在实现过程中被一组操作、类型或者属性直接继承，这就产生一个问题，能否为继承于同一特质的操作、类型或者属性提供动态绑定的能力，而非完全的静态绑定能力？接口正是基于这一诉求产生的。接口和特质有一些类似的地方，实际上接口的功能基于特质实现的，在本节后续内容详细介绍相关原理。<br>可以为方言、操作、类型和属性定义接口，而方言接口使用比较特殊，所以在本节按照使用方式将接口分为两类：方言接口和操作、属性、类型接口，下面分开介绍。</p>
+<h3 id="4-3-1方言接口"><a href="#4-3-1方言接口" class="headerlink" title="4.3.1方言接口"></a>4.3.1方言接口</h3><p>在MLIR中每一个方言都是一种IR，不同的IR完成不同的功能。但是不同的方言之间可能存在一些共性，例如一些优化可以适用于多种方言，比如内联。但是不同的方言的对于内联的处理有所不同，对于这样的诉求，定义一个方言接口如DialectInlinerInterface，让打算实现内联的方言都实现该接口中相关API，从而完成动态绑定能力。</p>
+<h4 id="1-接口定义"><a href="#1-接口定义" class="headerlink" title="1.接口定义"></a>1.接口定义</h4><p>在MLIR框架中定义了方言接口基类DialectInterfaceBase::Base&lt;&gt;，开发者定义的方言接口，需要继承于该基类。然后针对不同的方言，继承方言接口并实现方言特殊的处理。例如内联接口定义为代码4-10所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class DialectInlinerInterface :</span><br><span class="line">    public DialectInterface::Base&lt;DialectInlinerInterface&gt; &#123;</span><br><span class="line">public:</span><br><span class="line">  //如果区域scr能够内联到区域dst中则返回true</span><br><span class="line">  //参数valueMapping包含了区域src所有需要重映射的值，例如可以用它判断</span><br><span class="line">//初始基本块的参数能否替代区域src的值</span><br><span class="line">  virtual bool isLegalToInline(Region *dest, Region *src,</span><br><span class="line">                               IRMapping &amp;valueMapping) const &#123;</span><br><span class="line">    return false;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>根据内联接口，不同的方言可以特例化实现，例如方言affine内联的实现如代码4-11所示。</p>
+<figure class="highlight plaintext"><figcaption><span>AffineInlinerInterface : public DialectInlinerInterface &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">  //方言affine有特殊的内联约束，例如。这里忽略具体实现</span><br><span class="line">  bool isLegalToInline(Region *dest, Region *src,</span><br><span class="line">                       IRMapping &amp;valueMapping) const final &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">//当方言实现接口，需要将接口注册到方言中，通常在方言的构造函数</span><br><span class="line">AffineDialect::AffineDialect(MLIRContext *context) ... &#123;</span><br><span class="line">  addInterfaces&lt;AffineInlinerInterface&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-MLIR框架如何使用接口"><a href="#2-MLIR框架如何使用接口" class="headerlink" title="2.MLIR框架如何使用接口"></a>2.MLIR框架如何使用接口</h4><p>在使用方言接口时，需要根据方言获取对应的接口，然后根据接口可以使用接口相关API，示例如代码4-12所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Dialect *dialect = ...;</span><br><span class="line">//将方言强制转换为接口</span><br><span class="line">if (DialectInlinerInterface *interface = dyn_cast&lt;DialectInlinerInterface&gt;(dialect)) &#123;</span><br><span class="line">  //强制转换成功，说明方言实现相关的接口，就可以使用接口</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>方言和方言接口本身并没有继承关系，实际也是利用dyn_cast的能力，完成方言对象到接口对象的转换。这一点和3.3.2节中从Operation*到具体操作的强制类型转换类似，不同的是方言对象本身包含了已经注册的接口，所以在dyn_cast时无需构造接口对象，只需要从已经注册的接口对象中查询是否包含强制类型转换的接口对象，如果存在直接返回查询到的接口对象即可，如果查询不到，则返回空。<br>另外MLIR框架对内联还辅助实现一个集合类（DialectInterfaceCollection）帮助访问所有内联，该集合类方便找到各种对象对应的方言，从而方便开发者通过集合对象统一访问方言接口，感兴趣的读者可以查看源码了解详细内容。</p>
+<h4 id="3-常见方言接口概览"><a href="#3-常见方言接口概览" class="headerlink" title="3.常见方言接口概览"></a>3.常见方言接口概览</h4><h3 id="4-3-2操作、属性和类型接口"><a href="#4-3-2操作、属性和类型接口" class="headerlink" title="4.3.2操作、属性和类型接口"></a>4.3.2操作、属性和类型接口</h3><p>MLIR框架还允许分别为操作、属性和类型提供接口，这三类接口的实现和使用方法几乎一致，本节以操作接口为例进行介绍。</p>
+<h4 id="1-操作接口的示例"><a href="#1-操作接口的示例" class="headerlink" title="1.操作接口的示例"></a>1.操作接口的示例</h4><p>假设有这样一个需求，在编译优化过程中希望得到操作的运行时计算花费的成本，然后根据计算成本进行优化，例如将计算密集型的任务调度到GPGPU上执行。由于不同的操作计算成本各有差异、而且计算成本还可能依赖输入，例如scf方言中的for操作对于不同的输入其计算成本时不同，为此我们定义一个接口，对于需要计算成本的操作都使用这个接口约束，接口对应的TD实现如代码4-12所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def ComputationCostInterface : OpInterface&lt;&quot;ComputationCostInterface&quot;&gt; &#123;</span><br><span class="line">  let description = [&#123; &quot;get Op computation cost&quot; //描述信息：获取操作的计算成本</span><br><span class="line">  &#125;];</span><br><span class="line">  let cppNamespace = &quot;::mlir&quot;; //命名空间</span><br><span class="line">  let methods = [</span><br><span class="line">      //定义接口方法</span><br><span class="line">      InterfaceMethod&lt;</span><br><span class="line">        /*desc=*/[&#123; //方法描述</span><br><span class="line">        &#125;],</span><br><span class="line">        /*retType=*/&quot;int64_t&quot;, //方法的返回值</span><br><span class="line">        /*methodName=*/&quot;getComputationCost&quot;, //方法名</span><br><span class="line">        /*args=*/(ins) //方法的入参，本里没有参数</span><br><span class="line">      &gt;,</span><br><span class="line">  ];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用mlir-tblgen工具将代码4-12翻译成记录然后在翻译成C++代码。我们不再关注记录，仅仅关注生成的C++代码。由于生成的C++代码比较复杂，理解起来比较困难，所以下面先介绍操作接口的一些基础知识。</p>
+<h4 id="2-操作接口的C-实现"><a href="#2-操作接口的C-实现" class="headerlink" title="2.操作接口的C++实现"></a>2.操作接口的C++实现</h4><p>在C++中，为了方便实现自定义接口，框架提供了OpInterface基类用于支持自定义操作、属性和类型接口，它们的类结构如图4-1所示。</p>
+<img src="/2024/06/15/mlir-interfaces/17257006008043.jpg" class="">
+
+<p>OpState在3.3节已经看到，它包含了一个字段Operation*，而模版类Op、Interface和OpInterface分别提供了一些公共能力，特别是通过Interface类实现了接口的动态绑定能力。下面对这三个类进一步展开介绍。<br>操作接口直接继承于OpInterface，OpInterface的定义如代码4-14所示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename ConcreteType, typename Traits&gt;</span><br><span class="line">class OpInterface</span><br><span class="line">    : public detail::Interface&lt;ConcreteType, Operation *, Traits,</span><br><span class="line">                               Op&lt;ConcreteType&gt;, OpTrait::TraitBase&gt; &#123;</span><br><span class="line">public:</span><br><span class="line">  //定义辅助类型，方便代码开发，可以少写代码</span><br><span class="line">  using Base = OpInterface&lt;ConcreteType, Traits&gt;;</span><br><span class="line">  using InterfaceBase = detail::Interface&lt;ConcreteType, Operation *, Traits,  Op&lt;ConcreteType&gt;, OpTrait::TraitBase&gt;;</span><br><span class="line">  using InterfaceBase::InterfaceBase;</span><br><span class="line">protected:</span><br><span class="line">  //给定操作返回操作接口真正的实例对象。</span><br><span class="line">//这个函数也是将操作强制类型转换到操作接口的关键，dyn_cast会使用这个函数</span><br><span class="line">  static typename InterfaceBase::Concept *getInterfaceFor(</span><br><span class="line">Operation *op) &#123;</span><br><span class="line">    OperationName name = op-&gt;getName();</span><br><span class="line">    //根据操作名获取操作元数据，元数据存放在MLIRContext中</span><br><span class="line">    if (std::optional&lt;RegisteredOperationName&gt; rInfo = </span><br><span class="line">name.getRegisteredInfo()) &#123;</span><br><span class="line">      //元数据中包含操作接口，直接返回</span><br><span class="line">      if (auto *opIface = rInfo-&gt;getInterface&lt;ConcreteType&gt;())</span><br><span class="line">        return opIface;</span><br><span class="line">      //元数据中不包含操作接口，则尝试获取方言接口</span><br><span class="line">      return rInfo-&gt;getDialect().getRegisteredInterfaceForOp&lt;</span><br><span class="line">ConcreteType&gt;( op-&gt;getName());</span><br><span class="line">    &#125;</span><br><span class="line">    //如果没有操作元数据，则直接从方言中获取方言接口</span><br><span class="line">    if (Dialect *dialect = name.getDialect())</span><br><span class="line">      return dialect-&gt;getRegisteredInterfaceForOp&lt;ConcreteType&gt;(name);</span><br><span class="line">    return nullptr;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如代码4-14注释所示，代码中最重要的函数是getInterfaceFor，它的目的是给定一个操作获取操作接口实现或者方言接口实现，通过该函数开发者能方便的从操作对象得到接口对象，实现过程也需要借助于dyn_cast来完成。不过需要注意的是在dyn_cast实现强制类型转换的过程本质上通过Operation<em>重新构造了具体操作接口，构造过程在模版类OpInterface中。模版类OpInterface继承于Interface，Interface提供了一个关键的字段Concept</em>，是具体操作真正实现的接口，它也是具体操作通过接口实现动态绑定的关键。Interface的实现如代码4-15所示。</p>
+<figure class="highlight plaintext"><figcaption><span><typename ConcreteType, typename ValueT, typename Traits,</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">          typename BaseType,</span><br><span class="line">          template &lt;typename, template &lt;typename&gt; class&gt; class BaseTrait&gt;</span><br><span class="line">class Interface : public BaseType &#123;</span><br><span class="line">public:</span><br><span class="line">  using Concept = typename Traits::Concept;</span><br><span class="line">  ...</span><br><span class="line">//给定一个值，构造Interface</span><br><span class="line">//当对操作直接赋值给一个接口类型时调用这个显式构造函数，</span><br><span class="line">//在构造函数中调用getInterfaceFor获取操作的具体接口实现</span><br><span class="line">explicit Interface(ValueT t = ValueT()) : BaseType(t),</span><br><span class="line">conceptImpl(t ? ConcreteType::getInterfaceFor(t) : nullptr) &#123;</span><br><span class="line">assert((!t || conceptImpl) &amp;&amp;</span><br><span class="line">&quot;expected value to provide interface instance&quot;);</span><br><span class="line">&#125;</span><br><span class="line">//其它构造Interface的构造函数，可以显式提供参数.</span><br><span class="line">Interface(ValueT t, const Concept *conceptImpl)</span><br><span class="line">: BaseType(t), conceptImpl(const_cast&lt;Concept *&gt;(conceptImpl)) &#123;</span><br><span class="line">assert(!t || ConcreteType::getInterfaceFor(t) == conceptImpl);</span><br><span class="line">&#125;</span><br><span class="line">  ...</span><br><span class="line">private:</span><br><span class="line">  //conceptImpl指针指向真正接口实现对象</span><br><span class="line">  Concept *conceptImpl;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>代码4-14中定义了getInterfacefor函数，4-15中为Interface定义了构造函数。当开发者使用dyn_cast&lt;*<em>Interface&gt;(concreteOp</em>)将具体操作对象转换到接口时，就是调用模版类Interface的构造函数实现。<br>模版类Interface中最关键的是字段Concept*，它指向操作接口真实的实现，当为具体操作实现不同的Concept并将其注册到Interface中就能实现接口的动态绑定能力。模版类Interface又继承于Op类，目的是为了实现具体操作和接口之间的关联，模版类Op实现在3.3节已经提到，这里不再展开。</p>
+<h4 id="2-接口框架机制"><a href="#2-接口框架机制" class="headerlink" title="2.接口框架机制"></a>2.接口框架机制</h4><p>模版类Interface中的Concept指针是接口实现动态绑定的关键。下面我们看看是如何实现的。针对代码4-12来说，接口ComputationCostInterface定义一个函数getComputationCost，允许开发者进行重载实现。这个功能对应的C++代码如代码4-16所示。</p>
+<figure class="highlight plaintext"><figcaption><span>ComputationCostInterface &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    virtual int64_t getComputationCost() const = 0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>本质上就是在接口ComputationCostInterface中提供一个虚函数，同时让具体的类继承于该接口并重载相关API，当实例化不同的派生类时就实现了动态绑定的能力。但是在MLIR框架中，对象不允许存在虚函数，所以需要提供一套模拟虚函数的实现机制。<br>注意：C++的虚函数实现可以简单总结为几个关键点：为定义虚函数类生成一个虚函数表，虚函数表的条目个数等于虚函数的个数，每个条目存放的时虚函数的地址，虚函数表只会存储虚函数的地址，非虚函数无须存储，因为非虚函数在编译器就可以确定函数调用的地址。当派生类继承基类时，如果派生类重载虚函数，则派生类对应的虚函数表中对应条目更新为派生类重载的虚函数地址，否则重用基类的虚函数地址。对于有虚函数的类在实例化对象时，都会为对象额外分配一个指针的空间（称为vptr），同时将vptr指向类的虚函数表关联。这样通过指针调用虚函数时，总是从指针访问到对象的vptr，再通过vptr指向的虚函数表找到真正调用的函数，具体虚函数的指向过程可以参考其它资料。<br>为了模拟虚函数的执行，一定需要一个机制来模拟虚函数表，同时允许派生类重写接口中的APIs。为此MLIR框架引入了Concept的概念，就是模版类Interface中的Concept指针，它指向接口的具体实现。这意味着一个接口提供了几种实现，例如ComputationCostInterface通过mlir-tblgen工具生成的部分代码片段如代码4-17所示。</p>
+<figure class="highlight plaintext"><figcaption><span>mlir &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">class ComputationCostInterface;</span><br><span class="line">namespace detail &#123;</span><br><span class="line">    //定义特质，操作、类型和类型可以继承于特质</span><br><span class="line">struct ComputationCostInterfaceInterfaceTraits &#123;</span><br><span class="line">  //Concept是一个结构体，它只有成员变量，每个成员变量都是函数指针，</span><br><span class="line">  //这些函数指针模拟了接口类声明API的实现，所以增加了额外的参数</span><br><span class="line">  //Concept本质上是为了模拟虚函数表，所以它不会有任何实现</span><br><span class="line">  struct Concept &#123;</span><br><span class="line">//该方法来自于接口定义文件，包含额外两个参数，Concept*和Operation*</span><br><span class="line">//Concept*模拟C++中的this指针</span><br><span class="line">//Operation*表示一个非静态的接口API</span><br><span class="line">int64_t (*getComputationCost)(const Concept *impl, ::mlir::Operation *);</span><br><span class="line">  &#125;;</span><br><span class="line"> </span><br><span class="line">  //Model是接口的默认实现，即当开发者没有重载接口时使用Model作为接口实现</span><br><span class="line">  template&lt;typename ConcreteOp&gt;</span><br><span class="line">  class Model : public Concept &#123;</span><br><span class="line">  public:</span><br><span class="line">using Interface = ::mlir::ComputationCostInterface;</span><br><span class="line">//通过继承关系，将Model中的接口实现传递至基类</span><br><span class="line">Model() : Concept&#123;getComputationCost&#125; &#123;&#125;</span><br><span class="line">            //针对接口中的API提供默认实现</span><br><span class="line">static inline int64_t getComputationCost(const Concept *impl, ::mlir::Operation *tablegen_opaque_val);</span><br><span class="line">  &#125;;</span><br><span class="line">   //FallbackModel是MLIR框架提供的逃生模型，主要原因时MLIR是开放生态，可能</span><br><span class="line">  //存在一些场景，例如使用了未注册的操作，或者操作未实现接口，</span><br><span class="line">//对于这样的情况可以通过该机制定义逃生模型，一般该模型实现会关联到方言</span><br><span class="line">  //当开发者使用FallbackModel时需要通过？？？方式注册才能使用</span><br><span class="line">  //模板参数ConcreteOp指的是继承于FallbackModel的具体接口实现</span><br><span class="line">  template&lt;typename ConcreteOp&gt;</span><br><span class="line">  class FallbackModel : public Concept &#123;</span><br><span class="line">  public:</span><br><span class="line">using Interface = ::mlir::ComputationCostInterface;</span><br><span class="line">FallbackModel() : Concept&#123;getComputationCost&#125; &#123;&#125;</span><br><span class="line">            //针对接口中的API提供默认实现</span><br><span class="line">static inline int64_t getComputationCost(const Concept *impl, ::mlir::Operation *tablegen_opaque_val);</span><br><span class="line">  &#125;;</span><br><span class="line">  //ExternalModel是MLIR框架提供给开发者实现接口的基类</span><br><span class="line">//该接口实现也有默认实现，适用于开发者没有重新实现接口的情况</span><br><span class="line">  //ExternalModel有两个模板参数，第一个是接口实现类，第二个参数是适用的操作类型</span><br><span class="line">  //这样的设计确保ExternalModel作用于具体的操作</span><br><span class="line">  template&lt;typename ConcreteModel, typename ConcreteOp&gt;</span><br><span class="line">  class ExternalModel : public FallbackModel&lt;ConcreteModel&gt; &#123;</span><br><span class="line">  public:</span><br><span class="line">using ConcreteEntity = ConcreteOp;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line">...</span><br><span class="line">&#125; // namespace detail</span><br><span class="line"></span><br><span class="line">//定义接口类</span><br><span class="line">class ComputationCostInterface : public ::mlir::OpInterface&lt;ComputationCostInterface, detail::ComputationCostInterfaceInterfaceTraits&gt; &#123;</span><br><span class="line">public:</span><br><span class="line">  using ::mlir::OpInterface&lt;ComputationCostInterface, detail::ComputationCostInterfaceInterfaceTraits&gt;::OpInterface;</span><br><span class="line">  //定义辅助类，通过ComputationCostInterface::Trait可以访问到特质</span><br><span class="line">  //这个特质非常重要，自动将接口转化为特质，一方面让接口和特质在实现层面统一</span><br><span class="line">  //即具体操作定义时可以把接口和特质看做相同的。</span><br><span class="line">  template &lt;typename ConcreteOp&gt;</span><br><span class="line">     struct Trait : public detail::ComputationCostInterfaceTrait&lt;ConcreteOp&gt; &#123;&#125;;</span><br><span class="line">  //接口对外提供的API</span><br><span class="line">  int64_t getComputationCost();</span><br><span class="line">&#125;;</span><br><span class="line">//接口特质类的定义和实现，在本例中特质没有任何API</span><br><span class="line">namespace detail &#123;</span><br><span class="line">  template &lt;typename ConcreteOp&gt;</span><br><span class="line">  struct ComputationCostInterfaceTrait : public ::mlir::OpInterface&lt;ComputationCostInterface, detail::ComputationCostInterfaceInterfaceTraits&gt;::Trait&lt;ConcreteOp&gt; &#123;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;// namespace detail</span><br><span class="line">&#125; // namespace mlir</span><br><span class="line">//Model和FallbackModel中关于接口中的API的默认实现</span><br><span class="line">namespace mlir &#123;</span><br><span class="line">//Model类中API的实现，可以看到并没有使用Concept*参数</span><br><span class="line">//通过对Operation*进行类型转换后调用具体操作API实现</span><br><span class="line">template&lt;typename ConcreteOp&gt;</span><br><span class="line">int64_t detail::ComputationCostInterfaceInterfaceTraits::Model&lt;</span><br><span class="line">ConcreteOp&gt;::getComputationCost(const Concept </span><br><span class="line">*impl, ::mlir::Operation *tablegen_opaque_val) &#123;</span><br><span class="line">  return (llvm::cast&lt;ConcreteOp&gt;(tablegen_opaque_val)).</span><br><span class="line">getComputationCost();</span><br><span class="line">&#125;</span><br><span class="line">//FallbackModel类中API的实现，通过参数Concept*调用API实现</span><br><span class="line">//参数Concept*指向一个接口实现对象</span><br><span class="line">//由于接口实现可以由开发者动态提供，因此实现了动态绑定功能</span><br><span class="line">template&lt;typename ConcreteOp&gt;</span><br><span class="line">int64_t detail::ComputationCostInterfaceInterfaceTraits::FallbackModel&lt;</span><br><span class="line">ConcreteOp&gt;::getComputationCost(const Concept </span><br><span class="line">*impl, ::mlir::Operation *tablegen_opaque_val) &#123;</span><br><span class="line">  //注意impl的静态类型为Concept，真实类型为具体的接口实现对象</span><br><span class="line">//所以可以使用static_cast进行类型转换</span><br><span class="line">  return static_cast&lt;const ConcreteOp *&gt;(impl)-&gt; </span><br><span class="line">getComputationCost(tablegen_opaque_val);</span><br><span class="line">&#125;</span><br><span class="line">&#125; // namespace mlir</span><br><span class="line"></span><br><span class="line">//接口API的默认实现，可以看到它通过getImpl()找到真正的接口实现</span><br><span class="line">//原因是接口继承于模板类Interface</span><br><span class="line">//而Interface在构造对象时通过getInterfaceFor找到了真正的接口实现</span><br><span class="line">int64_t mlir::ComputationCostInterface::getComputationCost() &#123;</span><br><span class="line">  return getImpl()-&gt;getComputationCost(getImpl(), getOperation());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单可以总结一下，一方面接口定义会自动生成特质，从而将接口看作特质的一种。另外接口通过定义Concept类结构，如图4-2所示。</p>
+<img src="/2024/06/15/mlir-interfaces/17257007752956.jpg" class="">
+<p>允许开发者提供不同的接口实现，并将接口实现注册到操作中，从而实现接口动态绑定。</p>
+<h4 id="4-操作接口的定义、注册和使用"><a href="#4-操作接口的定义、注册和使用" class="headerlink" title="4.操作接口的定义、注册和使用"></a>4.操作接口的定义、注册和使用</h4><p>接口的定义和使用相对复杂，原因是接口定义会生成特质和接口实现类，因此接口中包含额外的信息，本节先介绍TD中接口定义和注册，最后介绍如何使用接口。</p>
+<h5 id="接口定义介绍"><a href="#接口定义介绍" class="headerlink" title="接口定义介绍"></a>接口定义介绍</h5><p>代码4-12是一个简单的接口示例，使用mlir-tblgen工具将其转化为记录，得到代码4-18所示。</p>
+ <figure class="highlight plaintext"><figcaption><span>ComputationCostInterface &#123;// Interface Trait NativeTrait InterfaceTrait OpInterfaceTrait OpInterface</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">  code description = [&#123;...  &#125;];</span><br><span class="line">  string cppInterfaceName = &quot;ComputationCostInterface&quot;;</span><br><span class="line">  string cppNamespace = &quot;::mlir&quot;;</span><br><span class="line">  list&lt;InterfaceMethod&gt; methods = [...]; // 接口成员函数和静态函数</span><br><span class="line">  string extraClassDeclaration = &quot;&quot;;</span><br><span class="line">  code extraSharedClassDeclaration = [&#123;&#125;];</span><br><span class="line">  string extraClassOf = &quot;&quot;;</span><br><span class="line">  list&lt;Interface&gt; baseInterfaces = [&#123;&#125;];</span><br><span class="line">  string trait = &quot;ComputationCostInterface::Trait&quot;;</span><br><span class="line">  code extraConcreteClassDeclaration = [&#123;&#125;];</span><br><span class="line">  code extraConcreteClassDefinition = [&#123;&#125;];</span><br><span class="line">  code extraTraitClassDeclaration = [&#123;&#125;];</span><br><span class="line">  string verify = &quot;&quot;;</span><br><span class="line">  bit verifyWithRegions = 0;</span><br><span class="line">  list&lt;Trait&gt; dependentTraits = [];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码4-18中有几个字段虽然为空，但是在一些场景也被广泛使用，主要包含：</p>
+<ul>
+<li>extraClassDeclaration：为接口定义C++代码，这些代码出现在接口类中（代码4-17中ComputationCostInterface），由于这些代码仅仅出现在接口类中，且没有给开发者提供重写的机会，这意味着所有继承于接口的具体操作都共享这一部分代码，因此通常会将接口实现过程公共、不变的代码声明为extraClassDeclaration，这样当具体操作强制类型转换为接口时可以使用这些代码。</li>
+<li>extraTraitClassDeclaration：为接口对应的特质定义C++代码，该代码仅仅出现在特质中（代码4-17中ComputationCostInterfaceTrait），当接口被视为特质使用时可以使用这些代码。</li>
+<li>extraSharedClassDeclaration：由于TD中接口定义可以自动生成特质类和接口类，该字段表示定义C++代码既出现在特质类中也会出现在接口类中（代码4-17中ComputationCostInterface和ComputationCostInterfaceTrait）。只有当代码需要被特质和接口共享时才会使用这个字段。</li>
+<li>methods：接口定义的APIs，包括一般的成员函数也包括静态函数，成员函数本质上是虚函数和，两者在TD中定义差别不大，成员函数可以使用$_op这样的占位符用于指代当前的操作，在mlir-tblgen工具自动生成的C++代码中成员函数会增加一个额外的参数参数指代操作。<br>这里以成员函数为例介绍相关的字段，成员函数指的是TD中使用InterfaceMethod定义的函数，它包括一下字段：</li>
+<li>description：成员函数的描述。</li>
+<li>returnType：成员函数的返回值。</li>
+<li>methodName：成员函数的名字。</li>
+<li>arguments：成员函数的参数，由于函数可以没有参数，所以该字段可以为空。</li>
+<li>methodBody：成员函数实现，可以为空。如果提供了该内容，在mlir-tblgen工具自动该生成的代码中它出现在接口默认实现中（代码4-17中Model），不会出现其它地方，实际上定义了该字段，继承于该接口的具体操作也不能重写该成员函数，它和extraClassDeclaration非常类似。</li>
+<li>defaultImplementation：成员函数的默认实现体，可以为空。如果提供了该内容，在mlir-tblgen工具自动该生成的代码中它出现在特质中（代码4-17中ComputationCostInterfaceTrait），由于特质被具体操作直接继承，所以相当于操作提供默认成员函数的实现，如嗲吗4-17所示Model中相关接口成员函数的实现就是转发到具体操作中相关API实现。</li>
+</ul>
+<h5 id="接口注册"><a href="#接口注册" class="headerlink" title="接口注册"></a>接口注册</h5><p>接口要想被使用，首先要进行注册。而操作接口依赖操作元数据，每个操作中都包含一个成员InterfaceMap，正如名字所示，它以键值对的形式存放操作实现的接口，其中key为接口的ID，value为接口的实现。<br>当操作要使用接口，必须先调用模板基类类Op的成员方法attachInterface将操作的接口注册到元数据中，在注册过程中首先构造接口对象，然后再插入到操作元数据中。<br>默认情况下，即开发者没有实现自己的接口实现类，MLIR框架在创建操作元数据时，具体来说是通过addOperation注册操作时会创建元数据，并调用attachInterface注册接口，此时会将Model作为默认实现注册到元数据。当开发者定义继承于ExternalModel实现了自己的接口实现类,需要在接口使用前通过attachInterface将接口实现类注册到具体操作。<br>目前MLIR为了防止接口实现类对于框架的影响，只允许注册一次接口实现类，也就说说对于一个具体操作，在TD中显式指定了接口，那么Model类会被注册；所以实际常见的是为具体操作新增一个接口（即它没有出现在具体操作的定义中），通过实现ExternalModel并将其注册到具体操作上。<br>所以通常是ExternalModel为操作动态注册或者延时注册接口（可能的情况是接口尚未实现），但这有一个潜在的风险，即开发者忘记为接口注册这些需要动态注册的接口，在运行时就会出错。在规范开发时可以为具体操作调用declarePromisedInterface将需要实现、但尚未实现的接口注册到方言的unresolvedPromisedInterfaces结构中，这样发生错误时能准确给出哪些接口尚未实现。</p>
+<h5 id="接口使用"><a href="#接口使用" class="headerlink" title="接口使用"></a>接口使用</h5><p>当接口定好以后，就可以在操作定义时使用这个接口。假设我们有三个操作Conv2D1、Conv2D2和Conv2D3需要实现接口，其定义示意如代码4-19所示，关于操作定义更详细的介绍参考第3.3节。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//第一种接口使用方法：将接口ComputationCostInterface看作特质使用</span><br><span class="line">def Uniform_Conv2D1Op: Uniform_Op&lt;&quot;Conv2D1&quot;, [ComputationCostInterface]&gt;</span><br><span class="line">//第二种接口使用方法：使用DeclareOpInterfaceMethods记录修饰接口</span><br><span class="line">def Uniform_Conv2D2Op: Uniform_Op&lt;&quot;Conv2D2&quot;, [DeclareOpInterfaceMethods&lt;ComputationCostInterface&gt;]&gt;</span><br><span class="line">//第三种接口使用方法：使用DeclareOpInterfaceMethods记录修饰接口</span><br><span class="line">//并指明接口重载的方法</span><br><span class="line">def Uniform_Conv2D3Op: Uniform_Op&lt;&quot;Conv2D3&quot;, [DeclareOpInterfaceMethods&lt;ComputationCostInterface, &quot;getComputationCost&quot;&gt;]&gt;</span><br></pre></td></tr></table></figure>
+<p>对于这三种使用方法其效果略有不同。<br>对于第一种使用方法，将接口视为特质来使用，本质上是使用接口中定义的特质ComputationCostInterfaceTraits，而非真正的接口。这样的使用方式实际上将接口退化为特质使用，操作并没有对接口中成员函数重载。<br>对于第二种使用方法来说，通过DeclareOpInterfaceMethods修饰接口，表示操作生成的C++代码中包含接口中成员函数的声明，接口中成员函数的实现需要开发者自己完成。但是对于接口中methodBody和defaultImplementation已经实现的成员函数并不会重新声明。<br>对于第三种使用方法来说，通过DeclareOpInterfaceMethods修饰接口时还指定接口的成员函数列表，列表中的函数是有默认实现的成员函数（即defaultImplemtation字段指定了默认实现）。通过该方法，mlir-tblgen工具为具体操作生成的C++代码中不仅仅包含接口中成员函数的声明，还包含重载函数的声明，开发者需要实现这些函数。关于接口更详细的使用方法可以参考官网[ 接口使用介绍：<a target="_blank" rel="noopener" href="https://mlir.llvm.org/docs/Interfaces/%E3%80%822024%E5%B9%B48%E6%9C%88%E8%AE%BF%E9%97%AE%E3%80%82]%E3%80%82">https://mlir.llvm.org/docs/Interfaces/。2024年8月访问。]。</a></p>
+<h4 id="5-常见操作、属性和类型接口概览TODO"><a href="#5-常见操作、属性和类型接口概览TODO" class="headerlink" title="5.常见操作、属性和类型接口概览TODO"></a>5.常见操作、属性和类型接口概览TODO</h4>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/06/15/mlir-interfaces/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d1546d731a9f30cc80127d57142a482b"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

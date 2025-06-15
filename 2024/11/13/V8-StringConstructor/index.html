@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一、StringConstructor JS规范  二、V8 StringConstructor实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="V8 StringConstructor实现机制">
+<meta property="og:url" content="http://example.com/2024/11/13/V8-StringConstructor/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="一、StringConstructor JS规范  二、V8 StringConstructor实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/11/13/V8-StringConstructor/V8-Specification.png">
+<meta property="article:published_time" content="2024-11-13T12:43:30.000Z">
+<meta property="article:modified_time" content="2025-06-15T05:58:00.524Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="V8">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/11/13/V8-StringConstructor/V8-Specification.png">
+
+
+<link rel="canonical" href="http://example.com/2024/11/13/V8-StringConstructor/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/11/13/V8-StringConstructor/","path":"2024/11/13/V8-StringConstructor/","title":"V8 StringConstructor实现机制"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>V8 StringConstructor实现机制 | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81StringConstructor-JS%E8%A7%84%E8%8C%83"><span class="nav-number">1.</span> <span class="nav-text">一、StringConstructor JS规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81V8-StringConstructor%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">二、V8 StringConstructor实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">三、总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/13/V8-StringConstructor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="V8 StringConstructor实现机制 | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          V8 StringConstructor实现机制
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-11-13 20:43:30" itemprop="dateCreated datePublished" datetime="2024-11-13T20:43:30+08:00">2024-11-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/V8/" itemprop="url" rel="index"><span itemprop="name">V8</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="一、StringConstructor-JS规范"><a href="#一、StringConstructor-JS规范" class="headerlink" title="一、StringConstructor JS规范"></a>一、StringConstructor JS规范</h2><img src="/2024/11/13/V8-StringConstructor/V8-Specification.png" class="" title="v8-specification">
+
+<h2 id="二、V8-StringConstructor实现"><a href="#二、V8-StringConstructor实现" class="headerlink" title="二、V8 StringConstructor实现"></a>二、V8 StringConstructor实现</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">transitioning javascript builtin StringConstructor(</span><br><span class="line">    js-implicit context: NativeContext, receiver: JSAny, newTarget: JSAny,</span><br><span class="line">    target: JSFunction)(...arguments): JSAny &#123;</span><br><span class="line">  const length: intptr = Convert&lt;intptr&gt;(arguments.length);</span><br><span class="line">  let s: String;</span><br><span class="line">  // 1. If no arguments were passed to this function invocation, let s be &quot;&quot;.</span><br><span class="line">  if (length == 0) &#123;</span><br><span class="line">    s = EmptyStringConstant();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // 2. Else,</span><br><span class="line">    // 2. a. If NewTarget is undefined and Type(value) is Symbol, return</span><br><span class="line">    // SymbolDescriptiveString(value).</span><br><span class="line">    if (newTarget == Undefined) &#123;</span><br><span class="line">      typeswitch (arguments[0]) &#123;</span><br><span class="line">        case (value: Symbol): &#123;</span><br><span class="line">          return SymbolDescriptiveString(value);</span><br><span class="line">        &#125;</span><br><span class="line">        case (JSAny): &#123;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    // 2. b. Let s be ? ToString(value).</span><br><span class="line">    s = ToString_Inline(arguments[0]);</span><br><span class="line">  &#125;</span><br><span class="line">  // 3. If NewTarget is undefined, return s.</span><br><span class="line">  if (newTarget == Undefined) &#123;</span><br><span class="line">    return s;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // We might be creating a string wrapper with a custom @@toPrimitive.</span><br><span class="line">  if (target != newTarget) &#123;</span><br><span class="line">    InvalidateStringWrapperToPrimitiveProtector();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 4. Return ! StringCreate(s, ? GetPrototypeFromConstructor(NewTarget,</span><br><span class="line">  // &quot;%String.prototype%&quot;)).</span><br><span class="line">  const map = GetDerivedMap(target, UnsafeCast&lt;JSReceiver&gt;(newTarget));</span><br><span class="line">  const obj =</span><br><span class="line">      UnsafeCast&lt;JSPrimitiveWrapper&gt;(AllocateFastOrSlowJSObjectFromMap(map));</span><br><span class="line">  obj.value = s;</span><br><span class="line">  return obj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在V8实现的StringConstructor中并没有DefinePropertyOrThrow的步骤。那么V8是如何满足规范要求的呢？</p>
+<p>由于规范中在String new出的对象上定义了length属性，因此GetOwnProperty要能够访问到该属性。<br>先看一下V8属性打印过程。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">JSObject::PrintProperties</span><span class="params">(std::ostream&amp; os)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">HasFastProperties</span>()) &#123;</span><br><span class="line">    Tagged&lt;DescriptorArray&gt; descs = <span class="built_in">map</span>()-&gt;<span class="built_in">instance_descriptors</span>(<span class="built_in">GetIsolate</span>());</span><br><span class="line">    <span class="type">int</span> nof_inobject_properties = <span class="built_in">map</span>()-&gt;<span class="built_in">GetInObjectProperties</span>();</span><br><span class="line">    <span class="keyword">for</span> (InternalIndex i : <span class="built_in">map</span>()-&gt;<span class="built_in">IterateOwnDescriptors</span>()) &#123;</span><br><span class="line">      ...</span><br><span class="line">      <span class="keyword">switch</span> (details.<span class="built_in">location</span>()) &#123;</span><br><span class="line">        <span class="keyword">case</span> PropertyLocation::kField: &#123;</span><br><span class="line">          FieldIndex field_index = FieldIndex::<span class="built_in">ForDetails</span>(<span class="built_in">map</span>(), details);</span><br><span class="line">          os &lt;&lt; <span class="built_in">Brief</span>(<span class="built_in">RawFastPropertyAt</span>(field_index));</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> PropertyLocation::kDescriptor:</span><br><span class="line">          os &lt;&lt; <span class="built_in">Brief</span>(descs-&gt;<span class="built_in">GetStrongValue</span>(i));</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      os &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">      details.<span class="built_in">PrintAsFastTo</span>(os, PropertyDetails::kForProperties);</span><br><span class="line">      <span class="keyword">if</span> (details.<span class="built_in">location</span>() == PropertyLocation::kField) &#123;</span><br><span class="line">        os &lt;&lt; <span class="string">&quot; @ &quot;</span>;</span><br><span class="line">        FieldType::<span class="built_in">PrintTo</span>(descs-&gt;<span class="built_in">GetFieldType</span>(i), os);</span><br><span class="line">        <span class="type">int</span> field_index = details.<span class="built_in">field_index</span>();</span><br><span class="line">        <span class="keyword">if</span> (field_index &lt; nof_inobject_properties) &#123;</span><br><span class="line">          os &lt;&lt; <span class="string">&quot;, location: in-object&quot;</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          field_index -= nof_inobject_properties;</span><br><span class="line">          os &lt;&lt; <span class="string">&quot;, location: properties[&quot;</span> &lt;&lt; field_index &lt;&lt; <span class="string">&quot;]&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        os &lt;&lt; <span class="string">&quot;, location: descriptor&quot;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">map</span>()-&gt;<span class="built_in">NumberOfOwnDescriptors</span>() &gt; <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>V8的property遍历过程是从object的map中获取。<br>String map的初始化过程如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#123;  <span class="comment">// --- S t r i n g ---</span></span><br><span class="line">    Handle&lt;JSFunction&gt; string_fun =</span><br><span class="line">        <span class="built_in">InstallFunction</span>(isolate_, global, <span class="string">&quot;String&quot;</span>, JS_PRIMITIVE_WRAPPER_TYPE,</span><br><span class="line">                        JSPrimitiveWrapper::kHeaderSize, <span class="number">0</span>,</span><br><span class="line">                        isolate_-&gt;<span class="built_in">initial_object_prototype</span>(),</span><br><span class="line">                        Builtin::kStringConstructor, <span class="number">1</span>, kDontAdapt);</span><br><span class="line">    <span class="built_in">InstallWithIntrinsicDefaultProto</span>(isolate_, string_fun,</span><br><span class="line">                                     Context::STRING_FUNCTION_INDEX);</span><br><span class="line"></span><br><span class="line">    <span class="function">DirectHandle&lt;Map&gt; <span class="title">string_map</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">        native_context()-&gt;string_function()-&gt;initial_map(), isolate())</span></span>;</span><br><span class="line">    string_map-&gt;<span class="built_in">set_elements_kind</span>(FAST_STRING_WRAPPER_ELEMENTS);</span><br><span class="line">    Map::<span class="built_in">EnsureDescriptorSlack</span>(isolate_, string_map, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    PropertyAttributes attribs =</span><br><span class="line">        <span class="built_in">static_cast</span>&lt;PropertyAttributes&gt;(DONT_ENUM | DONT_DELETE | READ_ONLY);</span><br><span class="line"></span><br><span class="line">    &#123;  <span class="comment">// Add length.</span></span><br><span class="line">      Descriptor d = Descriptor::<span class="built_in">AccessorConstant</span>(</span><br><span class="line">          factory-&gt;<span class="built_in">length_string</span>(), factory-&gt;<span class="built_in">string_length_accessor</span>(), attribs);</span><br><span class="line">      string_map-&gt;<span class="built_in">AppendDescriptor</span>(<span class="built_in">isolate</span>(), &amp;d);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Install the String.fromCharCode function.</span></span><br><span class="line">    <span class="built_in">SimpleInstallFunction</span>(isolate_, string_fun, <span class="string">&quot;fromCharCode&quot;</span>,</span><br><span class="line">                          Builtin::kStringFromCharCode, <span class="number">1</span>, kDontAdapt);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>String map在初始化过程中加入length属性，设置的属性值为string_length_accessor,即getter&#x2F;setter方法。此外，Descriptor类型用于描述对象布局，值得注意的是Descriptor是一个三元组[key, value, attributes]。</p>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><ul>
+<li>V8的String在初始化过程中，在其map的Descriptors（对象布局）中添加length属性Descriptor</li>
+<li>Descriptor类型为一个三元组[key, value, attributes]</li>
+<li>属性的类型分为kAccessor和kField两种类型，当类型为kAccessor时（即getter&#x2F;setter），该property不体现在object的内存中，仅记录在object-&gt;map中，在访问时，需要在线获取</li>
+<li>因此，V8在用String创建对象的时候，对象所在的内存中并不会有length属性，所以在StringConstructor中看不到DefineProperty的过程，但属性访问时不影响length属性获取，因为属性访问是遍历object-&gt;map，map中有获取length属性的方法。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/V8/" rel="tag"># V8</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/09/08/gen-zgc/" rel="prev" title="分代ZGC概述">
+                  <i class="fa fa-angle-left"></i> 分代ZGC概述
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/12/22/llvm-cg-reference/" rel="next" title="《深入理解LLVM：代码生成》参考资料">
+                  《深入理解LLVM：代码生成》参考资料 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"c9b10038e2b13b6e7274b25d15abdd1c"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

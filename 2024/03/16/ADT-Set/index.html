@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="LLVM中SetADT中提供了一系列Set相关的集合，由于很多Set是基于Map，建议读者先阅读Map容器。 DenseSet、SmallDenseSetDenseSet基于DenseMap实现的Set，对于DenseMap来说，Set中元素作为Map的Key，Map的Value是一个固定Empty值。同样地SmallDenseSet是基于SmallDenseMap实现的Set（默认空间更小，只有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ADT中Set容器介绍">
+<meta property="og:url" content="http://example.com/2024/03/16/ADT-Set/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="LLVM中SetADT中提供了一系列Set相关的集合，由于很多Set是基于Map，建议读者先阅读Map容器。 DenseSet、SmallDenseSetDenseSet基于DenseMap实现的Set，对于DenseMap来说，Set中元素作为Map的Key，Map的Value是一个固定Empty值。同样地SmallDenseSet是基于SmallDenseMap实现的Set（默认空间更小，只有">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/03/16/ADT-Set/17105840687046.jpg">
+<meta property="og:image" content="http://example.com/2024/03/16/ADT-Set/17105840389108.jpg">
+<meta property="article:published_time" content="2024-03-16T09:21:27.000Z">
+<meta property="article:modified_time" content="2025-06-15T05:58:00.475Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="LLVM,MLIR,ADT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/03/16/ADT-Set/17105840687046.jpg">
+
+
+<link rel="canonical" href="http://example.com/2024/03/16/ADT-Set/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/03/16/ADT-Set/","path":"2024/03/16/ADT-Set/","title":"ADT中Set容器介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ADT中Set容器介绍 | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LLVM%E4%B8%ADSet"><span class="nav-number">1.</span> <span class="nav-text">LLVM中Set</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DenseSet%E3%80%81SmallDenseSet"><span class="nav-number">1.1.</span> <span class="nav-text">DenseSet、SmallDenseSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SmallSet"><span class="nav-number">1.2.</span> <span class="nav-text">SmallSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SmallPtrSet"><span class="nav-number">1.3.</span> <span class="nav-text">SmallPtrSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StringSet"><span class="nav-number">1.4.</span> <span class="nav-text">StringSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SparseSet"><span class="nav-number">1.5.</span> <span class="nav-text">SparseSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SpareMultiSet"><span class="nav-number">1.6.</span> <span class="nav-text">SpareMultiSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ImmutableSet"><span class="nav-number">1.7.</span> <span class="nav-text">ImmutableSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SetVector"><span class="nav-number">1.8.</span> <span class="nav-text">SetVector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UniqueVector"><span class="nav-number">1.9.</span> <span class="nav-text">UniqueVector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FoldingSet"><span class="nav-number">1.10.</span> <span class="nav-text">FoldingSet</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#std%E4%B8%ADSet%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">std中Set实现</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/16/ADT-Set/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ADT中Set容器介绍 | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ADT中Set容器介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-16 17:21:27" itemprop="dateCreated datePublished" datetime="2024-03-16T17:21:27+08:00">2024-03-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="LLVM中Set"><a href="#LLVM中Set" class="headerlink" title="LLVM中Set"></a>LLVM中Set</h1><p>ADT中提供了一系列Set相关的集合，由于很多Set是基于Map，建议读者先阅读Map容器。</p>
+<h2 id="DenseSet、SmallDenseSet"><a href="#DenseSet、SmallDenseSet" class="headerlink" title="DenseSet、SmallDenseSet"></a>DenseSet、SmallDenseSet</h2><p>DenseSet基于DenseMap实现的Set，对于DenseMap来说，Set中元素作为Map的Key，Map的Value是一个固定Empty值。同样地SmallDenseSet是基于SmallDenseMap实现的Set（默认空间更小，只有4个元素）。</p>
+<h2 id="SmallSet"><a href="#SmallSet" class="headerlink" title="SmallSet"></a>SmallSet</h2><p>SmallSet是ADT提供的一个集合，专门处理元素较少的场景。它的底层使用SmallVector和std::set作为存储结构，当SmallSet的元素较少时使用SmallVector，当元素超过SmallVector中栈空间的大小时，将SmallVector转化为std::set。<br>添加数据使用insert。</p>
+<h2 id="SmallPtrSet"><a href="#SmallPtrSet" class="headerlink" title="SmallPtrSet"></a>SmallPtrSet</h2><p>SmallSet是处理一般元素，当处理指针的时候会使用SmallPtrSet。因为SmallSet底层使用SmallVector或者std::set，在存储时会根据对象的类型（是否支持Copy函数）进行Copy构造对象。而使用指针可以提供更好的性能，无需进行Copy构造。<br>SmallPtrSet只能接受指针类型，同样地其内存布局也分为两种：一个小数组（分配在栈上）和一个指针（分配在堆上），当元素个数较少时使用数组进行管理，当元素较多时使用指针进行管理。使用数组时元素按照顺序存放，查找也按照顺序进行；当使用指针时会对指针进行Hash，然后计算对应位置，因此可能存在Hash冲突问题，解决Hash冲突的方法也是开发定址法。<br>添加数据使用insert。</p>
+<h2 id="StringSet"><a href="#StringSet" class="headerlink" title="StringSet"></a>StringSet</h2><p>它继承于StringMap，key为StringRef，Value类型为null。对String期望获得较高性能。添加数据使用insert，且只支持单元素添加，不像SmallSet、SmallPtrSet可以支持一次添加多个元素。。</p>
+<h2 id="SparseSet"><a href="#SparseSet" class="headerlink" title="SparseSet"></a>SparseSet</h2><p>这个容器目的时为Set提供更高查询、插入、删除效率，相应地该容器需要较多的额外存储空间。它的设计如下：</p>
+<img src="/2024/03/16/ADT-Set/17105840687046.jpg" class="">
+
+<p>使用一个SmallVector存储真正的Value；使用一个数组存储存储Value在SmallVector对应的索引位置（Index），而Value在数组也有一个索引，它是通过一个Hash计算得到。<br>通常来说，使用SpareSet的性能比HashTable性能更好，它的查询、插入、删除一般是常量数量级别，依赖于插入或者删除的操作的执行顺序。</p>
+<h2 id="SpareMultiSet"><a href="#SpareMultiSet" class="headerlink" title="SpareMultiSet"></a>SpareMultiSet</h2><p>它和SpareSet类似，但是支持多个重复元素。它的设计和SparseSet也非常类似，最大的区别对SmallVector存储的数据进行了升级，在SparseSet中SmallVector存储的Value，而SparseMultiSet中SmallVector存放的是一个结构，这个结构不仅仅包括了Value，还包括了双向链表，用于将相同的Value节点串起来。</p>
+<h2 id="ImmutableSet"><a href="#ImmutableSet" class="headerlink" title="ImmutableSet"></a>ImmutableSet</h2><p>类似于ImmuatbleMap，也是使用平衡二叉树实现，当添加、删除元素时都会创建一颗新的平衡二叉树。</p>
+<h2 id="SetVector"><a href="#SetVector" class="headerlink" title="SetVector"></a>SetVector</h2><p>ADT中提供了一个容器，要求元素不能重复（Set的基本功能），同时提供了元素顺序访问的能力。在底层使用SmallVector和DenseSet。默认情况下，元素顺序插入到SmallVector中，同时会将元素插入到DenseSet，DenseSet主要用于保证元素不能重复。<br>这个容器还可以接受一个额外的参数N，表示元素较少场景中的使用。在元素较少场景，只使用SmallVector，不使用DenseSet，所以在插入元素时需要遍历SmallVector，确保元素唯一。<br>该容器对外接口基本上以SmallVector为主，甚至可以将整个SmallVector暴露出去。</p>
+<h2 id="UniqueVector"><a href="#UniqueVector" class="headerlink" title="UniqueVector"></a>UniqueVector</h2><p>这也是一个特殊的似于Set的容器，它要求数据成员不能重复，同时提供了元素顺序访问的能力。在底层使用std::vector保存真实的数据，同时使用std::map&lt;T, unsigned&gt;已经在Vector存放的元素。它非常类似于SetVector，但是在底层使用map，所以map中会储存一个ID。这个容器使用成本比较高，但是它能和std标准算法直接交互。</p>
+<h2 id="FoldingSet"><a href="#FoldingSet" class="headerlink" title="FoldingSet"></a>FoldingSet</h2><p>这个集合提供了特殊功能，第一针对集合的元素进行增强，集合元素需要额外继承于FoldingSetNode，FoldingSetNode提供了一个机制，计算元素唯一ID的函数Profile，开发者需要根据元素的特点自定义如何形成这个唯一ID（FoldingSetNodeID）。第二集合提供额外的处理能力，例如GetOrInsertNode函数会根据ID计算Node是否已经存在，如果存在则丢弃新插入的Node返回原来的Node，否则新插入Node。RemoveNode删除特定Node。</p>
+<p>该容器的实现基于一个连续的内存为主，称为Buckets，每个Bucket又是一个单链表，用于将相同的Hash值管理起来。其结果如下所示：</p>
+<img src="/2024/03/16/ADT-Set/17105840389108.jpg" class="">
+
+
+<p>FoldingSet也不会执行元素的析构函数，只是将元素从FoldingSet管理的结构中移除。<br>SmallSet只能处理对象引用，SmallPtrSet只能处理对象指针<br>FoldingSet使用方法：<br>1）定义Node继承于FlodingSetNode，实现Profile函数（目的是计算对象的ID）<br>2）定义FlodingSet<br>3）通过FindNodeOrInsertPos、GetOrInsertNode、RemoveNode使用集合</p>
+<h1 id="std中Set实现"><a href="#std中Set实现" class="headerlink" title="std中Set实现"></a>std中Set实现</h1><p>非常类似于Map也是采用红黑树进行实现。只不过key和value相同。</p>
+<span id="more"></span>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LLVM-MLIR-ADT/" rel="tag"># LLVM,MLIR,ADT</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/16/ADT-Map/" rel="prev" title="ADT中Map容器介绍">
+                  <i class="fa fa-angle-left"></i> ADT中Map容器介绍
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/03/16/ADT-Graph/" rel="next" title="ADT中图和迭代器介绍">
+                  ADT中图和迭代器介绍 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"2dfc2b7f2abcaced3634ece4352a8217"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

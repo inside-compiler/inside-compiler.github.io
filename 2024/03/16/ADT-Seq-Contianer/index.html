@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ADT提供了的顺序和std一样包括连续内存管理的容器以及链表形式的容器。 顺序容器-连续内存连续内存主要包括：SmallVector、Arrayref、TinyPtrVecotr。其中SmallVector和ArrayRef是最常用的数据类型。 SmallVector这是ADT对标std::vector提供的容器，它的接口和std::vector也非常类似，一般来说它的性能优于std::vecto">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ADT顺序容器介绍">
+<meta property="og:url" content="http://example.com/2024/03/16/ADT-Seq-Contianer/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="ADT提供了的顺序和std一样包括连续内存管理的容器以及链表形式的容器。 顺序容器-连续内存连续内存主要包括：SmallVector、Arrayref、TinyPtrVecotr。其中SmallVector和ArrayRef是最常用的数据类型。 SmallVector这是ADT对标std::vector提供的容器，它的接口和std::vector也非常类似，一般来说它的性能优于std::vecto">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/03/16/ADT-Seq-Contianer/17105774616667.jpg">
+<meta property="article:published_time" content="2024-03-16T08:15:23.000Z">
+<meta property="article:modified_time" content="2025-06-15T05:58:00.475Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="LLVM,MLIR,ADT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/03/16/ADT-Seq-Contianer/17105774616667.jpg">
+
+
+<link rel="canonical" href="http://example.com/2024/03/16/ADT-Seq-Contianer/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/03/16/ADT-Seq-Contianer/","path":"2024/03/16/ADT-Seq-Contianer/","title":"ADT顺序容器介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ADT顺序容器介绍 | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8-%E8%BF%9E%E7%BB%AD%E5%86%85%E5%AD%98"><span class="nav-number">1.</span> <span class="nav-text">顺序容器-连续内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SmallVector"><span class="nav-number">1.1.</span> <span class="nav-text">SmallVector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayRef"><span class="nav-number">1.2.</span> <span class="nav-text">ArrayRef</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TinyPtrVector"><span class="nav-number">1.3.</span> <span class="nav-text">TinyPtrVector</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8-List"><span class="nav-number">2.</span> <span class="nav-text">顺序容器-List</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E9%93%BE%E8%A1%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">基础链表数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ilist-node"><span class="nav-number">2.1.1.</span> <span class="nav-text">ilist_node</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ilist-node-with-parent"><span class="nav-number">2.1.2.</span> <span class="nav-text">ilist_node_with_parent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#node-options"><span class="nav-number">2.1.3.</span> <span class="nav-text">node_options</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ilist-sentinel"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">ilist_sentinel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ilist-tag"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">ilist_tag</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#simple-list"><span class="nav-number">2.2.</span> <span class="nav-text">simple_list</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Iplist-ilist"><span class="nav-number">2.3.</span> <span class="nav-text">Iplist&#x2F;ilist</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ImmutableList"><span class="nav-number">2.4.</span> <span class="nav-text">ImmutableList</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/16/ADT-Seq-Contianer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ADT顺序容器介绍 | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ADT顺序容器介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-16 16:15:23" itemprop="dateCreated datePublished" datetime="2024-03-16T16:15:23+08:00">2024-03-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LLVM/" itemprop="url" rel="index"><span itemprop="name">LLVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>ADT提供了的顺序和std一样包括连续内存管理的容器以及链表形式的容器。</p>
+<h1 id="顺序容器-连续内存"><a href="#顺序容器-连续内存" class="headerlink" title="顺序容器-连续内存"></a>顺序容器-连续内存</h1><p>连续内存主要包括：SmallVector、Arrayref、TinyPtrVecotr。其中SmallVector和ArrayRef是最常用的数据类型。</p>
+<h2 id="SmallVector"><a href="#SmallVector" class="headerlink" title="SmallVector"></a>SmallVector</h2><p>这是ADT对标std::vector提供的容器，它的接口和std::vector也非常类似，一般来说它的性能优于std::vector，主要原因是smallvector在实现时进行了优化。smallvector的标准使用方式为smallvecotr&lt;type, initial_length&gt;，使用方式和std::vector也类似。smallvector和std::vector相比多个一个模板参数initial_length，这个参数表示smallvector预分配的内存，并且这个内存分配在栈上，而不是预分配在堆中。也就是说，当元素数量较少时，SmallVector会在栈上分配内存，避免了堆上内存分配和释放的开销。只有在元素数量超过阈值时，SmallVector才会在堆上动态分配内存，这时它的行为和std::vector类似。smallvector和std::vector在插入元素时，当超过当前容器的大小时，都会进行扩容，std::vector会重新分配更大的内存块，并将元素从旧内存复制到新内存中，这可能导致内存重新分配和复制的开销。smallvector优先在栈上分配，超过容量切换到堆上。<br>SmallVector实现采用了一点比较“特殊”的方式，它采用了多继承的方法实现栈+堆混合存储，代码如下：<br> <figure class="highlight plaintext"><figcaption><span>: public SmallVectorImpl<T>,</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">                     SmallVectorStorage&lt;T, N&gt; &#123;</span><br><span class="line">           </span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中SmallVectorImpl对应的是堆存储，SmallVectorStorage对应的是栈存储。SmallVectorStorage本质上是要给数组，所以它的空间是在栈上。而SmallVectorImpl会将SmallVectorStorage对应的数组地址以及数组的长度进行保存，默认情况下并不会在堆中分配空间，当往SmallVector添加元素时总是先判断数据长度是否超过数组的范围，如果超过则进行堆空间分配，如果是第一次从堆中分配，使用malloc并且将栈中数据使用memcpy复制到堆中；如果不是第一次在堆中分配内存，使用realloc分配。<br>SmallVector内存布局如下所示。</p>
+<img src="/2024/03/16/ADT-Seq-Contianer/17105774616667.jpg" class="">
+
+<p>LLVM中提供了API，例如to_vector将std::vector转换到SmallVector，方便整个框架使用SmallVector，在转换过程中会重新构造一个SmallVector对象，同样地如果要从SmallVector转换到std::vector也是重构一个stad::vector对象。所以双方的互转成本较高，而且SmallVector并不适用于std中的各种标准算法，所以在LLVM项目中可以看到两种容器都有使用，一般来说如果需要使用标准算法，优先使用std::vector；当不涉及到算法时，两种容器都可以，如无特别要求一般使用SmallVector。</p>
+<h2 id="ArrayRef"><a href="#ArrayRef" class="headerlink" title="ArrayRef"></a>ArrayRef</h2><p>ArrayRef是ADT中提供的一个简化顺序容器，它可以从std中的array、vector以及ADT中的SmallVector进行构造，该容器最大的特点是它并没有自己的内存，它和源容器共享内存。所以一般它用于从顺序容器读元素的场景。<br>此外ADT中还提供了MutableArrayRef和OwningArrayRef，正如它们的名字描述，MutableArrayRef也是和源容器共享内存，但是它提供了一些API可以修改源容器中元素。而OwningArrayRef则是拥有自己的内存，每次创建OwningArrayRef都会分配对应的内存空间。</p>
+<h2 id="TinyPtrVector"><a href="#TinyPtrVector" class="headerlink" title="TinyPtrVector"></a>TinyPtrVector</h2><p>这是针对SmallVector优化的特殊类型，它适用于容器大多数时候只有0个或者1个元素的场景，对于这样的场景使用该容器可以不必使用SmallVector，相当于直接使用原始类型的指针。所以它使用了一个Union来表示其存储layout，一个是原始类型的指针，另一个是SmallVector的指针。</p>
+<h1 id="顺序容器-List"><a href="#顺序容器-List" class="headerlink" title="顺序容器-List"></a>顺序容器-List</h1><p>ADT提供了链表类型simplelist、iplist和ilist。同时开发者可以基于链表的一些基础数据结构定义自己的链表类型。</p>
+<h2 id="基础链表数据结构"><a href="#基础链表数据结构" class="headerlink" title="基础链表数据结构"></a>基础链表数据结构</h2><p>基础链表数据结构主要是提供链表的基础操作，例如设置链表的前驱、后继。</p>
+<h3 id="ilist-node"><a href="#ilist-node" class="headerlink" title="ilist_node"></a>ilist_node</h3><p>这是ADT中一个常见的基类，它实现了双向链表。</p>
+<h3 id="ilist-node-with-parent"><a href="#ilist-node-with-parent" class="headerlink" title="ilist_node_with_parent"></a>ilist_node_with_parent</h3><p>这是ADT另外一个比较常用的list基类，它也是双向链表，同时提供了一些基础的API用于访问派生类型的父类型。它接受两个类型，分别是当前类型以及它的父类型。<br>使用该类型时，需要实现实现getParent（）这样的API才能保证正确性。同时要求父类型实现getSublistAccess（）这样的API。<br>例如MBB继承于该类型，它的父类型为MachineFunction，两者分别需要定义对应的API。</p>
+<h3 id="node-options"><a href="#node-options" class="headerlink" title="node_options"></a>node_options</h3><p>ADT中链表结点还可以附加一些option，最典型是sentinel和tag。</p>
+<h4 id="ilist-sentinel"><a href="#ilist-sentinel" class="headerlink" title="ilist_sentinel"></a>ilist_sentinel</h4><p>该选项表示结点是否哨兵结点。</p>
+<h4 id="ilist-tag"><a href="#ilist-tag" class="headerlink" title="ilist_tag"></a>ilist_tag</h4><p>为Node添加一个标签，用于确保只有对应tag的node才能加入到list中。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">struct A &#123;&#125;;</span><br><span class="line">struct B &#123;&#125;;</span><br><span class="line">//定义结点，包括标签A、B</span><br><span class="line">struct N : ilist_node&lt;N, ilist_tag&lt;A&gt;&gt;, ilist_node&lt;N, ilist_tag&lt;B&gt;&gt; &#123;&#125;;</span><br><span class="line"></span><br><span class="line">void foo() &#123;</span><br><span class="line">  // ListA只能接受结点有Tag A的节点</span><br><span class="line">  simple_ilist&lt;N, ilist_tag&lt;A&gt;&gt; ListA;</span><br><span class="line">  // ListB只能接受结点有Tag B的结点</span><br><span class="line">  simple_ilist&lt;N, ilist_tag&lt;B&gt;&gt; ListB;</span><br><span class="line">  N N1;</span><br><span class="line">  ListA.push_back(N1);</span><br><span class="line">  ListB.push_back(N1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="simple-list"><a href="#simple-list" class="headerlink" title="simple_list"></a>simple_list</h2><p>基于ilist_node实现的双向链表，它并不支持真正的Delete，它的remove、erase接口都是将结点从链表中移除，并不会执行结点的析构函数。另外simple_list也不支持traits，所以也不会在结点变化时执行额外的操作。</p>
+<p><strong>push_back只能接受引用类型，不会执行对象的析构函数</strong><br>一些例子：</p>
+<ol>
+<li>simple_ilist<T>给出默认值。</li>
+<li>simple_ilist&lt;T,ilist_sentinel_tracking<true>&gt;启用ilist_node::isSentinel() API。</li>
+<li>simple_ilist&lt;T, ilist_tag ,ilist_sentinel_tracking<false>&gt; 指定 A 标签，并且应该关闭跟踪。</li>
+<li>simple_ilist&lt;T,ilist_sentinel_tracking<false>, ilist_tag &gt; 和3相同。</li>
+</ol>
+<h2 id="Iplist-ilist"><a href="#Iplist-ilist" class="headerlink" title="Iplist&#x2F;ilist"></a>Iplist&#x2F;ilist</h2><p>继承于simple-list，ADT中支持的双向链表，并且这个链表可以支持多态类型的存储，所以是Intrusive Polymorphic的链表。它最大的创新点有两个：<br>1）在于iplist可以支持基类以及派生类对象，例如instructions和basicblock。<br>2）位list添加一个traits，在list中对象删除、添加、转移等动作时可以调用Callback进行处理。<br>注意ilist是iplist的别名。</p>
+<p><strong>push_back只能接受指针类型</strong></p>
+<h2 id="ImmutableList"><a href="#ImmutableList" class="headerlink" title="ImmutableList"></a>ImmutableList</h2><p>提供一个不可变的List，对于该类型不能直接创建，通常都是ImmutableListFactory完成对象创建。</p>
+<span id="more"></span>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LLVM-MLIR-ADT/" rel="tag"># LLVM,MLIR,ADT</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/07/ISel-5/" rel="prev" title="指令选择小结">
+                  <i class="fa fa-angle-left"></i> 指令选择小结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/03/16/ADT-Map/" rel="next" title="ADT中Map容器介绍">
+                  ADT中Map容器介绍 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"41f9ad99642e1cfd7e1cc255e74321ee"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

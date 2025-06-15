@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="MLIR学习系列1-MLIR概述MLIR自2019年发布后就成为编译界的新贵，不仅仅AI编译器、领域编译器、新型硬件公司和新型语言都在尝试使用MLIR，其中以AI编译器取得的成果最为显著。本文简单介绍MLIR的基础知识、MLIR构建和MLIR相关工具的使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MLIR学习系列1-MLIR概述">
+<meta property="og:url" content="http://example.com/2024/01/01/Build-MLIR/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="MLIR学习系列1-MLIR概述MLIR自2019年发布后就成为编译界的新贵，不仅仅AI编译器、领域编译器、新型硬件公司和新型语言都在尝试使用MLIR，其中以AI编译器取得的成果最为显著。本文简单介绍MLIR的基础知识、MLIR构建和MLIR相关工具的使用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-01T02:21:22.000Z">
+<meta property="article:modified_time" content="2025-06-15T05:58:00.478Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="MLIR">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2024/01/01/Build-MLIR/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/01/01/Build-MLIR/","path":"2024/01/01/Build-MLIR/","title":"MLIR学习系列1-MLIR概述"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MLIR学习系列1-MLIR概述 | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MLIR%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%971-MLIR%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">MLIR学习系列1-MLIR概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MLIR%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">MLIR是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MLIR%E6%9E%84%E5%BB%BA"><span class="nav-number">1.2.</span> <span class="nav-text">MLIR构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MLIR%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8"><span class="nav-number">1.3.</span> <span class="nav-text">MLIR相关工具使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MLIR%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.</span> <span class="nav-text">MLIR使用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8MLIR%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AAHello-MLIR%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">1.4.1.</span> <span class="nav-text">使用MLIR定义一个Hello MLIR的代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86MLIR%E6%96%B9%E8%A8%80%E4%B8%8B%E9%99%8D%E8%87%B3LLVM%E6%96%B9%E8%A8%80"><span class="nav-number">1.4.2.</span> <span class="nav-text">将MLIR方言下降至LLVM方言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86LLVM%E6%96%B9%E8%A8%80%E8%BD%AC%E6%8D%A2%E4%B8%BALLVM-IR"><span class="nav-number">1.4.3.</span> <span class="nav-text">将LLVM方言转换为LLVM IR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%B5%8B%E8%AF%95LLVM-IR"><span class="nav-number">1.4.4.</span> <span class="nav-text">运行测试LLVM IR</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/01/01/Build-MLIR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MLIR学习系列1-MLIR概述 | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MLIR学习系列1-MLIR概述
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-01-01 10:21:22" itemprop="dateCreated datePublished" datetime="2024-01-01T10:21:22+08:00">2024-01-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="MLIR学习系列1-MLIR概述"><a href="#MLIR学习系列1-MLIR概述" class="headerlink" title="MLIR学习系列1-MLIR概述"></a>MLIR学习系列1-MLIR概述</h1><p>MLIR自2019年发布后就成为编译界的新贵，不仅仅AI编译器、领域编译器、新型硬件公司和新型语言都在尝试使用MLIR，其中以AI编译器取得的成果最为显著。本文简单介绍MLIR的基础知识、MLIR构建和MLIR相关工具的使用。</p>
+<span id="more"></span>
+
+<h2 id="MLIR是什么？"><a href="#MLIR是什么？" class="headerlink" title="MLIR是什么？"></a>MLIR是什么？</h2><p>MLIR是Multi-Level Intermediate Representation的缩写。MLIR提供一套新的编译基础架构，方便编译器开发人员定义多层IR，并基于IR进行优化。<br>MLIR定义的IR通过方言（Dialect）进行管理，Dialect又包含了Operation，而Operation是IR对于的操作，因此可以认为Dialect是Operation的集合。<br>通过Dialect的定义，可以将代码转换至对应的方言，再通过对方言的降级和优化，最后下降至LLVM IR，重用LLVM的编译框架完成优化、代码生成。</p>
+<h2 id="MLIR构建"><a href="#MLIR构建" class="headerlink" title="MLIR构建"></a>MLIR构建</h2><p>MLIR是LLVM的子项目，默认情况下构建LLVM时并不会构建MLIR子项目。所以为了使用MLIR在构建LLVM时需要添加额外的参数。编译命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/llvm/llvm-project.git</span><br><span class="line">mkdir llvm-project/build</span><br><span class="line">cd llvm-project/build</span><br><span class="line">cmake -G Ninja ../llvm \</span><br><span class="line">   -DLLVM_ENABLE_PROJECTS=mlir \</span><br><span class="line">   -DLLVM_BUILD_EXAMPLES=ON \</span><br><span class="line">   -DLLVM_TARGETS_TO_BUILD=&quot;Native;NVPTX;AMDGPU&quot; \</span><br><span class="line">   -DCMAKE_BUILD_TYPE=Release \</span><br><span class="line">   -DLLVM_ENABLE_ASSERTIONS=ON</span><br><span class="line">cmake --build . --target check-mlir</span><br></pre></td></tr></table></figure>
+<p>在构建时主要添加构建参数<code>-DLLVM_ENABLE_PROJECTS=mlir</code>即可。编译完成后就可以看到MLIR配套相关的工具。</p>
+<h2 id="MLIR相关工具使用"><a href="#MLIR相关工具使用" class="headerlink" title="MLIR相关工具使用"></a>MLIR相关工具使用</h2><p>MLIR项目构建完成后会生成一些工具。其中最主要的包括：</p>
+<ul>
+<li>mlir-tblgen：将TD文件转换C++代码，和MLIR’框架配合使用</li>
+<li>mlir-opt：对MLIR方言进行下降或者执行优化</li>
+<li>mlir-translate：将LLVM方言转换为LLVM IR；</li>
+</ul>
+<p>另外，其它还有一些工具，例如mlir-pdll、mlir-cpu-runner等在后续的blog中涉及到相关内容再进行介绍。</p>
+<h2 id="MLIR使用示例"><a href="#MLIR使用示例" class="headerlink" title="MLIR使用示例"></a>MLIR使用示例</h2><p>下面通过一个简单的示例演示MLIR的工作流程。</p>
+<h3 id="使用MLIR定义一个Hello-MLIR的代码"><a href="#使用MLIR定义一个Hello-MLIR的代码" class="headerlink" title="使用MLIR定义一个Hello MLIR的代码"></a>使用MLIR定义一个Hello MLIR的代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">module &#123;</span><br><span class="line">        memref.global &quot;private&quot; constant @string : memref&lt;13xi8&gt; = dense&lt;[0x48,0x65,0x6c,0x6c,0x6f,0x2c,0x20,0x4d,0x4c,0x49,0x52,0x21,0]&gt;</span><br><span class="line">        llvm.func external @puts(!llvm.ptr&lt;i8&gt;) -&gt; ()</span><br><span class="line">        func.func @main() -&gt; i64 &#123;</span><br><span class="line">                %c0_i64 = arith.constant 0 : i64</span><br><span class="line">                %0 = memref.get_global @string : memref&lt;13xi8&gt;</span><br><span class="line">                %1 = memref.extract_aligned_pointer_as_index %0 : memref&lt;13xi8&gt; -&gt; index</span><br><span class="line">                %2 = arith.index_cast %1 : index to i64</span><br><span class="line">                %3 = llvm.inttoptr %2 : i64 to !llvm.ptr&lt;i8&gt;</span><br><span class="line">                llvm.call @puts(%3) : (!llvm.ptr&lt;i8&gt;) -&gt; ()</span><br><span class="line">                return %c0_i64 : i64</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，使用4个方言，分别是memref、func、arith和llvm（例如代码中memerf.global表示memref方言中的global operation）。通过memref定义一个全局变量的字符串“Hello，MLIR！”<br>使用llvm方言引用一个外部函数put；<br>使用func方言定义main函数，并在main函数获取字符串，并将其作为put函数的参数，调用put函数。</p>
+<h3 id="将MLIR方言下降至LLVM方言"><a href="#将MLIR方言下降至LLVM方言" class="headerlink" title="将MLIR方言下降至LLVM方言"></a>将MLIR方言下降至LLVM方言</h3><p>在MLIR世界中，需要将其它的方言下降至LLVM方言（包含LLVM和后端硬件方言，烈日ArmSVE方言），在本例中需要将func、arith、memref下降到LLVM方言，使用命令如下：<br><code>mlir-opt  -convert-func-to-llvm  -finalize-memref-to-llvm -convert-arith-to-llvm -reconcile-unrealized-casts hello.mlir </code></p>
+<p>这个代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">module attributes &#123;llvm.data_layout = &quot;&quot;&#125; &#123;</span><br><span class="line">  llvm.mlir.global private constant @string(dense&lt;[72, 101, 108, 108, 111, 44, 32, 77, 76, 73, 82, 33, 0]&gt; : tensor&lt;13xi8&gt;) &#123;addr_space = 0 : i32&#125; : !llvm.array&lt;13 x i8&gt;</span><br><span class="line">  llvm.func @puts(!llvm.ptr&lt;i8&gt;)</span><br><span class="line">  llvm.func @main() -&gt; i64 &#123;</span><br><span class="line">    %0 = llvm.mlir.constant(0 : i64) : i64</span><br><span class="line">    %1 = llvm.mlir.constant(13 : index) : i64</span><br><span class="line">    %2 = llvm.mlir.constant(1 : index) : i64</span><br><span class="line">    %3 = llvm.mlir.null : !llvm.ptr</span><br><span class="line">    %4 = llvm.getelementptr %3[13] : (!llvm.ptr) -&gt; !llvm.ptr, i8</span><br><span class="line">    %5 = llvm.ptrtoint %4 : !llvm.ptr to i64</span><br><span class="line">    %6 = llvm.mlir.addressof @string : !llvm.ptr</span><br><span class="line">    %7 = llvm.getelementptr %6[0, 0] : (!llvm.ptr) -&gt; !llvm.ptr, !llvm.array&lt;13 x i8&gt;</span><br><span class="line">    %8 = llvm.mlir.constant(3735928559 : index) : i64</span><br><span class="line">    %9 = llvm.inttoptr %8 : i64 to !llvm.ptr</span><br><span class="line">    %10 = llvm.mlir.undef : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %11 = llvm.insertvalue %9, %10[0] : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %12 = llvm.insertvalue %7, %11[1] : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %13 = llvm.mlir.constant(0 : index) : i64</span><br><span class="line">    %14 = llvm.insertvalue %13, %12[2] : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %15 = llvm.insertvalue %1, %14[3, 0] : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %16 = llvm.insertvalue %2, %15[4, 0] : !llvm.struct&lt;(ptr, ptr, i64, array&lt;1 x i64&gt;, array&lt;1 x i64&gt;)&gt;</span><br><span class="line">    %17 = llvm.ptrtoint %7 : !llvm.ptr to i64</span><br><span class="line">    %18 = llvm.inttoptr %17 : i64 to !llvm.ptr&lt;i8&gt;</span><br><span class="line">    llvm.call @puts(%18) : (!llvm.ptr&lt;i8&gt;) -&gt; ()</span><br><span class="line">    llvm.return %0 : i64</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该代码只包含了LLVM方言</p>
+<h3 id="将LLVM方言转换为LLVM-IR"><a href="#将LLVM方言转换为LLVM-IR" class="headerlink" title="将LLVM方言转换为LLVM IR"></a>将LLVM方言转换为LLVM IR</h3><p>将LLVM方言转换为LLVM IR，使用命令如下<code>mlir-translate --mlir-to-llvmir ***.mlir </code><br>生成的LLVM IR如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">; ModuleID = &#x27;LLVMDialectModule&#x27;</span><br><span class="line">source_filename = &quot;LLVMDialectModule&quot;</span><br><span class="line"></span><br><span class="line">@string = private constant [13 x i8] c&quot;Hello, MLIR!\00&quot;</span><br><span class="line"></span><br><span class="line">declare ptr @malloc(i64)</span><br><span class="line"></span><br><span class="line">declare void @free(ptr)</span><br><span class="line"></span><br><span class="line">declare void @puts(ptr)</span><br><span class="line"></span><br><span class="line">define i64 @main() &#123;</span><br><span class="line">  call void @puts(ptr @string)</span><br><span class="line">  ret i64 0</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">!llvm.module.flags = !&#123;!0&#125;</span><br><span class="line"></span><br><span class="line">!0 = !&#123;i32 2, !&quot;Debug Info Version&quot;, i32 3&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行测试LLVM-IR"><a href="#运行测试LLVM-IR" class="headerlink" title="运行测试LLVM IR"></a>运行测试LLVM IR</h3><p>生成的LLVM IR就可以接入到LLVM体系中，可以使用LLVM的优化、代码生成、汇编、反汇编工具。例如可以使用lli直接运行上述的LLVM IR，可以得到如下结果：<br><code>Hello， MLIR！</code></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文作为MLIR概述的第一篇，简单介绍MLIR的基本概念和工具，通过一个示例演示通过MLIR工具生成LLVM IR的过程。后续我们将逐步展开介绍MLIR方言、模式匹配、方言降级和优化等工作。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MLIR/" rel="tag"># MLIR</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/12/31/Survey-on-Clang/" rel="prev" title="Survey_on_Clang">
+                  <i class="fa fa-angle-left"></i> Survey_on_Clang
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/02/01/MLIR-%E6%96%B9%E8%A8%80%E6%A6%82%E8%BF%B0/" rel="next" title="MLIR-方言概述">
+                  MLIR-方言概述 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"1ac85f40f05add25707ff0fbb0f4d7d5"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

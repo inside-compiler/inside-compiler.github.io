@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="方言概述MLIR社区提供的方言超过40余个方言，理解全部的方言已经非常困难。下面是有一个部分重要方言的降级流程图。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MLIR-方言概述">
+<meta property="og:url" content="http://example.com/2024/02/01/MLIR-%E6%96%B9%E8%A8%80%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="Inside Compiler">
+<meta property="og:description" content="方言概述MLIR社区提供的方言超过40余个方言，理解全部的方言已经非常困难。下面是有一个部分重要方言的降级流程图。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/02/01/MLIR-%E6%96%B9%E8%A8%80%E6%A6%82%E8%BF%B0/17059287649196.jpg">
+<meta property="article:published_time" content="2024-02-01T02:21:22.000Z">
+<meta property="article:modified_time" content="2025-06-15T05:58:00.522Z">
+<meta property="article:author" content="inside compiler">
+<meta property="article:tag" content="MLIR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/02/01/MLIR-%E6%96%B9%E8%A8%80%E6%A6%82%E8%BF%B0/17059287649196.jpg">
+
+
+<link rel="canonical" href="http://example.com/2024/02/01/MLIR-%E6%96%B9%E8%A8%80%E6%A6%82%E8%BF%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/02/01/MLIR-%E6%96%B9%E8%A8%80%E6%A6%82%E8%BF%B0/","path":"2024/02/01/MLIR-方言概述/","title":"MLIR-方言概述"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MLIR-方言概述 | Inside Compiler</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Inside Compiler</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E8%A8%80%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">方言概述</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">inside compiler</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/02/01/MLIR-%E6%96%B9%E8%A8%80%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="inside compiler">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MLIR-方言概述 | Inside Compiler">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MLIR-方言概述
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-02-01 10:21:22" itemprop="dateCreated datePublished" datetime="2024-02-01T10:21:22+08:00">2024-02-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-15 13:58:00" itemprop="dateModified" datetime="2025-06-15T13:58:00+08:00">2025-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MLIR/" itemprop="url" rel="index"><span itemprop="name">MLIR</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>915</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="方言概述"><a href="#方言概述" class="headerlink" title="方言概述"></a>方言概述</h1><p>MLIR社区提供的方言超过40余个方言，理解全部的方言已经非常困难。下面是有一个部分重要方言的降级流程图。</p>
+<span id="more"></span>
+
+<img src="/2024/02/01/MLIR-%E6%96%B9%E8%A8%80%E6%A6%82%E8%BF%B0/17059287649196.jpg" class="">
+
+
+<p>为了方便理解方言的功能，我们将上图换划分成四层介绍：</p>
+<ol>
+<li>硬件方言：目的是将MLIR转换到LLVM IR。例如：</li>
+</ol>
+<ul>
+<li>LLVM方言将MLIR转换至通用的LLVM IR；</li>
+<li>X86Vector、ArmSME、ArmSVE、ARMNeon、AMX、AVX512、NVVM、ROCm等方言MLIR转换至特定硬件架构的LLVM IR（通常通过Instrsic实现）。</li>
+</ul>
+<ol start="2">
+<li>结构方言：目的是提供表示程序的控制流。例如：</li>
+</ol>
+<ul>
+<li>控制流方言：SCF（Standard Control Flow，标准控制流）方言和CF（Control Flow，控制流）方言用于描述程序的控制流。其中SCF可以描述循环、分支等，它的抽象更高；CF描述分支，其抽象程度低；SCF一般会降级到CF。</li>
+</ul>
+<ol start="3">
+<li>数据和内存描述的MLIR。例如：</li>
+</ol>
+<ul>
+<li>Tensor、MemRef和Arith方言用于描述程序中高级和基础数据结构。其中Tensor描述张量；MemRef描述内存；Arith描述基础数学运算。</li>
+</ul>
+<ol start="4">
+<li>优化方言：目的提供公共优化能力。例如：</li>
+</ol>
+<ul>
+<li>循环优化：Affine方言提供针对循环的多面体优化；</li>
+<li>分块优化：Vector方言提供针对数据分块的优化；</li>
+<li>线性算法优化：Linalg方言提供针对线性算法的优化；</li>
+<li>常见优化库：OpenMP和OpenACC方言提供常见优化库功能；</li>
+<li>其它优化：如Async方言提供程序异步执行优化、Bufferization方言提供缓存优化。</li>
+</ul>
+<p>注意1:上面的划分可能存在非常大的争议，例如在2023年Jeff等人在LLVM峰会上对方言也做了分类介绍，可以参考：<a target="_blank" rel="noopener" href="https://youtu.be/hIt6J1_E21c%E3%80%82%E8%BF%99%E9%87%8C%E7%9A%84%E5%88%92%E5%88%86%E4%B8%BB%E8%A6%81%E6%98%AF%E4%BB%8E%E9%99%8D%E7%BA%A7%E7%9A%84%E7%BB%B4%E5%BA%A6%E5%87%BA%E5%8F%91%EF%BC%8C%E8%80%8CJeff%E5%AE%83%E4%BB%AC%E7%9A%84%E5%88%86%E7%B1%BB%E6%9D%A5%E8%87%AA%E4%BA%8ELLVM%E7%A4%BE%E5%8C%BA%E6%9C%80%E6%97%A9%E5%AF%B9%E4%BA%8E%E6%96%B9%E8%A8%80%E7%9A%84%E5%88%86%E7%B1%BB%EF%BC%8C%E5%8F%82%E8%80%83%EF%BC%9Ahttps://discourse.llvm.org/t/codegen-dialect-overview/2723%E3%80%82">https://youtu.be/hIt6J1_E21c。这里的划分主要是从降级的维度出发，而Jeff它们的分类来自于LLVM社区最早对于方言的分类，参考：https://discourse.llvm.org/t/codegen-dialect-overview/2723。</a></p>
+<p>注意2: 在这里我们仅仅关注MLIR社区方言，在社区方言外还存在业务方言，例如将Python描述的大模型通过转化变成MLIR方言，由于这么方言属于业务方言，我们此处并不讨论。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MLIR/" rel="tag"># MLIR</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/01/01/Build-MLIR/" rel="prev" title="MLIR学习系列1-MLIR概述">
+                  <i class="fa fa-angle-left"></i> MLIR学习系列1-MLIR概述
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/02/02/ADT-Overview/" rel="next" title="ADT-概述">
+                  ADT-概述 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">inside compiler</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"inside-compiler","repo":"inside-compiler.github.io","client_id":"3b662fd9edd646229c79","client_secret":"312a2514c4029a47341087757f0c051786144c77","admin_user":"fiking","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"labels":["gitalk"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"4ec428bbe2edb40965b145a9a12fc62b"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
